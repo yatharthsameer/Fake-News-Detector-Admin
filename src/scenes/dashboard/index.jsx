@@ -24,6 +24,7 @@ import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 import React, { useContext } from "react";
+import { performSearch } from "./searchBackend"; // Import the search function
 
 const Dashboard = () => {
   const [results, setResults] = React.useState([]);
@@ -72,52 +73,10 @@ const Dashboard = () => {
   };
 
   const handleSearchButtonClick = () => {
-    // Extract the search type (already available in the searchType state)
-    // Get the search query from the TextField (let's give it a ref to easily access its value)
-    setIsSearchInitiated(true);
-
-    const searchQuery = searchInputRef.current.value;
-
-    // Make a POST request to the Flask server
-    fetch("http://localhost:3001/search", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query: searchQuery }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data); // For now, let's just log the top matches returned by the server
-        setResults(data);
-        setChartData(processChartData(data));
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+    // Handle the search button click here
+    // You can access the search type using the `searchType` state
+    // and the search input value from the text field
   };
-  // const handleReadMoreClick = () => {
-  //   const searchQuery = searchInputRef.current.value;
-
-  //   // Make a POST request to the Flask server
-  //   fetch("http://localhost:3001/searchAll", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ query: searchQuery }),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       console.log(data); // Log the data returned by the server
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //     });
-  // };
-
-  const highestMatch = results.length > 0 ? results[0].percentage : 0;
-
   return (
     <Box m="20px">
       {/* HEADER */}
@@ -255,103 +214,96 @@ const Dashboard = () => {
             <BarChart isDashboard={true} />
           </Box>
         </Box> */}
-            <Box
-              gridColumn="span 7"
-              gridRow="span 4"
-              backgroundColor={colors.primary[400]}
-              overflow="auto"
+        <Box
+          gridColumn="span 7"
+          gridRow="span 4"
+          backgroundColor={colors.primary[400]}
+          overflow="auto"
+        >
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            borderBottom={`1px solid ${colors.primary[400]}`}
+            colors={colors.grey[100]}
+            p="15px"
+          >
+            <Typography
+              color={colors.grey[100]}
+              variant="h5"
+              fontWeight="600"
+              sx={{ mt: "15px" }}
             >
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                borderBottom={`1px solid ${colors.primary[400]}`}
-                colors={colors.grey[100]}
-                p="15px"
-              >
+              Top Matches 
+            </Typography>
+          </Box>
+          {Object.entries(mockNewsData).map(([index, newsItem]) => (
+            <Box
+              key={`${newsItem.Story_URL}-${index}`}
+              display="flex"
+              flexDirection="row"
+              alignItems="flex-start"
+              borderBottom={`1px solid ${colors.primary[400]}`}
+              p=" 8px 35px"
+            >
+              <img
+                src={newsItem.image} // Use the image URL from your data
+                alt="News"
+                width="110px" // Set the width and height to create a square
+                height="95px"
+                style={{ marginRight: "20px" }} // Add some spacing between image and content
+              />
+              <div>
                 <Typography
-                  color={colors.grey[100]}
+                  color={colors.greenAccent[100]}
                   variant="h5"
                   fontWeight="600"
-                  sx={{ mt: "15px" }}
                 >
-                  Top Matches
-                </Typography>
-                {/* <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleReadMoreClick}
-                >
-                  Read More
-                </Button> */}
-              </Box>
-              {results.map((result, index) => (
-                <Box
-                  key={index}
-                  display="flex"
-                  flexDirection="row"
-                  alignItems="flex-start"
-                  borderBottom={`1px solid ${colors.primary[400]}`}
-                  p=" 13px 35px"
-                >
-                  <img
-                    src={result.data.img} // Display the image from the result
-                    alt="News"
-                    width="110px"
-                    height="95px"
-                    style={{ marginRight: "20px" }}
-                  />
-                  {/* Display other details from the result like the image, headline, etc.
-                 You can also display the matching percentage using result.percentage */}
-                  <div>
-                    <Typography
-                      color={colors.greenAccent[100]}
-                      variant="h5"
-                      fontWeight="600"
-                    >
-                      <a
-                        href={result.data.Story_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          color: colors.greenAccent[100],
-                          textDecoration: "none",
-                        }}
-                      >
-                        {result.data.Headline}
-                      </a>
-                    </Typography>
-                    <Typography color={colors.grey[100]}>
-                      {result.data.Story_Date}
-                    </Typography>
-                    <Typography color={colors.grey[100]}>
-                      {result.percentage}% match
-                    </Typography>
-                  </div>
-                </Box>
-              ))}
-            </Box>
-            <Box
-              gridColumn="span 5"
-              gridRow="span 2"
-              backgroundColor={colors.primary[400]}
-            >
-              <Box
-                mt="22px"
-                p="0 30px"
-                display="flex "
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Box>
-                  <Typography
-                    variant="h5"
-                    fontWeight="600"
-                    color={colors.grey[100]}
+                  <a
+                    href={newsItem.Story_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: colors.greenAccent[100],
+                      textDecoration: "none",
+                    }} // Add some spacing between image and content
                   >
-                    Timeline
-                  </Typography>
-                  {/* <Typography
+                    {newsItem.Headline}
+                  </a>
+                </Typography>
+                <Typography color={colors.grey[100]}>
+                  {newsItem.Story_Date}
+                </Typography>
+                <Typography color={colors.grey[100]}>
+                  {/* Read More */}
+                  98% match
+                </Typography>
+              </div>
+            </Box>
+          ))}
+        </Box>
+
+        <Box
+          gridColumn="span 5"
+          gridRow="span 2"
+          backgroundColor={colors.primary[400]}
+        >
+          <Box
+            mt="22px"
+            p="0 30px"
+            display="flex "
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Box>
+              <Typography
+                variant="h5"
+                fontWeight="600"
+                color={colors.grey[100]}
+              >
+                Timeline
+              </Typography>
+              {/* <Typography
                 variant="h3"
                 fontWeight="bold"
                 color={colors.greenAccent[500]}

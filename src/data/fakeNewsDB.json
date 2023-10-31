@@ -1,0 +1,702 @@
+[
+    {
+        "Story_Date": "1st Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-viral-picture-of-duck-orchid-is-ai-generated/",
+        "Headline": "Fact Check: Viral Picture of \u2018Duck Orchid\u2019 is AI-Generated",
+        "Claim_URL": "https://www.facebook.com/happygardensFB/photos/a.425491137886131/1752392901862608/",
+        "What_(Claim)": "This is a flying duck orchid!"
+    },
+    {
+        "Story_Date": "6th Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-rahul-gandhi-never-said-he-or-his-family-is-muslim-edited-breaking-plate-viral/",
+        "Headline": "Fact Check: Rahul Gandhi Never Said He Or His Family Is Muslim, Edited Breaking Plate Viral",
+        "Claim_URL": "https://www.facebook.com/photo?fbid=2454064631427182&set=a.779310992235896",
+        "What_(Claim)": "Rahul Gandhi said he is a Muslim"
+    },
+    {
+        "Story_Date": "5th Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-no-communal-angle-in-mumbai-headless-body-in-suitcase-case/",
+        "Headline": "Fact Check: No Communal Angle in \u2018Mumbai Headless Body in Suitcase\u2019 Case",
+        "Claim_URL": "https://www.facebook.com/TheRIGHTIndianss/photos/a.105009394429682/767296691534279/",
+        "What_(Claim)": "This is a case of Love Jihad"
+    },
+    {
+        "Story_Date": "5th Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-incomplete-video-of-yogendra-yadav-being-shared-with-misleading-claims/",
+        "Headline": "Fact Check: Incomplete Video of Yogendra Yadav Being Shared with Misleading Claims",
+        "Claim_URL": "https://www.facebook.com/laxman.pai.77/videos/3616827111971241",
+        "What_(Claim)": "Yogendra Yadav is a Muslim and his real name is Salim"
+    },
+    {
+        "Story_Date": "13th Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-comedian-tiku-talsania-has-not-converted-to-islam-fake-post-viral/",
+        "Headline": "Fact Check: Comedian Tiku Talsania Has Not Converted To Islam, Fake Post Viral",
+        "Claim_URL": "https://www.facebook.com/reel/799371948234242",
+        "What_(Claim)": "Bollywood\\'s famous comedian Tiku Talsania has accepted Islam"
+    },
+    {
+        "Story_Date": "23rd Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-viral-video-of-australian-fan-chanting-vande-mataram-not-from-world-cup-2023/",
+        "Headline": "Fact Check: Viral Video of Australian Fan Chanting \u201cVande Mataram\u201d Not from World Cup 2023",
+        "Claim_URL": "https://www.vishvasnews.com/english/viral/fact-check-viral-video-of-australian-fan-chanting-vande-mataram-not-from-world-cup-2023/",
+        "What_(Claim)": "Australian fan shouted Vande Matram after beating Pakistan"
+    },
+    {
+        "Story_Date": "20th Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-school-book-chapter-about-using-head-for-carrying-weight-is-unrelated-to-bihar-board/",
+        "Headline": "Fact Check: School Book Chapter About Using Head For Carrying Weight Is Unrelated To Bihar Board",
+        "Claim_URL": "https://www.facebook.com/photo/?fbid=6989785214373757&set=a.646215515397457",
+        "What_(Claim)": "This is what Bihar government is teaching in schools. Function of head: Lifting weights."
+    },
+    {
+        "Story_Date": "16th Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-2016-video-of-cristiano-ronaldo-falsely-linked-to-israel-hamas-conflict/",
+        "Headline": "Fact Check: 2016 Video Of Cristiano Ronaldo Falsely Linked To Israel-Hamas Conflict",
+        "Claim_URL": "https://www.facebook.com/ibrahim.alsabban/videos/883573429802017",
+        "What_(Claim)": "A Facebook user named Ibrahim Hassun shared this viral video on October 15, claiming that Ronaldo stands with Palestine."
+    },
+    {
+        "Story_Date": "18th Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-agniveer-amritpal-singh-did-not-get-military-honor-due-to-suicide/",
+        "Headline": "Fact Check: Agniveer Amritpal Singh Did Not Get Military Honor Because He Committed Suicide",
+        "Claim_URL": "https://twitter.com/SatyapalmalikG/status/1713113470059807076",
+        "What_(Claim)": "The Central Government is not giving martyr status to Agniveer, due to which Amritpal Singh was not given military honour."
+    },
+    {
+        "Story_Date": "25th Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-pm-modi-did-not-appeal-to-vote-for-congress-viral-video-is-edited/",
+        "Headline": "Fact Check: PM Modi Did Not Appeal To Vote For Congress, Viral Video Is Edited",
+        "Claim_URL": "https://www.instagram.com/reel/CykmMZGrK0n/",
+        "What_(Claim)": "PM Modi appealed to vote for Congress"
+    },
+    {
+        "Story_Date": "15th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-old-video-going-viral-with-misleading-claims-linked-to-morocco-earthquake/",
+        "Headline": "Fact-Check: Old Video Going Viral With Misleading Claims Linked To Morocco Earthquake",
+        "Claim_URL": "https://www.facebook.com/100092402475336/videos/834028598376591",
+        "What_(Claim)": "Mosque demolished in Morocco, yet Azaan continues"
+    },
+    {
+        "Story_Date": "9th Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-people-seen-fighting-in-video-were-members-of-tdp-fake-claim-regarding-jsp-viral/",
+        "Headline": "Fact Check: People Seen Fighting In Video Were Members Of TDP, Fake Claim Regarding JSP Viral",
+        "Claim_URL": "https://www.facebook.com/jashuva.maxwell.9/videos/338438055225968",
+        "What_(Claim)": "Fight between TDP and JSP leaders in Kakinada"
+    },
+    {
+        "Story_Date": "1st Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-video-from-2018-bengali-film-going-viral-as-glimpse-of-shahrukh-khan-starrer-jawaan/",
+        "Headline": "Fact Check: Video From 2018 Bengali Film Going Viral as glimpse of Shahrukh Khan starrer \u2018Jawaan\u2019",
+        "Claim_URL": "https://www.facebook.com/rajuahmad69/videos/1525471158269408",
+        "What_(Claim)": "Jawan Leaked Action Scene"
+    },
+    {
+        "Story_Date": "5th Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-crystallised-book-artwork-being-claimed-as-holy-quran-recovered-from-deep-sea/",
+        "Headline": "Fact Check: Crystallised Book Artwork Being Claimed As Holy Quran Recovered From Deep Sea",
+        "Claim_URL": "https://www.facebook.com/groups/muslimshahzadi/posts/3668515240095757/?__cft__[0]=AZVdRL8_iwW7U2Z1zlOnC5dofBmg-pIFSHTqo6rmIes7ZxuanS0pi8FNF5fRlqz7n6GIRxpd7xmmnVZllSbzQg_NqPoixcSma6Z6OQXqD7GcxL-xt4UZys2oTKAzX9fwrYsNRnW7CWVDSLUUGBYHGEV-&__tn__=%2CO%2CP-R",
+        "What_(Claim)": "This Quran was found in the deep sea, still intact"
+    },
+    {
+        "Story_Date": "26th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-this-image-of-pm-modi-emerging-from-the-group-of-trees-is-ai-generated/",
+        "Headline": "Fact Check: This Image Of PM Modi, Emerging From The Group Of Trees, Is AI-Generated",
+        "Claim_URL": "https://www.facebook.com/RajannaKoravi/posts/796078909193223",
+        "What_(Claim)": "Group of trees look like the image of Prime Minister Modi"
+    },
+    {
+        "Story_Date": "25th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-old-video-of-snowfall-in-jk-being-passed-off-as-recent/",
+        "Headline": "Fact Check: Old Video Of Snowfall In JK Being Passed Off As Recent",
+        "Claim_URL": "https://www.facebook.com/mir.bilal.967/videos/1394126924505350",
+        "What_(Claim)": "Fresh snowfall in Daksum Kokernag on September 22, 2023"
+    },
+    {
+        "Story_Date": "28th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-kareena-kapoor-khan-not-on-x-viral-post-on-cricket-shared-by-fan-page/",
+        "Headline": "Fact Check: Kareena Kapoor Khan Not On X, Viral Post On Cricket Shared By Fan Page",
+        "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=pfbid0srt3AAC2X1b5LogJpuJB4CPbokrHCeYBvVMB4MSrDEzuy9zEXo2er4KRdZf39pwEl&id=100091983862956",
+        "What_(Claim)": "Kareena Kapoor Khan posts about Shami, Siraj and Wicket Jihad on X"
+    },
+    {
+        "Story_Date": "20th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-viral-video-of-robot-playing-badminton-with-humans-is-edited-2/",
+        "Headline": "Fact Check: Viral Video Of Robot Playing Badminton With Humans Is Edited",
+        "Claim_URL": "https://www.facebook.com/100054374836655/videos/1067439430889085",
+        "What_(Claim)": "Real footage of Robot vs. Human in Badminton"
+    },
+    {
+        "Story_Date": "13th Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-couple-at-concert-escaped-safely-after-hamas-attack-on-israel-viral-claim-misleading/",
+        "Headline": "Fact Check: Couple At Concert Escaped Safely After Hamas Attack On Israel, Viral Claim Misleading",
+        "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=pfbid02fsmW1qPt16LVLonMYikyodMpVq3rnq8GE4xKtTyRZyNBxGMLGMZiYLVHqR2RyArVl&id=100084244321671",
+        "What_(Claim)": "The viral picture is of the couple Amit and Neer attending the music festival. Both died in the attack on Israel."
+    },
+    {
+        "Story_Date": "14th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-edited-clip-from-rahul-gandhis-old-interview-viral-with-misleading-claim/",
+        "Headline": "Fact Check: Edited Clip From Rahul Gandhi\u2019s Old Interview Viral With Misleading Claim",
+        "Claim_URL": "Facebook group \u2018Senior Citizens Group <60yrs++++++",
+        "What_(Claim)": "when Rahul Gandhi was confronted with a challenging question during an interview, he remained silent and could not answer."
+    },
+    {
+        "Story_Date": "7th Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-post-by-parody-account-of-kareena-kapoor-shared-with-misleading-claim/",
+        "Headline": "Fact Check: Post By Parody Account Of Kareena Kapoor Shared With Misleading Claim",
+        "Claim_URL": "https://www.facebook.com/photo/?fbid=1041299646897256&set=a.101444550882775",
+        "What_(Claim)": "Kareena Kapoor expressed her opinion on the recent situation in the country by tweeting"
+    },
+    {
+        "Story_Date": "11th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/ai-check/fact-check-this-video-claiming-to-show-mukesh-ambani-is-a-deepfake/",
+        "Headline": "Fact Check: This Video Claiming To Show Mukesh Ambani Is A Deepfake",
+        "Claim_URL": "https://www.facebook.com/100093643596829/posts/998429268065608/",
+        "What_(Claim)": "Mukesh Ambani endorsed an investment scheme"
+    },
+    {
+        "Story_Date": "4th Jul 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-viral-image-of-three-story-bus-in-ayodhya-created-using-artificial-intelligence-shared-with-misleading-claim/",
+        "Headline": "Fact Check: Viral Image Of Three-story Bus In Ayodhya Created Using Artificial Intelligence, Shared With Misleading Claim",
+        "Claim_URL": "https://www.facebook.com/photo/?fbid=850216603104545&set=gm.953087472618782&idorvanity=481814943079373",
+        "What_(Claim)": "This five-star bus to ferry visitors from Ayodhya airport to Janmabhoomi soon"
+    },
+    {
+        "Story_Date": "11th Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-sunil-gavaskar-did-not-criticise-bcci-over-poor-management-of-cricket-world-cup-2023/",
+        "Headline": "Fact Check: Sunil Gavaskar Did Not Criticise BCCI Over Poor Management Of Cricket World Cup 2023",
+        "Claim_URL": "https://www.facebook.com/pawan.dixit.7927/posts/pfbid02URLEj6fkHVNuwFRLebABi3fBz9Vox6VvnpLrxiir841wh9VR9rz5M5GfQoNBCdttl",
+        "What_(Claim)": "Former Indian cricketer Sunil Gavaskar has criticized BCCI regarding Cricket World Cup 2023."
+    },
+    {
+        "Story_Date": "29th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-edited-photos-of-rahul-gandhi-with-badge-number-420-going-viral/",
+        "Headline": "Fact Check: Edited Photos Of Rahul Gandhi With Badge Number 420 Going Viral",
+        "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=pfbid0xDpALwzff9VyEYRu81VYRuy4uXWTh1zrTauZ8WfobqoBVjLwgCPLAt2X2dEUVReLl&id=100005568338243",
+        "What_(Claim)": "Rahul Gandhi seen wearing a red shirt with the number 420 on his badge"
+    },
+    {
+        "Story_Date": "8th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-old-video-of-prime-minister-modi-circulating-with-misleading-claims-about-india-alliance/",
+        "Headline": "Fact Check: Old Video Of Prime Minister Modi Circulating With Misleading Claims About INDIA Alliance",
+        "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=pfbid021MdxqBn9CnwRzwC1WBLXAQ9BjjtJbxtZP2xTTGYYkh32NvUeg52S6QKYUsZMvmVhl&id=100027466985904",
+        "What_(Claim)": "PM Narendra Modi sought votes for India Alliance"
+    },
+    {
+        "Story_Date": "22nd Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-viral-photos-of-pm-modi-and-us-president-joe-biden-are-ai-generated/",
+        "Headline": "Fact Check: Viral Photos Of PM Modi And US President Joe Biden Are AI-Generated",
+        "Claim_URL": "https://www.facebook.com/groups/740544566322820/posts/2071667653210498",
+        "What_(Claim)": "PM Modi and the US President are walking wearing kurta-pajama."
+    },
+    {
+        "Story_Date": "10th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-claim-of-getting-three-years-of-imprisonment-for-misbehaving-with-mosque-madarasa-staff-in-rajasthan-is-fake/",
+        "Headline": "Fact Check: Claim Of Getting Three Years Of Imprisonment For Misbehaving With Mosque, Madarasa Staff In Rajasthan Is Fake",
+        "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=pfbid0oZKq16QpqoDKiW9zsqSEcRMWiKXMTczAxGL1SsFe3JDinbqqFUgwx9NkdntKYmK6l&id=100076350603994",
+        "What_(Claim)": "The Rajasthan government has made a new law, under which misbehavior with the staff of a mosque or madrasa can lead to a punishment of three years."
+    },
+    {
+        "Story_Date": "25th Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-edited-video-of-earth-going-viral-in-the-name-of-chandrayaan-3-mission/",
+        "Headline": "Fact Check: Edited Video Of Earth Going Viral In The Name Of Chandrayaan-3 Mission",
+        "Claim_URL": "https://twitter.com/wasimkhan0730/status/1693465129910935983",
+        "What_(Claim)": "Video of Earth recorded from the moon during the Chandrayaan-3 mission."
+    },
+    {
+        "Story_Date": "23rd Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-bull-fight-video-going-viral-with-misleading-claims/",
+        "Headline": "Fact Check: Bull Fight Video Going Viral With Misleading Claims",
+        "Claim_URL": "https://www.facebook.com/100008929158412/videos/170667749316255/",
+        "What_(Claim)": "This video of auto overturning in stray cattle fight is from UP"
+    },
+    {
+        "Story_Date": "21st Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/entertainment/fact-check-pakistan-zindabad-slogans-were-not-raised-during-gadar-2-show-in-bareilly-cinema-hall-viral-claim-fake/",
+        "Headline": "Fact Check: \u2018Pakistan Zindabad\u2019 Slogans Were Not Raised During Gadar 2 Show In Bareilly Cinema Hall; Viral Claim Fake",
+        "Claim_URL": "https://twitter.com/Starboy2079/status/1691020685919842306",
+        "What_(Claim)": "Muslims raised slogans of Pakistan Zindabad during the Gadar 2 show"
+    },
+    {
+        "Story_Date": "8th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-theres-no-bus-route-420-in-bengaluru-viral-photo-mocking-politicians-is-edited/",
+        "Headline": "Fact Check: There\u2019s No Bus Route 420 in Bengaluru, Viral Photo Mocking Politicians Is Edited",
+        "Claim_URL": "https://www.facebook.com/photo/?fbid=299048279520101&set=a.106597995431798",
+        "What_(Claim)": "Bus Route 420 in Bengaluru"
+    },
+    {
+        "Story_Date": "18th Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-claim-of-excessive-usage-of-earbuds-earphones-could-cause-facial-paralysis-is-false/",
+        "Headline": "Fact Check: Claim Of Excessive Usage Of Earbuds, Earphones Could Cause Facial Paralysis Is False",
+        "Claim_URL": "https://www.facebook.com/reel/1028250455000277",
+        "What_(Claim)": "Excessive use of earphones or earbuds can lead to deafness, ear infection and pain and stress, but the claim that it causes facial paralysis is false."
+    },
+    {
+        "Story_Date": "6th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-old-video-of-vedic-mantras-recital-in-croatia-passed-off-as-hindu-event-at-the-white-house/",
+        "Headline": "Fact Check: Old Video Of Vedic Mantras Recital In Croatia Passed Off As Hindu Event At The White House",
+        "Claim_URL": "https://www.facebook.com/sudesh.gaur.56/posts/245758191762379/",
+        "What_(Claim)": "Shri Rudram Stotram was recited at the White House in America"
+    },
+    {
+        "Story_Date": "24th Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-nasa-video-based-on-apollo-mission-data-falsely-circulated-as-chandrayaan-3-footage/",
+        "Headline": "Fact Check: NASA Video Based On Apollo Mission Data Falsely Circulated as Chandrayaan-3 Footage",
+        "Claim_URL": "https://www.facebook.com/100079586472042/videos/1269561010428637/",
+        "What_(Claim)": "Moon Inside View capture by Chandrayaan-3"
+    },
+    {
+        "Story_Date": "22nd Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/sports/fact-check-viral-claim-about-shooter-rhythm-sangwan-breaking-world-records-in-baku-is-misleading/",
+        "Headline": "Fact Check: Viral Claim About Shooter Rhythm Sangwan Breaking World Records In Baku Is Misleading",
+        "Claim_URL": "https://www.facebook.com/maa.kaladla.50159836/posts/pfbid0WfhhyhHWR1ppHMk74wy1hKr9oFMF6QQSJP4AQNF6xxqbSKzhje6wDCnXZ1GNJ4bnl",
+        "What_(Claim)": "India\\'s new shooting star Rhythm Sangwan broke the world record at the ongoing ISSF Shooting World Cup in Baku"
+    },
+    {
+        "Story_Date": "16th Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-this-image-of-satyajit-ray-posing-with-aston-martin-is-edited/",
+        "Headline": "Fact Check: This Image Of Satyajit Ray Posing With Aston Martin Is Edited",
+        "Claim_URL": "https://www.facebook.com/photo?fbid=1500515507146114&set=a.101698177027861",
+        "What_(Claim)": "Ray in 1953! No bond can match his charisma"
+    },
+    {
+        "Story_Date": "17th Jul 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-not-vegetable-seller-but-sp-leader-hired-bouncers-to-protest-against-rising-tomato-prices/",
+        "Headline": "Fact Check: Not Vegetable Seller But SP Leader Hired Bouncers To Protest Against Rising Tomato Prices",
+        "Claim_URL": "https://www.instagram.com/p/CuezrXXBHcp/?utm_source=ig_embed&ig_rid=8f6b2b1e-19bb-45f2-a7dc-0f0997c93889",
+        "What_(Claim)": "A vegetable seller in UP\\'s Varanasi hired bouncers to prevent customers from stealing tomatoes"
+    },
+    {
+        "Story_Date": "12th Jul 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-phone-number-launched-to-support-bjp-viral-with-misleading-claim-about-ucc/",
+        "Headline": "Fact Check: Phone Number Launched To Support BJP Viral With Misleading Claim About UCC",
+        "Claim_URL": "https://www.facebook.com/groups/6175888542451256/posts/23910591598554344",
+        "What_(Claim)": "Hindus who wish to express their support for the Uniform Civil Code should give a missed call to \\'9090902024\\'"
+    },
+    {
+        "Story_Date": "5th Jul 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-videos-of-church-fire-burning-car-yard-unrelated-to-france-violence/",
+        "Headline": "Fact Check: Videos Of Church Fire, Burning Car Yard Unrelated To France Violence",
+        "Claim_URL": "https://twitter.com/i/status/1676116224210792448",
+        "What_(Claim)": "Videos related to France violence"
+    },
+    {
+        "Story_Date": "3rd Jul 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-viral-video-of-cars-falling-from-building-is-unrelated-to-france-violence/",
+        "Headline": "Fact Check: Viral Video Of Cars Falling From Building Is Unrelated To France Violence",
+        "Claim_URL": "https://www.facebook.com/100014909295087/videos/969220317450796",
+        "What_(Claim)": "video of violance in France"
+    },
+    {
+        "Story_Date": "28th Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-viral-claim-that-pm-modi-wore-islamic-skullcap-in-egypt-is-false/",
+        "Headline": "Fact Check: Viral Claim That PM Modi Wore Islamic Skullcap In Egypt Is False",
+        "Claim_URL": "https://www.facebook.com/photo?fbid=247800927865052&set=a.104759448835868",
+        "What_(Claim)": "PM Modi wore Islamic cap in Egypt"
+    },
+    {
+        "Story_Date": "22nd Feb 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-viral-video-claiming-huge-crowd-recited-hanuman-chalisa-in-jaipur-is-fake-footage-is-from-pakistan/",
+        "Headline": "Fact Check: Viral video claiming huge crowd recited Hanuman Chalisa in Jaipur is fake; footage is from Pakistan",
+        "Claim_URL": "https://www.facebook.com/100060347808195/posts/914720746642370/",
+        "What_(Claim)": "Huge crowd recites Hanuman Chalisa in Jaipur"
+    },
+    {
+        "Story_Date": "23rd Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-photo-of-injured-woman-breastfeeding-child-is-unrelated-to-ongoing-manipur-violence/",
+        "Headline": "Fact Check: Photo Of Injured Woman Breastfeeding Child Is Unrelated to Ongoing Manipur Violence",
+        "Claim_URL": "1.67E+18",
+        "What_(Claim)": "Photo related to Manipur violance"
+    },
+    {
+        "Story_Date": "4th Jan 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-virat-kohli-has-not-announced-his-retirement-from-cricket/",
+        "Headline": "Fact Check: Virat Kohli has not announced his retirement from cricket",
+        "Claim_URL": "https://www.facebook.com/watch/live/?ref=watch_permalink&v=525445706222199",
+        "What_(Claim)": "Virat Kohli announces retirement"
+    },
+    {
+        "Story_Date": "22nd Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-posts-claiming-nyt-published-article-calling-pm-modi-last-hope-of-earth-are-false/",
+        "Headline": "Fact Check: Posts Claiming NYT Published Article Calling PM Modi \u2018Last Hope Of Earth\u2019 Are False",
+        "Claim_URL": "https://facebook.com/story.php?story_fbid=pfbid02E3n94uvS2hJ65q6X5JuVsEZdXoDEkS9vKd1PWro4QXjqSSAbemToyHDJmxZVvFvBl&id=100001614520587&mibextid=Nif5oz",
+        "What_(Claim)": "PM Modi\\'s photo on the front page of The New York Times."
+    },
+    {
+        "Story_Date": "21st Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-video-of-woman-being-brutally-beaten-up-is-unrelated-to-manipur-violence/",
+        "Headline": "Fact Check: Video Of Woman Being Brutally Beaten Up Is Unrelated to Manipur Violence",
+        "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=590420026569110&id=100068033528476",
+        "What_(Claim)": "Latest video from Manipur violance"
+    },
+    {
+        "Story_Date": "23rd Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-photo-from-indian-cricketer-prasidh-krishnas-wedding-going-viral-with-false-claims/",
+        "Headline": "Fact Check: Photo From Indian Cricketer Prasidh Krishna\u2019s Wedding Going Viral With False Claims",
+        "Claim_URL": "https://www.facebook.com/photo?fbid=3399790873595337&set=a.1899780230263083&locale=en_GB",
+        "What_(Claim)": "Photograph from the wedding of Finance Minister Nirmala Sitharaman\\'s daughter."
+    },
+    {
+        "Story_Date": "19th Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-old-video-of-people-drowning-in-oman-sea-falsely-linked-to-cyclone-biparjoy/",
+        "Headline": "Fact Check: Old Video Of People Drowning In Oman Sea Falsely Linked To Cyclone Biparjoy",
+        "Claim_URL": "https://perma.cc/KTP4-KCMR",
+        "What_(Claim)": "Family swept away in sea due to Cyclone Biparjoy"
+    },
+    {
+        "Story_Date": "15th Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/society/fact-check-video-of-car-swept-away-in-water-is-not-from-karnataka-unrelated-to-cyclone-biparjoy/",
+        "Headline": "Fact Check: Video Of Car Swept Away In Water Is Not From Karnataka, Unrelated To Cyclone Biparjoy",
+        "Claim_URL": "https://www.facebook.com/watch/?ref=search&v=969068050902361&external_log_id=a24619db-0894-4d1e-869b-88b3026a7840&q=It%20is%20Dandeli%20Karnataka%20near%20hubi%20darwad.%20Sometimes%20over%20confidence%20has%20%20to%20pays%20alot",
+        "What_(Claim)": "It is Dandeli Karnataka near hubi darwad. Sometimes over confidence has to pays alot"
+    },
+    {
+        "Story_Date": "14th Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-karnataka-cm-siddaramaiah-did-not-insult-footballers-old-video-of-bjp-regime-viral-with-false-claim/",
+        "Headline": "Fact Check: Karnataka CM Siddaramaiah Did Not Insult Footballers, Old Video of BJP Regime Viral With False Claim",
+        "Claim_URL": "https://www.facebook.com/viraj.revadekar/posts/279845741071036/",
+        "What_(Claim)": "Karnataka CM made the football team wait on the footpath"
+    },
+    {
+        "Story_Date": "13th Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-old-video-from-spain-passed-off-as-cyclone-biparjoy-in-gujarat/",
+        "Headline": "Fact Check: Old Video From Spain Passed Off As Cyclone Biparjoy In Gujarat",
+        "Claim_URL": "https://www.facebook.com/PakWeather/videos/276085058251326",
+        "What_(Claim)": "Strong sea tide in Madhavpur (Gujarat)"
+    },
+    {
+        "Story_Date": "6th Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-edited-video-of-yogendra-yadav-going-viral-with-false-claim-related-to-his-religion/",
+        "Headline": "Fact-Check: Edited video of Yogendra Yadav going viral with false claim related to his religion",
+        "Claim_URL": "https://www.facebook.com/laxman.pai.77/posts/3616827111971241/",
+        "What_(Claim)": "Yogendra Yadav\\'s childhood friends and family members refer to him as Salim"
+    },
+    {
+        "Story_Date": "7th Jul 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/entertainment/fact-check-edited-video-of-tv-actor-uorfi-javed-visiting-bageshwar-dham-going-viral-with-false-claim/",
+        "Headline": "Fact-Check: Edited Video Of TV Actor Uorfi Javed Visiting Bageshwar Dham Going Viral With False Claim",
+        "Claim_URL": "https://www.facebook.com/100009121442228/videos/1219325635422860",
+        "What_(Claim)": "Uorfi Javed visited Bageshwar Dham"
+    },
+    {
+        "Story_Date": "20th Jul 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-old-video-of-boys-arrest-in-brazil-going-viral-with-false-claim/",
+        "Headline": "Fact Check: Old Video Of Boy\u2019s Arrest In Brazil Going Viral With False Claim",
+        "Claim_URL": "https://www.facebook.com/100050246058362/videos/101420246366875",
+        "What_(Claim)": "One terrorist arrested in Srinagar"
+    },
+    {
+        "Story_Date": "19th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-fake-post-on-tata-offering-free-recharge-of-rs-719-on-ratan-tatas-birthday-goes-viral/",
+        "Headline": "Fact Check: Fake Post On Tata Offering Free Recharge Of Rs 719 On Ratan Tata\u2019s Birthday Goes Viral",
+        "Claim_URL": "https://www.facebook.com/groups/1480621088682928/posts/6580166808728305",
+        "What_(Claim)": "Tata Company is providing an 84-day recharge worth Rs 719 to all Indian users on Ratan Tata\\'s birthday"
+    },
+    {
+        "Story_Date": "31st Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-viral-picture-of-elvish-yadav-with-virat-kohli-is-edited-shared-with-misleading-claim/",
+        "Headline": "Fact Check: Viral Picture Of Elvish Yadav With Virat Kohli Is Edited, Shared With Misleading Claim",
+        "Claim_URL": "https://www.facebook.com/groups/1778029212395713/posts/2170772959788001",
+        "What_(Claim)": "Elvish Yadav met Virat Kohli after winning Bigg Boss"
+    },
+    {
+        "Story_Date": "21st Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-video-of-plastic-granules-shared-as-fake-wheat-viral-post-misleading/",
+        "Headline": "Fact Check: Video Of Plastic Granules Shared As \u2018Fake Wheat\u2019; Viral Post Misleading",
+        "Claim_URL": "https://twitter.com/rashtrawadi_aru/status/1711730443882782892",
+        "What_(Claim)": "Fake wheat has also started being made, look at the market with open eyes, what is left now to make fake?"
+    },
+    {
+        "Story_Date": "29th Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-fake-free-recharge-links-going-viral-after-chandrayaan-3s-landing/",
+        "Headline": "Fact Check: Fake Free Recharge Links Going Viral After Chandrayaan-3\u2019s Landing",
+        "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=pfbid02BHiRbjQnkzvMc5a4pQG3Mr1NHWHnaCQqGv7VXsYRrJTbJzubNqDdTZ8vj9zJxUjEl&id=100090992661242",
+        "What_(Claim)": "Tata company offering free recharges after Chandrayaan 3 launch"
+    },
+    {
+        "Story_Date": "17th Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-woman-crying-outside-hospital-in-viral-video-from-gaza-isnt-palestinian-actor-but-a-common-citizen/",
+        "Headline": "Fact Check: Woman Crying Outside Hospital In Viral Video From Gaza Isn\u2019t Palestinian Actor, But A Common Citizen",
+        "Claim_URL": "https://www.facebook.com/100095345895048/videos/1511361909679692",
+        "What_(Claim)": "Palestinian actress Masiya Abd Elhadi acting outside a hospital in Gaza."
+    },
+    {
+        "Story_Date": "12th Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-nobel-laureate-amartya-sens-death-rumours-are-fake/",
+        "Headline": "Fact Check: Nobel Laureate Amartya Sen\u2019s Death Rumours Are Fake",
+        "Claim_URL": "https://twitter.com/PTI_News/status/1711709354058215512",
+        "What_(Claim)": "Amartya Sen Passes Away"
+    },
+    {
+        "Story_Date": "24th Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-viral-video-of-flood-is-from-pakistans-swat-valley-not-kedarnath/",
+        "Headline": "Fact Check: Viral Video of Flood Is From Pakistan\u2019s Swat Valley, Not Kedarnath",
+        "Claim_URL": "https://www.facebook.com/groups/souliseternal/posts/2408339149347740/",
+        "What_(Claim)": "Video of flood in Kedarnath."
+    },
+    {
+        "Story_Date": "9th Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-old-image-of-flooded-chennai-airport-going-viral-with-false-claims/",
+        "Headline": "Fact Check: Old Image Of Flooded Chennai Airport Going Viral With False Claims",
+        "Claim_URL": "https://www.facebook.com/photo/?fbid=704313321708935&set=a.423943919745878",
+        "What_(Claim)": "Gujarat model Ahmedabad airport turns into a port after heavy rainfall"
+    },
+    {
+        "Story_Date": "26th Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-old-video-of-toy-distribution-at-football-match-for-turkey-earthquake-survivors-going-viral-in-israel-hamas-war-context/",
+        "Headline": "Fact Check: Old Video Of Toy Distribution At Football Match For Turkey Earthquake Survivors Going Viral In Israel-Hamas War Context",
+        "Claim_URL": "https://twitter.com/iamabraz/status/1716151876436296029",
+        "What_(Claim)": "Spectators support Palestine by throwing toys at football ground"
+    },
+    {
+        "Story_Date": "27th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-video-of-people-searching-for-diamonds-on-road-in-surat-going-viral-with-false-claims/",
+        "Headline": "Fact Check: Video Of People Searching For Diamonds On Road In Surat Going Viral With False Claims",
+        "Claim_URL": "https://www.facebook.com/aapvaranasi.premsagarpal/posts/1272145756837281/",
+        "What_(Claim)": "Troubled by the severe recession in the diamond market of Surat, diamond traders threw diamonds on the road."
+    },
+    {
+        "Story_Date": "3rd Jan 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-jio-company-not-giving-reward-up-to-rs-10000-link-being-shared-fake/",
+        "Headline": "Fact Check: Jio Company Not Giving Reward Up To Rs 10,000, Link Being Shared Fake",
+        "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=pfbid0WRV5KjcDE6TP2wVyFeySz5pv6YrwjtAsrWREhYdfugU4TfR57AdvfUMZEM1mSxEvl&id=100075034221425",
+        "What_(Claim)": "Jio is giving a reward of up to Rs 10,000"
+    },
+    {
+        "Story_Date": "20th Jan 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-old-photo-of-pm-modi-sonia-gandhi-goes-viral-with-misleading-claim/",
+        "Headline": "Fact Check: Old photo of PM Modi, Sonia Gandhi goes viral with misleading claim",
+        "Claim_URL": "https://www.facebook.com/md.iquebal.31/posts/pfbid02fdCjC8AsCpiVr6u8uHh8bN4nDUSEqsNjHJCWmQLKQojpTBFUoao58hwQudQSeDjWl",
+        "What_(Claim)": "Congress, BJP secret meeting"
+    },
+    {
+        "Story_Date": "14th Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-viral-video-of-two-singers-shared-with-false-claim-linking-them-to-manipur/",
+        "Headline": "Fact Check: Viral Video Of Two Singers Shared With False Claim Linking Them To Manipur",
+        "Claim_URL": "https://www.facebook.com/anand.kumar.3532507/posts/713926367176848/",
+        "What_(Claim)": "One of them is a Kuki and the other is Meitei from sizzling Manipur."
+    },
+    {
+        "Story_Date": "11th Aug 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-video-of-balasore-train-accident-going-viral-with-false-claim-related-to-train-crash-in-pakistan/",
+        "Headline": "Fact Check: Video Of Balasore Train Accident Going Viral With False Claim Related To Train Crash In Pakistan",
+        "Claim_URL": "https://www.facebook.com/100010130529766/videos/1490950908393841/?mibextid=Nif5oz",
+        "What_(Claim)": "Video of train accident in Pakistan"
+    },
+    {
+        "Story_Date": "26th Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-edited-video-clip-of-2020-quad-summit-linked-to-pm-modis-us-state-visit-shared-with-misleading-claim/",
+        "Headline": "Fact Check: Edited Video Clip Of 2020 Quad Summit Linked To PM Modi\u2019s US State Visit, Shared With Misleading Claim",
+        "Claim_URL": "https://twitter.com/sayeed_uddin/status/1671393236391436290",
+        "What_(Claim)": "PM Modi was ignored by Joe Biden in America."
+    },
+    {
+        "Story_Date": "14th Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-viral-video-of-siddaramaiah-is-from-2022-iftar-party-not-related-to-karnataka-elections/",
+        "Headline": "Fact Check: Viral Video Of Siddaramaiah Is From 2022 Iftar Party, Not Related To Karnataka Elections",
+        "Claim_URL": "https://www.facebook.com/rameshchand.sharma.756/posts/6341780009194347/",
+        "What_(Claim)": "CM Siddaramaiah celebrates with people from the Muslim community after winning the elections in Karnataka."
+    },
+    {
+        "Story_Date": "8th Jun 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-edited-video-of-pm-modi-going-viral-with-false-claim/",
+        "Headline": "Fact-Check: Edited video of PM Modi going viral with false claim",
+        "Claim_URL": "https://www.facebook.com/ankitbhatnagarbijawar/posts/584069917188696/",
+        "What_(Claim)": "PM Modi watching an address by Dhirendra Krishna Shastri on television"
+    },
+    {
+        "Story_Date": "24th May 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-viral-post-about-devoleena-bhattarjee-is-false-actor-did-not-have-a-role-in-the-kerala-story/",
+        "Headline": "Fact Check: Viral post about Devoleena Bhattarjee is false, actor did not have a role in The Kerala Story",
+        "Claim_URL": "https://www.facebook.com/photo/?fbid=613252684173885&set=pb.100064674764582.-2207520000.",
+        "What_(Claim)": "Devoleena Bhattacharjee has played a role in \\'The Kerala Story\\'"
+    },
+    {
+        "Story_Date": "15th May 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-video-of-pm-modis-roadshow-in-surat-linked-to-wrestlers-protest-in-misleading-viral-post/",
+        "Headline": "Fact Check: Video of PM Modi\u2019s roadshow in Surat linked to wrestlers\u2019 protest in misleading viral post",
+        "Claim_URL": "https://twitter.com/yvikashpradhan/status/1655871792983191552",
+        "What_(Claim)": "Lakhs of people take part in wrestlers\\' protest at Jantar Mantar"
+    },
+    {
+        "Story_Date": "11th May 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-4-year-old-video-of-actor-prakash-raj-being-linked-to-karnataka-elections/",
+        "Headline": "Fact Check: 4-Year-Old Video of actor Prakash Raj being linked to Karnataka elections",
+        "Claim_URL": "https://www.facebook.com/premayogan/posts/938725807442664/",
+        "What_(Claim)": "Prakash Raj urges people to not vote for Congress in Karnataka elections"
+    },
+    {
+        "Story_Date": "15th Feb 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-viral-video-of-dog-rescue-is-not-from-turkey-earthquake-shared-with-misleading-claim/",
+        "Headline": "Fact Check: Viral video of dog rescue is not from Turkey earthquake, shared with misleading claim",
+        "Claim_URL": "https://www.facebook.com/khairmuhammad.tunio.5/posts/1143108066254535/",
+        "What_(Claim)": "Dog\\'s child buried under the ruins after Turkey earthquake"
+    },
+    {
+        "Story_Date": "21st Feb 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-rbi-did-not-ask-banks-to-print-essence-of-gita-on-passbooks/",
+        "Headline": "Fact Check: RBI did not ask banks to print essence of Gita on passbooks",
+        "Claim_URL": "https://www.facebook.com/haiderali1331/posts/pfbid02cqNRqwbo74UMdGMoPtnqaruKmuiXDsUQzK8x6tSFCcaa7qNb9f9nPKkZUjPeosf6l",
+        "What_(Claim)": "RBI asks banks to print essence of Gita on passbooks"
+    },
+    {
+        "Story_Date": "14th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-viral-picture-of-meeting-between-pm-modi-and-us-president-edited-and-shared-with-misleading-claim/",
+        "Headline": "Fact Check: Viral Picture Of Meeting Between PM Modi And US President Edited And Shared With Misleading Claim",
+        "Claim_URL": "https://www.facebook.com/ajaymishrajiarmy/videos/710025511169502/",
+        "What_(Claim)": "There is a picture of Mahabharata on the back wall of the meeting between PM MOdi and US President Joe Bidenin Bharat Mandapam."
+    },
+    {
+        "Story_Date": "4th May 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-6-year-old-pic-of-jharkhand-train-being-shared-as-vande-bharat-express-with-misleading-claim/",
+        "Headline": "Fact Check: 6-Year-Old Pic of Jharkhand train being shared as Vande Bharat Express with misleading claim",
+        "Claim_URL": "https://twitter.com/KrisNair1/status/1651119775425388544",
+        "What_(Claim)": "Thiruvananthapuram-Kasaragod Vande Bharat train had reported a water leak on arrival in Kannur"
+    },
+    {
+        "Story_Date": "21st Apr 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-video-of-delhi-education-minister-atishi-inspecting-mcd-school-being-shared-with-misleading-claim/",
+        "Headline": "Fact Check: Video of Delhi Education Minister Atishi inspecting MCD school being shared with misleading claim",
+        "Claim_URL": "https://www.facebook.com/100000418254414/videos/1735794593505729/",
+        "What_(Claim)": "Delhi Education Minister Atishi Marlena criticises a government school for its poor condition"
+    },
+    {
+        "Story_Date": "10th Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/ai-check/fact-check-rahul-gandhis-ai-generated-picture-shared-with-misleading-claim/",
+        "Headline": "Fact Check: Rahul Gandhi\u2019s AI-Generated Picture Shared With Misleading Claim",
+        "Claim_URL": "https://twitter.com/Ak29122000/status/1707009151883485358",
+        "What_(Claim)": "Rahul Gandhi\\'s photo taken on Goa beach by Australian tourist"
+    },
+    {
+        "Story_Date": "13th Apr 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-viral-letter-on-rss-call-to-convert-muslim-girls-is-fake-and-misleading/",
+        "Headline": "Fact Check: Viral letter on RSS call to convert Muslim girls is fake and misleading",
+        "Claim_URL": "https://twitter.com/ShahavajAnjum/status/1644726693473701888",
+        "What_(Claim)": "RSS letter allegedly talks about training Hindu youths on behalf of the Sangh to get Muslim girls to convert to Hinduism."
+    },
+    {
+        "Story_Date": "6th Oct 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-pm-modi-didnt-pay-tributes-to-godse-viral-image-of-deendayal-upadhyaya-shared-with-misleading-claim/",
+        "Headline": "Fact Check: PM Modi Didn\u2019t Pay Tributes To Godse, Viral Image Of Deendayal Upadhyaya Shared With Misleading Claim",
+        "Claim_URL": "https://www.facebook.com/photo.php?fbid=883876216437040&set=a.104312387726764&type=3&theater",
+        "What_(Claim)": "PM Modi paying tribute to Mahatma Gandhi and Nathuram Godse"
+    },
+    {
+        "Story_Date": "4th Apr 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-image-of-foxtail-lily-being-shared-as-rare-pagoda-flower-seen-every-400-years/",
+        "Headline": "Fact Check: Image of foxtail lily being shared as rare \u2018pagoda flower\u2019 seen every 400 years",
+        "Claim_URL": "https://www.facebook.com/ahmed.shafiq.33/posts/173670728436854/",
+        "What_(Claim)": "Unique \\'pagoda flower\\' found in Tibet; this flower grows once every 400 years in the Himalayas"
+    },
+    {
+        "Story_Date": "12th Sep 2023",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-old-poster-of-pm-modi-being-most-popular-leader-shared-with-false-claim-by-linking-it-to-g20-summit/",
+        "Headline": "Fact Check: Old Poster Of PM Modi Being \u2018Most Popular\u2019 Leader Shared With False Claim By Linking It To G20 Summit",
+        "Claim_URL": "https://twitter.com/flashNaseerA/status/1699768631771676847",
+        "What_(Claim)": "Posters showing Modi\\'s popularity put up to welcome heads of state before the G-20 meeting."
+    },
+    {
+        "Story_Date": "24th Nov 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-viral-post-claiming-fifa-offering-50gb-free-data-by-clicking-on-a-link-is-a-scam/",
+        "Headline": "Fact Check: Viral Post Claiming FIFA Offering 50GB free data By Clicking On A Link Is A Scam",
+        "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=pfbid024HWtX3yDSNAJFwz2svzXESpftj8etj1KVNJz3ZwAzJbG8Y8aKYoBc68AyBH9AqfZl&id=100049781354436",
+        "What_(Claim)": "FIFA gives people around the world 50GB data for free to watch 2022 qatar World Cup."
+    },
+    {
+        "Story_Date": "30th Nov 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-the-viral-video-of-fifa-world-cup-2022-opening-ceremony-is-digitally-created/",
+        "Headline": "Fact Check: The Viral Video Of FIFA World Cup 2022 opening ceremony Is Digitally Created",
+        "Claim_URL": "https://www.facebook.com/100063903630636/videos/901370057937786",
+        "What_(Claim)": "caption reads, \u201cFIFA 2022,,, opening ceremony fireworks. So beautiful."
+    },
+    {
+        "Story_Date": "22nd Dec 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-do-not-use-garlic-to-reduce-ear-pain-and-headache-viral-post-is-misleading/",
+        "Headline": "Fact Check: Do not use garlic to reduce ear pain and headache; viral post is misleading",
+        "Claim_URL": "https://www.facebook.com/photo/?fbid=10218392967210615&set=a.10202281867563193",
+        "What_(Claim)": "Putting garlic in the ear cures earache, ear infection and headache quickly."
+    },
+    {
+        "Story_Date": "31st Aug 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-this-video-of-the-giant-moon-emerging-from-the-sky-is-edited-2/",
+        "Headline": "Fact Check: This video of the giant moon emerging from the sky is edited",
+        "Claim_URL": "https://www.facebook.com/khushkarn.singh.94/posts/466820655319244/",
+        "What_(Claim)": "This phenomenon can be observed only once a year for 36 seconds. During this, there is a total solar eclipse for 5 seconds and there is darkness all over."
+    },
+    {
+        "Story_Date": "2nd Nov 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-the-tallest-man-in-the-world-is-from-turkey-not-pakistan/",
+        "Headline": "Fact Check: The tallest man in the world is from Turkey, not Pakistan",
+        "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=1155578855370820&id=100027561500399",
+        "What_(Claim)": "The tallest man in the world is a Muslim brother from Pakistan"
+    },
+    {
+        "Story_Date": "31st Oct 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-this-video-of-rameez-raja-scolding-the-pakistani-team-is-old-and-not-related-to-the-zimbabwe-pakistan-match-in-t20-world-cup/",
+        "Headline": "Fact Check: This video of Rameez Raja scolding the Pakistani team is old, and not related to the Zimbabwe-Pakistan match in T20 World Cup",
+        "Claim_URL": "https://twitter.com/umeshkodopi/status/1585905838346027008",
+        "What_(Claim)": "Ramiz Raja scolds team Pakistan after defeat against Zimbabwe in T20 WC"
+    },
+    {
+        "Story_Date": "31st Aug 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-video-of-congress-mla-jagat-singh-negi-again-viral-with-false-claim-2/",
+        "Headline": "Fact Check: Video of Congress MLA Jagat Singh Negi again viral with false claim",
+        "Claim_URL": "https://www.facebook.com/watch/?v=480897370092890",
+        "What_(Claim)": "Nepali MP criticizes PM Modi in Nepal Parliament"
+    },
+    {
+        "Story_Date": "29th Jul 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-this-breathing-test-doesnt-measure-lung-health-or-oxygen-levels-viral-video-is-misleading/",
+        "Headline": "Fact Check: This breathing test doesn\u2019t measure lung health or oxygen levels, viral video is misleading",
+        "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=pfbid0RocWBZ682iPwWxomT2idjGa2swX4A6uS5vcTtaCWHUToZyYWvhJYBXAMSMdbKKibl&id=100082619599232",
+        "What_(Claim)": "Check Your Lungs and Oxygen Level. If you can hold your breath from point A to B, Then You are in SAFE ZONE"
+    },
+    {
+        "Story_Date": "25th Oct 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-the-video-of-the-tapping-exercise-has-nothing-to-do-with-tata-memorial-hospital/",
+        "Headline": "Fact Check: The video of the tapping exercise has nothing to do with Tata Memorial Hospital",
+        "Claim_URL": "https://www.facebook.com/gajendra.khedkar.3/videos/673554053967271/",
+        "What_(Claim)": "Tata Memorial Hospital. Request everyone to watch this video without deleting."
+    },
+    {
+        "Story_Date": "21st Oct 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-in-gurugram-dead-body-in-suitcase-case-accused-and-victim-belonged-to-the-same-community-no-communal-angle/",
+        "Headline": "Fact Check: In Gurugram dead body in suitcase case, accused and victim belonged to the same community, no communal angle",
+        "Claim_URL": "https://twitter.com/yogeshDharmSena/status/1582925230934093824",
+        "What_(Claim)": "Love jihad case in Gurugram"
+    },
+    {
+        "Story_Date": "20th Oct 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-cartoon-network-is-not-shutting-down-viral-claim-is-false/",
+        "Headline": "Fact Check: Cartoon Network is not shutting down, viral claim is false",
+        "Claim_URL": "https://www.facebook.com/3ored/videos/879027493019365/",
+        "What_(Claim)": "Cartoon Network is Shutting Down"
+    },
+    {
+        "Story_Date": "13th Jul 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-this-person-doing-yoga-in-kedarnath-is-santosh-trivedi-a-pilgrimage-priest-not-pm-modi/",
+        "Headline": "Fact Check: This person doing yoga in Kedarnath is Santosh Trivedi, a pilgrimage priest, not PM Modi",
+        "Claim_URL": "https://www.facebook.com/pradip.nalamwar.14/posts/pfbid02mQ3Sc7tWk6CfQWkobfTRSck2jT3fo6wpci8HxLoDYMgYy61CQy2Em8tJLsbW1WiXl",
+        "What_(Claim)": "\u092e\u094b\u0926\u0940 \u091c\u0940 \u0915\u093e 26 \u0935\u0930\u094d\u0937 \u0915\u0940 \u0909\u092e\u094d\u0930 \u092e\u0947\u0902 \u0915\u0947\u0926\u093e\u0930\u0928\u093e\u0925 \u0915\u0940 \u092a\u0930\u093f\u0915\u094d\u0930\u092e\u093e \u0932\u0917\u093e\u0924\u0947 \u0939\u0941\u090f\u0964"
+    },
+    {
+        "Story_Date": "30th Jun 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-this-video-of-protest-during-bhagwant-manns-press-conference-is-old/",
+        "Headline": "Fact Check: This video of protest during Bhagwant Mann\u2019s press conference is old",
+        "Claim_URL": "https://www.facebook.com/watch/?v=1053073762045273",
+        "What_(Claim)": "Seems to have earned good respect in 3 months"
+    },
+    {
+        "Story_Date": "13th Oct 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-video-of-people-falling-into-a-drain-is-from-rajasthan-not-tamil-nadu/",
+        "Headline": "Fact Check: Video Of People Falling Into A Drain Is From Rajasthan, Not Tamil Nadu",
+        "Claim_URL": "https://www.facebook.com/100009119638419/posts/390393103154249/",
+        "What_(Claim)": "People fell into a drain in Chennai after the top concret floor broke"
+    },
+    {
+        "Story_Date": "4th Oct 2022",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-this-is-not-a-miraculous-river-that-appears-for-a-month-out-of-nowhere-the-viral-claim-is-fake/",
+        "Headline": "Fact Check: This is not a miraculous river that appears for a month out of nowhere, the viral claim is fake",
+        "Claim_URL": "https://www.facebook.com/dimple.munjal.31/videos/507399444552991/",
+        "What_(Claim)": "This river of South India appears on the new moon of Pitra Paksha and disappears on the new moon day of Deepawali."
+    }
+]
