@@ -70,7 +70,11 @@ const Dashboard = () => {
 
     return [chartData];
   };
-
+  const handleSearchEnterKey = (event) => {
+    if (event.key === "Enter") {
+      handleSearchButtonClick();
+    }
+  };
   const handleSearchButtonClick = () => {
     // Extract the search type (already available in the searchType state)
     // Get the search query from the TextField (let's give it a ref to easily access its value)
@@ -175,6 +179,7 @@ const Dashboard = () => {
               borderRadius: "8px", // Rounded corners
             },
           }}
+          onKeyDown={handleSearchEnterKey} // Add the onKeyDown event handler
         />
         <Button
           variant="contained"
