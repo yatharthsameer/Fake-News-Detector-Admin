@@ -3,7 +3,11 @@ import { useTheme } from "@mui/material";
 import { tokens } from "../theme";
 import { mockLineData as data } from "../data/mockData";
 
-const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
+const LineChart = ({
+  data,
+  isCustomLineColors = false,
+  isDashboard = false,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -59,12 +63,14 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
       axisRight={null}
       axisBottom={{
         orient: "bottom",
-        tickSize: 0,
+        tickSize: 5, // Adjust the tick size if necessary
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "transportation", // added
+        legend: "Year",
         legendOffset: 36,
         legendPosition: "middle",
+        tickValues: data[0]?.data.map((d) => d.x), // Explicitly set tick values
+        tickTextColor: colors.grey[100], // Explicitly set tick text color
       }}
       axisLeft={{
         orient: "left",

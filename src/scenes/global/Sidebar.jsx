@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+        import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme,Switch } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -58,6 +59,8 @@ const Sidebar = () => {
   return (
     <Box
       sx={{
+        height: "115vh", // Full viewport height
+        display: "flex",
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
         },

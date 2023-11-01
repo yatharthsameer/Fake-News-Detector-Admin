@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import Topbar from "./scenes/global/Topbar";
+// import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
@@ -18,14 +18,14 @@ import Calendar from "./scenes/calendar/calendar";
 
 function App() {
   const [theme, colorMode] = useMode();
-  const [isSidebar, setIsSidebar] = useState(true);
+  const [isSidebar] = useState(true);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="app" style={{ height: "804px", display: "flex" }}>          
-        <Sidebar isSidebar={isSidebar} />
+        <div className="app">
+          <Sidebar isSidebar={isSidebar} />
           <main className="content">
             {/* <Topbar setIsSidebar={setIsSidebar} /> */}
             <Routes>
