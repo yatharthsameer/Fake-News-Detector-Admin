@@ -1,7 +1,7 @@
 
         import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme,Switch } from "@mui/material";
+import { Box, IconButton, Typography, useTheme, Switch } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { useContext } from "react";
@@ -28,7 +28,6 @@ import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-    
 
   return (
     <MenuItem
@@ -48,7 +47,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 const Sidebar = () => {
   const colorMode = useContext(ColorModeContext);
   const theme = useTheme();
-    const handleColorModeToggle = () => {
+  const handleColorModeToggle = () => {
     colorMode.toggleColorMode(); // Toggle light/dark mode
   };
 
@@ -140,8 +139,8 @@ const Sidebar = () => {
               sx={{ m: "15px 0 5px 20px" }}
             >
               Data
-            </Typography> 
-           <Item
+            </Typography>
+            <Item
               title="Manage Team"
               to="/team"
               icon={<PeopleOutlinedIcon />}
@@ -154,17 +153,16 @@ const Sidebar = () => {
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            /> 
-            
-            
-            { <Item
-              title="Invoices Balances"
-              to="/invoices"
-              icon={<ReceiptOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> }
-        
+            />
+            {
+              <Item
+                title="Invoices Balances"
+                to="/invoices"
+                icon={<ReceiptOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            }
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -179,15 +177,14 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-
-            { <Item
-              title="Calendar"
-              to="/calendar"
-              icon={<CalendarTodayOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> 
-        
+            {
+              <Item
+                title="Calendar"
+                to="/calendar"
+                icon={<CalendarTodayOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
             }
             <Item
               title="Settings"
