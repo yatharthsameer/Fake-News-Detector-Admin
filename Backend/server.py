@@ -70,6 +70,9 @@ def search():
     results = fact_check(query, data, limit)
     response_data = [{"percentage": round(match[0]*100, 2), "data": match[1]} for match in results]
     print(f"Search completed for query: {query}")
+    print(f"Top {limit} results:")
+    for result in response_data:
+        print(f"{result['percentage']}% match: {result['data']['Headline']} ({result['data']['What_(Claim)']}))")
     return jsonify(response_data)
 
 @app.route('/searchAll', methods=['POST'])
