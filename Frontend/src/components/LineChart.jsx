@@ -57,7 +57,8 @@ const LineChart = ({
         stacked: true,
         reverse: false,
       }}
-      yFormat=" >-.2f"
+      //change y format to integer
+      yFormat=" >-1"
       curve="catmullRom"
       axisTop={null}
       axisRight={null}
@@ -78,7 +79,7 @@ const LineChart = ({
         tickSize: 3,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "count", // added
+        legend: "count", // added
         legendOffset: -40,
         legendPosition: "middle",
       }}

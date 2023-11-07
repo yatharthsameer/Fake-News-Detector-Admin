@@ -58,7 +58,7 @@ const Dashboard = () => {
     }
 
     const chartData = {
-      id: "queryFrequency",
+      id: "Frequency",
       color: tokens("dark").blueAccent[300],
       data: Object.keys(yearCount)
         .map((year) => ({
@@ -226,15 +226,15 @@ const Dashboard = () => {
               >
                 <ProgressCircle size="125" progress={highestMatch / 100} />
                 <Typography
-                  variant="h5"
+                  variant="h4"
                   color={colors.greenAccent[100]}
                   sx={{ mt: "15px" }}
                 >
-                  Accuracy
+                  Match
                 </Typography>
                 <Typography
                   sx={{
-                    fontSize: "13px", // Adjust the desired font size
+                    fontSize: "10px", // Adjust the desired font size
                   }}
                 >
                   Disclaimer: This site uses AI technology for decision-making.

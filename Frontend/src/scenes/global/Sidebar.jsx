@@ -170,9 +170,9 @@ const Sidebar = () => {
               Pages
             </Typography> */}
             <Item
-              title="Analytics"
+              title="Submit Claim"
               to="/form"
-              icon={<AnalyticsIcon />}
+              icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />

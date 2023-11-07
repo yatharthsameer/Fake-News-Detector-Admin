@@ -1,24 +1,22 @@
-import { Box, Button, TextField } from "@mui/material";
+import React from "react";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import Header from "../../components/Header";
 
 const Form = () => {
-  const isNonMobile = useMediaQuery("(min-width:600px)");
-
   const handleFormSubmit = (values) => {
     console.log(values);
   };
 
   return (
     <Box m="20px">
-      <Header title="CREATE USER" subtitle="Create a New User Profile" />
-
+      <Typography variant="h2" component="h1" align="center" gutterBottom>
+        Claim
+      </Typography>
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
-        validationSchema={checkoutSchema}
+        validationSchema={validationSchema}
       >
         {({
           values,
@@ -29,98 +27,112 @@ const Form = () => {
           handleSubmit,
         }) => (
           <form onSubmit={handleSubmit}>
-            <Box
-              display="grid"
-              gap="30px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-              }}
+            <Box display="flex" flexDirection="column" gap="20px">
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Story Date"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.Story_Date}
+                name="Story_Date"
+                error={!!touched.Story_Date && !!errors.Story_Date}
+                helperText={touched.Story_Date && errors.Story_Date}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Story URL"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.Story_URL}
+                name="Story_URL"
+                error={!!touched.Story_URL && !!errors.Story_URL}
+                helperText={touched.Story_URL && errors.Story_URL}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Headline"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.Headline}
+                name="Headline"
+                error={!!touched.Headline && !!errors.Headline}
+                helperText={touched.Headline && errors.Headline}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Claim URL"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.Claim_URL}
+                name="Claim_URL"
+                error={!!touched.Claim_URL && !!errors.Claim_URL}
+                helperText={touched.Claim_URL && errors.Claim_URL}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="What (Claim)"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.What_Claim}
+                name="What_Claim"
+                error={!!touched.What_Claim && !!errors.What_Claim}
+                helperText={touched.What_Claim && errors.What_Claim}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Image URL"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.img}
+                name="img"
+                error={!!touched.img && !!errors.img}
+                helperText={touched.img && errors.img}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="About Person"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.About_Person}
+                name="About_Person"
+                error={!!touched.About_Person && !!errors.About_Person}
+                helperText={touched.About_Person && errors.About_Person}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="About Subject"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.About_Subject}
+                name="About_Subject"
+                error={!!touched.About_Subject && !!errors.About_Subject}
+                helperText={touched.About_Subject && errors.About_Subject}
+              />
+            </Box>
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              sx={{ mt: 2 }}
             >
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="First Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.firstName}
-                name="firstName"
-                error={!!touched.firstName && !!errors.firstName}
-                helperText={touched.firstName && errors.firstName}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Last Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.lastName}
-                name="lastName"
-                error={!!touched.lastName && !!errors.lastName}
-                helperText={touched.lastName && errors.lastName}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Email"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.email}
-                name="email"
-                error={!!touched.email && !!errors.email}
-                helperText={touched.email && errors.email}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Contact Number"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.contact}
-                name="contact"
-                error={!!touched.contact && !!errors.contact}
-                helperText={touched.contact && errors.contact}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Address 1"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.address1}
-                name="address1"
-                error={!!touched.address1 && !!errors.address1}
-                helperText={touched.address1 && errors.address1}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Address 2"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.address2}
-                name="address2"
-                error={!!touched.address2 && !!errors.address2}
-                helperText={touched.address2 && errors.address2}
-                sx={{ gridColumn: "span 4" }}
-              />
-            </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create New User
-              </Button>
-            </Box>
+              Submit
+            </Button>
           </form>
         )}
       </Formik>
@@ -128,27 +140,35 @@ const Form = () => {
   );
 };
 
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
-const checkoutSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  contact: yup
+const validationSchema = yup.object().shape({
+  Story_Date: yup.string().required("Story date is required"),
+  Story_URL: yup
     .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("required"),
-  address1: yup.string().required("required"),
-  address2: yup.string().required("required"),
+    .url("Enter a valid URL")
+    .required("Story URL is required"),
+  Headline: yup.string().required("Headline is required"),
+  Claim_URL: yup
+    .string()
+    .url("Enter a valid URL")
+    .required("Claim URL is required"),
+  What_Claim: yup.string().required("Claim is required"),
+  img: yup
+    .string()
+    .url("Enter a valid image URL")
+    .required("Image URL is required"),
+  About_Person: yup.string().notRequired(),
+  About_Subject: yup.string().required("Subject is required"),
 });
+
 const initialValues = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  contact: "",
-  address1: "",
-  address2: "",
+  Story_Date: "",
+  Story_URL: "",
+  Headline: "",
+  Claim_URL: "",
+  What_Claim: "",
+  img: "",
+  About_Person: "",
+  About_Subject: "",
 };
 
 export default Form;
