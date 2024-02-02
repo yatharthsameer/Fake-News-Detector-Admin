@@ -23,7 +23,9 @@ import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
-import React, { useContext } from "react";
+import React, { useEffect,useCallback, useState, useContext } from "react";
+import { useDropzone } from "react-dropzone";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Dashboard = () => {
   const [results, setResults] = React.useState([]);
@@ -76,52 +78,80 @@ const Dashboard = () => {
     }
   };
   const handleSearchButtonClick = () => {
-    // Extract the search type (already available in the searchType state)
-    // Get the search query from the TextField (let's give it a ref to easily access its value)
     setIsSearchInitiated(true);
 
-    const searchQuery = searchInputRef.current.value;
+    if (searchType === "text") {
+      const searchQuery = searchInputRef.current.value;
 
-    // Make a POST request to the Flask server
-    fetch("http://localhost:3001/search", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query: searchQuery }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data); // For now, let's just log the top matches returned by the server
-        setResults(data);
-        setChartData(processChartData(data));
+      // Make a POST request for text search
+      fetch("http://localhost:3001/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: searchQuery }),
       })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  };
-  // const handleReadMoreClick = () => {
-  //   const searchQuery = searchInputRef.current.value;
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data); // Log the top matches returned by the server
+          setResults(data);
+          setChartData(processChartData(data));
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    } else if (searchType === "image" && selectedImageFile) {
+      // Create a FormData instance to send the file
+      const formData = new FormData();
+      formData.append("file", selectedImageFile);
 
-  //   // Make a POST request to the Flask server
-  //   fetch("http://localhost:3001/searchAll", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ query: searchQuery }),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       console.log(data); // Log the data returned by the server
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //     });
-  // };
+      // Make a POST request for image upload
+      fetch("http://localhost:3001/upload", {
+        method: "POST",
+        body: formData, // Send the form data
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data); // Log the top matches returned by the server
+          setResults(data);
+          setChartData(processChartData(data));
+        })
+        .catch((error) => {
+          console.error("Error uploading image:", error);
+        });
+    }
+  };
+
+ 
 
   const highestMatch = results.length > 0 ? results[0].percentage : 0;
 
+const [selectedImageFile, setSelectedImageFile] = useState(null);
+const [selectedImagePreview, setSelectedImagePreview] = useState(null);
+
+ const onDrop = useCallback((acceptedFiles) => {
+   const file = acceptedFiles[0];
+   setSelectedImageFile(file); // Store the File object for uploading
+
+   // Use a FileReader to generate a preview URL
+   const reader = new FileReader();
+   reader.onload = (e) => {
+     setSelectedImagePreview(e.target.result); // Store the Data URL for displaying the thumbnail
+   };
+   reader.readAsDataURL(file);
+ }, []);
+
+
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: "image/*",
+  });
+
+  const handleImageRemove = (event) => {
+    event.stopPropagation();
+    setSelectedImagePreview(null);
+  };
   return (
     <Box m="20px">
       {/* HEADER */}
@@ -152,7 +182,7 @@ const Dashboard = () => {
             marginRight: "8px",
             width: "150px",
             backgroundColor: colors.primary[400],
-          }} // Increase width of the dropdown
+          }}
         >
           <InputLabel>Search Type</InputLabel>
           <Select
@@ -166,21 +196,76 @@ const Dashboard = () => {
           </Select>
         </FormControl>
 
-        <TextField
-          inputRef={searchInputRef} // Attach the ref to the input inside TextField
-          variant="outlined"
-          label="Search"
-          size="medium"
-          fullWidth
-          InputProps={{
-            style: {
-              backgroundColor: colors.primary[400],
+        {searchType === "text" && (
+          <TextField
+            ref={searchInputRef} // Attach the ref here
+            variant="outlined"
+            label="Search"
+            size="medium"
+            fullWidth
+            InputProps={{
+              style: {
+                backgroundColor: colors.primary[400],
+                borderRadius: "8px",
+              },
+            }}
+            onKeyDown={handleSearchEnterKey}
+          />
+        )}
 
-              borderRadius: "8px", // Rounded corners
-            },
-          }}
-          onKeyDown={handleSearchEnterKey} // Add the onKeyDown event handler
-        />
+        {searchType === "image" && (
+          <Box
+            {...getRootProps()}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-start",
+              width: "calc(100% - 150px - 10px)", // Adjust width to account for select and button
+              minHeight: "56px",
+              border: "1px solid #cccccc",
+              borderRadius: "4px",
+              backgroundColor: colors.primary[400],
+              cursor: "pointer",
+              paddingLeft: "10px", // Add some padding
+            }}
+          >
+            <input {...getInputProps()} />
+            {selectedImagePreview ? (
+              <Box sx={{ position: "relative" }}>
+                <img
+                  src={selectedImagePreview}
+                  alt="Selected"
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    objectFit: "cover",
+                    marginRight: "10px",
+                  }} // Thumbnail size
+                />
+                <IconButton
+                  onClick={(event) => handleImageRemove(event)}
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    color: "white",
+                    backgroundColor: "black",
+                    "&:hover": { backgroundColor: "black" },
+                    zIndex: 2,
+                  }}
+                  size="small"
+                >
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            ) : (
+              <Typography>
+                Drag 'n' drop an image here, or click to select one
+              </Typography>
+            )}
+          </Box>
+        )}
+
         <Button
           variant="contained"
           onClick={handleSearchButtonClick}

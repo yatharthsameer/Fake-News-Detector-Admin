@@ -1,51 +1,36 @@
-import json
-import requests
-import csv
+from DeepImageSearch import Load_Data, Search_Setup
 
-# Function to make a POST request and get the top article
-def get_top_article(query):
-    response = requests.post('http://localhost:3001/search', json={'query': query})
-    if response.status_code == 200:
-        results = response.json()
-        if results and len(results) > 0:
-            return results[0]['data']['Headline']
-    return None
+# Load images from a folder
+image_list = Load_Data().from_folder(["data"])
 
-# Load the queries from the JSON file
-with open('test2.json', 'r') as file:
-    data = json.load(file)
+# Set up the search engine
+st = Search_Setup(
+    image_list=image_list, model_name="vgg19", pretrained=True, image_count=102
+)
 
-# Variables to track matches and total for accuracy calculation
-total_claims = 0
-matched_claims = 0
+# Index the images
+st.run_index()
 
-# Open a CSV file to write the results
-with open('results.csv', 'w', newline='') as csvfile:
-    csvwriter = csv.writer(csvfile)
-    # Write the header row
-    csvwriter.writerow(['Query', 'Top Matched Article'])
+# Infinite loop to process image queries
+while True:
+    try:
+        # Get image path input from user
+        image_path = input("Enter image path (or type 'exit' to end): ")
 
-    # Iterate over each claim set
-    for claim_set in data['claims']:
-        # Process the original claim first
-        original_claim = claim_set[0]
-        original_top_article = get_top_article(original_claim)
-        csvwriter.writerow([original_claim, original_top_article or 'No results found'])
+        # Check if the user wants to exit the loop
+        if image_path.lower() == "exit":
+            break
 
-        # Then process each rephrased claim
-        for rephrased_claim in claim_set[1:]:
-            rephrased_top_article = get_top_article(rephrased_claim)
-            csvwriter.writerow([rephrased_claim, rephrased_top_article or 'No results found'])
+        # Get similar images
+        similar_images = st.get_similar_images(
+            image_path=image_path, number_of_images=10
+        )
 
-            # Compare and update the accuracy metrics
-            if original_top_article == rephrased_top_article:
-                matched_claims += 1
-            total_claims += 1
+        # Print similar images
+        print(similar_images)
 
-# Calculate the accuracy
-accuracy = (matched_claims / total_claims) * 100 if total_claims > 0 else 0
-print(f"Accuracy of the model: {accuracy}%")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
-# Save the accuracy to a JSON file
-with open('results.json', 'w') as jsonfile:
-    json.dump({'accuracy': accuracy}, jsonfile)
+# End of the program
+print("Process ended.")
