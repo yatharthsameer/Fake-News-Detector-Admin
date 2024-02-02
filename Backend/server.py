@@ -6,6 +6,10 @@ from nltk.corpus import stopwords
 from werkzeug.utils import secure_filename
 from DeepImageSearch import Load_Data, Search_Setup
 import os
+from sentence_transformers import SentenceTransformer, util
+import pandas as pd
+import numpy as np
+import torch  # Import torch for tensor operations
 
 
 # Define a function to load stopwords from a local file
@@ -88,6 +92,7 @@ def fact_check(query, data, limit=None):
 
 @app.route("/search", methods=["POST"])
 def search():
+    print("request.json", request.json)
     query = request.json.get("query", "")
     limit = request.json.get("limit", 10)
     results = fact_check(query, data, limit)
@@ -191,6 +196,50 @@ def upload_file():
             return jsonify(response_data)
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+# Load the pre-computed embeddings and associated texts from the CSV file
+embeddings_df = pd.read_csv("text_embeddings.csv")
+# Extract embeddings and convert them to float32
+embeddings = embeddings_df.drop(columns=["Text"]).values.astype(np.float32)
+# Extract the original texts for reference
+texts = embeddings_df["Text"].tolist()
+
+# Initialize the Sentence Transformer model
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+
+@app.route("/searchEmbed", methods=["POST"])
+def search_embed():
+    # Get the query from the POST request
+    print("request.json", request.json)
+    query = request.json.get("query", "")
+    print("query", query)
+    # Encode the query to get its embedding
+    query_embedding = model.encode(query).astype(np.float32)
+
+    # Compute cosine similarity between the query embedding and pre-computed embeddings
+    cosine_similarities = util.pytorch_cos_sim(query_embedding, embeddings)[0].numpy()
+
+    # Get the top 10 most similar indices and their scores
+    top_10_indices = np.argsort(cosine_similarities)[::-1][:10]
+    top_10_scores = cosine_similarities[top_10_indices]
+
+    # Prepare the response data
+    response_data = []
+    for index, score in zip(top_10_indices, top_10_scores):
+        # Directly use the corresponding item from `data`
+        matched_item = data[index]
+        response_data.append(
+            {
+                "percentage": round(score * 100, 2),
+                "data": matched_item,  # Use the item from `data.json` directly
+            }
+        )
+        print("response_data", response_data)
+
+    # Return the top 10 most similar texts along with their similarity scores
+        
+    print("response_data", jsonify(response_data))
+    return jsonify(response_data)
 
 
 if __name__ == "__main__":

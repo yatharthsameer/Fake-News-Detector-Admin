@@ -82,9 +82,10 @@ const Dashboard = () => {
 
     if (searchType === "text") {
       const searchQuery = searchInputRef.current.value;
+      console.log(searchQuery);
 
       // Make a POST request for text search
-      fetch("http://localhost:3001/search", {
+      fetch("http://localhost:3001/searchEmbed", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -198,7 +199,7 @@ const [selectedImagePreview, setSelectedImagePreview] = useState(null);
 
         {searchType === "text" && (
           <TextField
-            ref={searchInputRef} // Attach the ref here
+            inputRef={searchInputRef} // Attach the ref here
             variant="outlined"
             label="Search"
             size="medium"
