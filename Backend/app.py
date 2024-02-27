@@ -15,18 +15,10 @@ from transformers import AutoModel, AutoTokenizer
 from scipy.spatial.distance import cosine
 
 
-# Define a function to load stopwords from a local file
-def load_stopwords(path):
-    with open(path, "r") as file:
-        stopwords = file.read().splitlines()
-    return set(stopwords)
 
 
-# Path to your local stopwords file
-local_stopwords_path = "english"
 
-# Load the stopwords
-stop_words = load_stopwords(local_stopwords_path)
+
 app = Flask(__name__)
 CORS(app)  # Enabling CORS
 
