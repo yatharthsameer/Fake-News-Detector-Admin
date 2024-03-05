@@ -2,7 +2,7 @@ import requests
 import json
 
 # Assuming the data.json file is stored in a specific path
-data_json_path = "./data.json"
+data_json_path = "./dataReal7k.json"
 
 
 # Function to extract image URLs from the JSON file
@@ -17,7 +17,7 @@ image_urls = extract_img_links(data_json_path)
 
 
 # Folder name where the images will be saved
-folder_name = "data"
+folder_name = "data7k"
 
 
 # Function to download and save images
