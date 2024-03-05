@@ -23,7 +23,7 @@ import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
-import React, { useEffect,useCallback, useState, useContext } from "react";
+import React, { useEffect, useCallback, useState, useContext } from "react";
 import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -85,7 +85,7 @@ const Dashboard = () => {
       console.log(searchQuery);
 
       // Make a POST request for text search
-      fetch("http://localhost:3001/searchEmbed", {
+      fetch("https://factcheckerbtp.vishvasnews.com/searchEmbed", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -107,7 +107,7 @@ const Dashboard = () => {
       formData.append("file", selectedImageFile);
 
       // Make a POST request for image upload
-      fetch("http://localhost:3001/upload", {
+      fetch("https://factcheckerbtp.vishvasnews.com/upload", {
         method: "POST",
         body: formData, // Send the form data
       })
@@ -123,26 +123,22 @@ const Dashboard = () => {
     }
   };
 
- 
-
   const highestMatch = results.length > 0 ? results[0].percentage : 0;
 
-const [selectedImageFile, setSelectedImageFile] = useState(null);
-const [selectedImagePreview, setSelectedImagePreview] = useState(null);
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
+  const [selectedImagePreview, setSelectedImagePreview] = useState(null);
 
- const onDrop = useCallback((acceptedFiles) => {
-   const file = acceptedFiles[0];
-   setSelectedImageFile(file); // Store the File object for uploading
+  const onDrop = useCallback((acceptedFiles) => {
+    const file = acceptedFiles[0];
+    setSelectedImageFile(file); // Store the File object for uploading
 
-   // Use a FileReader to generate a preview URL
-   const reader = new FileReader();
-   reader.onload = (e) => {
-     setSelectedImagePreview(e.target.result); // Store the Data URL for displaying the thumbnail
-   };
-   reader.readAsDataURL(file);
- }, []);
-
-
+    // Use a FileReader to generate a preview URL
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setSelectedImagePreview(e.target.result); // Store the Data URL for displaying the thumbnail
+    };
+    reader.readAsDataURL(file);
+  }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -193,7 +189,6 @@ const [selectedImagePreview, setSelectedImagePreview] = useState(null);
           >
             <MenuItem value="text">Text</MenuItem>
             <MenuItem value="image">Image</MenuItem>
-            <MenuItem value="link">Link</MenuItem>
           </Select>
         </FormControl>
 
