@@ -30,12 +30,15 @@ import CloseIcon from "@mui/icons-material/Close";
 const Dashboard = () => {
   const [results, setResults] = React.useState([]);
   const [chartData, setChartData] = React.useState([]);
+  const [imageUrl, setImageUrl] = useState(""); // Add this state
+const [errorMessage, setErrorMessage] = useState("");
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [searchType, setSearchType] = React.useState("text"); // Default search type is "text"
   const searchInputRef = React.useRef(null);
   const [isSearchInitiated, setIsSearchInitiated] = React.useState(false);
+  const urlInputRef = React.useRef(null);
 
   const handleSearchTypeChange = (event) => {
     setSearchType(event.target.value);
@@ -120,6 +123,28 @@ const Dashboard = () => {
         .catch((error) => {
           console.error("Error uploading image:", error);
         });
+    } else if (searchType === "link" && imageUrl.trim()) {
+      const imgURLQ = imageUrl.trim();
+      fetch("https://factcheckerbtp.vishvasnews.com/uploadImageURL", {
+        // Use the correct endpoint
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ image_url: imgURLQ }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          setResults(data);
+          setChartData(processChartData(data));
+          setImageUrl(""); // Reset the imageUrl state
+          setErrorMessage(""); // Clear any previous error message
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setErrorMessage(error.message); // Set the error message
+        });
     }
   };
 
@@ -189,6 +214,7 @@ const Dashboard = () => {
           >
             <MenuItem value="text">Text</MenuItem>
             <MenuItem value="image">Image</MenuItem>
+            <MenuItem value="link">Link</MenuItem>
           </Select>
         </FormControl>
 
@@ -197,6 +223,23 @@ const Dashboard = () => {
             inputRef={searchInputRef} // Attach the ref here
             variant="outlined"
             label="Search"
+            size="medium"
+            fullWidth
+            InputProps={{
+              style: {
+                backgroundColor: colors.primary[400],
+                borderRadius: "8px",
+              },
+            }}
+            onKeyDown={handleSearchEnterKey}
+          />
+        )}
+        {searchType === "link" && (
+          <TextField
+            value={imageUrl} // Use the imageUrl state here
+            onChange={(e) => setImageUrl(e.target.value)} // Update the state on change
+            variant="outlined"
+            label="Image URL"
             size="medium"
             fullWidth
             InputProps={{
@@ -363,15 +406,11 @@ const Dashboard = () => {
                 >
                   Top Matches
                 </Typography>
-                {/* <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleReadMoreClick}
-                >
-                  Read More
-                </Button> */}
+                
               </Box>
-              {results.map((result, index) => (
+              {Array.isArray(results) ? (
+
+              results.map((result, index) => (
                 <Box
                   key={index}
                   display="flex"
@@ -415,7 +454,13 @@ const Dashboard = () => {
                     </Typography>
                   </div>
                 </Box>
-              ))}
+             ))):
+             
+             (
+  <Typography color="error">Error: Results are not available.</Typography>
+)}
+             
+             
             </Box>
             <Box
               gridColumn="span 5"

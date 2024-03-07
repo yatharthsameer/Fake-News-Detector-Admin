@@ -14,6 +14,11 @@ import logging
 from logging.handlers import RotatingFileHandler
 from transformers import AutoModel, AutoTokenizer
 from scipy.spatial.distance import cosine
+import requests  # Import requests to fetch image from URL
+from PIL import Image, UnidentifiedImageError  # Import PIL to handle image operations
+from io import BytesIO  # Import BytesIO to convert response content to image
+import os
+import shutil  # Import shutil for file operations
 
 
 app = Flask(__name__)
@@ -190,6 +195,73 @@ def get_embedding(text):
             outputs.last_hidden_state.mean(dim=1).squeeze().numpy()
         )  # Ensure the output is 1-D
     return embedding
+
+
+@app.route("/uploadImageURL", methods=["POST"])
+def upload_image_url():
+    json_data = request.get_json()
+    image_url = json_data.get("image_url")
+
+    if not image_url:
+        return jsonify({"error": "No image URL provided"}), 400
+
+    temp_image_path = "./temp_image.jpg"  # Define the path outside try-except block
+
+    try:
+        # Fetch the image from the URL
+        response = requests.get(image_url, stream=True)
+
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Create a PIL Image from the binary data
+            image = Image.open(BytesIO(response.content))
+
+            # Save the image to a temporary file
+            image.save(temp_image_path)
+
+            # Proceed with your existing logic for handling uploaded images
+            similar_images = st.get_similar_images(
+                image_path=temp_image_path, number_of_images=10
+            )
+
+            response_data = []
+            for img_info in similar_images:  # Iterate through the list of dictionaries
+                # Extract the index from the image path
+                image_index = (
+                    int(img_info["path"].split("_")[-1].split(".")[0]) - 1
+                )  # Adjust index to 0-based
+                print(image_index)
+
+                # Fetch the corresponding object from the JSON data
+                corresponding_object = data[image_index]
+                print(corresponding_object)
+
+                # Append the object and its match percentage to the response data
+                response_data.append(
+                    {
+                        "percentage": round(img_info["match_percentage"], 2),
+                        "data": corresponding_object,
+                    }
+                )
+                print("response_data", response_data)
+
+            return jsonify(response_data)
+        else:
+            return jsonify({"error": "Failed to fetch image from URL"}), 500
+    except UnidentifiedImageError as e:
+        return (
+            jsonify(
+                {
+                    "error": "Cannot identify image file. Ensure the URL points directly to an image."
+                }
+            ),
+            400,
+        )
+    except Exception as e:
+        # Clean up the temporary file in case of an error
+        if os.path.exists(temp_image_path):
+            os.remove(temp_image_path)
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/searchEmbed", methods=["POST"])
