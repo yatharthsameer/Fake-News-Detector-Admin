@@ -10,23 +10,34 @@ from sentence_transformers import SentenceTransformer, util
 import torch  # Import torch for tensor operations
 import pandas as pd
 import numpy as np
-
+import logging
+from logging.handlers import RotatingFileHandler
 from transformers import AutoModel, AutoTokenizer
 from scipy.spatial.distance import cosine
 
 
-
-
-
-
 app = Flask(__name__)
 CORS(app)  # Enabling CORS
+# Configure Logging
+formatter = logging.Formatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s")
+handler = RotatingFileHandler("flask_app.log", maxBytes=10000, backupCount=3)
+handler.setLevel(logging.WARNING)  # Adjust this level as needed
+handler.setFormatter(formatter)
+app.logger.addHandler(handler)
+
+# Log to console in DEBUG mode
+if app.debug:
+    console = logging.StreamHandler()
+    console.setLevel(logging.DEBUG)
+    console.setFormatter(formatter)
+    app.logger.addHandler(console)
+
+app.logger.info("Flask application started")
 
 # Load the data from the JSON file
 with open("data.json", "r") as file:
     data = json.load(file)
     print("Data loaded successfully.")
-
 
 
 image_list = Load_Data().from_folder(["./ImageMatching/data"])
@@ -205,6 +216,34 @@ def search_embed():
         response_data.append(matched_item)
 
     return jsonify(response_data)
+
+
+@app.route("/appendData", methods=["POST"])
+def append_story():
+    # Extract data from the request
+    request_data = request.get_json()
+
+    # Define the path for the JSON file where data will be appended
+    file_path = "dataAppendedFromPOST.json"
+
+    # Check if the file exists. If not, create an empty list to start with
+    if not os.path.exists(file_path):
+        with open(file_path, "w") as file:
+            json.dump([], file)
+
+    # Open the file to read the current data
+    with open(file_path, "r+") as file:
+        # Read the current data in the file
+        file_data = json.load(file)
+        # Append the new data (request_data) to the file's data
+        file_data.append(request_data)
+        # Set file's current position at offset.
+        file.seek(0)
+        # Convert back to json and write in the file
+        json.dump(file_data, file, indent=4)
+
+    # Send back a response to indicate success
+    return jsonify({"message": "Data appended successfully"}), 200
 
 
 if __name__ == "__main__":
