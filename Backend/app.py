@@ -35,7 +35,7 @@ if app.debug:
 app.logger.info("Flask application started")
 
 # Load the data from the JSON file
-with open("data.json", "r") as file:
+with open("data_with_images_part2.json", "r") as file:
     data = json.load(file)
     print("Data loaded successfully.")
 
@@ -167,7 +167,7 @@ tokenizer = AutoTokenizer.from_pretrained("ai4bharat/indic-bert")
 model = AutoModel.from_pretrained("ai4bharat/indic-bert")
 
 # Load the data from the JSON file
-with open("data.json", "r") as file:
+with open("data_with_images_part2.json", "r") as file:
     data = json.load(file)
     print("Data loaded successfully.")
 
