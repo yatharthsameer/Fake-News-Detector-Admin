@@ -294,25 +294,45 @@ def search_embed():
 def append_story():
     # Extract data from the request
     request_data = request.get_json()
+    print(request_data)
 
     # Define the path for the JSON file where data will be appended
-    file_path = "dataAppendedFromPOST.json"
+    file_path = "data_with_images_part2.json"
 
     # Check if the file exists. If not, create an empty list to start with
     if not os.path.exists(file_path):
-        with open(file_path, "w") as file:
-            json.dump([], file)
+        with open(file_path, "w", encoding="utf-8") as file:
+            json.dump([], file, ensure_ascii=False)
 
     # Open the file to read the current data
-    with open(file_path, "r+") as file:
+    with open(file_path, "r+", encoding="utf-8") as file:
         # Read the current data in the file
         file_data = json.load(file)
-        # Append the new data (request_data) to the file's data
+
+        # Check if Story_URL is already present
+        existing_story = next(
+            (
+                item
+                for item in file_data
+                if item["Story_URL"] == request_data["Story_URL"]
+            ),
+            None,
+        )
+        if existing_story is not None:
+            # If present, do not append and return a message indicating so
+            return (
+                jsonify({"message": "Story URL already exists. No data appended."}),
+                400,
+            )
+
+        # If Story_URL is not present, append the new data (request_data) to the file's data
         file_data.append(request_data)
         # Set file's current position at offset.
         file.seek(0)
+        # Clear the file content
+        file.truncate()
         # Convert back to json and write in the file
-        json.dump(file_data, file, indent=4)
+        json.dump(file_data, file, ensure_ascii=False, indent=4)
 
     # Send back a response to indicate success
     return jsonify({"message": "Data appended successfully"}), 200

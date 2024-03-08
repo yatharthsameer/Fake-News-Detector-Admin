@@ -92,6 +92,7 @@ const [errorMessage, setErrorMessage] = useState("");
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "charset": "utf-8",
         },
         body: JSON.stringify({ query: searchQuery }),
       })
@@ -130,6 +131,7 @@ const [errorMessage, setErrorMessage] = useState("");
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "charset": "utf-8",
         },
         body: JSON.stringify({ image_url: imgURLQ }),
       })

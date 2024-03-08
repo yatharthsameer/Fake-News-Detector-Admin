@@ -4,9 +4,31 @@ import { Formik } from "formik";
 import * as yup from "yup";
 
 const Form = () => {
-  const handleFormSubmit = (values) => {
-    console.log(values);
+  const handleFormSubmit = async (values) => {
+    try {
+      const response = await fetch("http://127.0.0.1:8080/appendData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "charset":"utf-8",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result.message); // Or set some state to show a success message
+      } else {
+        console.error("Submission failed", await response.text());
+        // Handle server errors or invalid responses here
+        // For example, set an error state to display an error message
+      }
+    } catch (error) {
+      console.error("An error occurred during submission:", error);
+      // Handle the error state here
+    }
   };
+
 
   return (
     <Box m="20px">
