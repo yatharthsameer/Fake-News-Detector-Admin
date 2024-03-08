@@ -6,14 +6,17 @@ import * as yup from "yup";
 const Form = () => {
   const handleFormSubmit = async (values) => {
     try {
-      const response = await fetch("http://127.0.0.1:8080/appendData", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "charset":"utf-8",
-        },
-        body: JSON.stringify(values),
-      });
+      const response = await fetch(
+        "https://factcheckerbtp.vishvasnews.com/appendData",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            charset: "utf-8",
+          },
+          body: JSON.stringify(values),
+        }
+      );
 
       if (response.ok) {
         const result = await response.json();
