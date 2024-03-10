@@ -119,13 +119,13 @@ def download_images(urls_with_ids, folder):
 # Set your paths and folder name
 csv_filename = "hindi.csv"
 
-json_file_path = "hindi.json"
-output_txt_file = "hindi.txt"
-updated_json_path = "hindi.json"
+json_file_path = "test.json"
+output_txt_file = "test.txt"
+updated_json_path = "test.json"
 folder_name = "../data"  # Adjust path as needed
 
 # Process sequence
-convert_csv_to_json(csv_filename, json_file_path)  # Convert CSV to JSON first
+# convert_csv_to_json(csv_filename, json_file_path)  # Convert CSV to JSON first
 fetch_and_log_image_urls(json_file_path, output_txt_file)
 update_json_with_image_links(json_file_path, output_txt_file, updated_json_path)
 image_urls = extract_img_links(updated_json_path)

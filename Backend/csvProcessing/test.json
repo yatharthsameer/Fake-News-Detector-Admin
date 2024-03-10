@@ -1,22 +1,1002 @@
-[
 {
-    "Story_Date": "27th Dec 2019",
-    "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-video-claiming-eating-bitter-guard-or-radish-over-ladyfinger-is-harmful-is-fake-as-per-doctors/",
-    "Headline": "Fact Check: Video claiming eating bitter guard or radish over ladyfinger is harmful is fake as per doctors",
-    "Claim_URL": "https://archive.md/HeVAk",
-    "What_(Claim)": "eating bitter guard or radish over ladyfinger is harmful",
-    "About_Subject": "bitter gourd, radish, lady finger",
-    "About_Person": "vegetable consumers"
-},
-{
-    "Story_Date": "26th Dec 2019",
-    "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-video-showing-blue-colored-apple-made-in-china-is-fake/",
-    "Headline": "Fact Check: Video showing blue-colored apple made in China is fake",
-    "Claim_URL": "https://www.instagram.com/p/B6EOQlClEUH/",
-    "What_(Claim)": "The blue apple in China",
-    "About_Subject": "Blue apple",
-    "About_Person": "China"
+    "1": {
+        "Story_Date": "27th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-video-claiming-eating-bitter-guard-or-radish-over-ladyfinger-is-harmful-is-fake-as-per-doctors/",
+        "Headline": "Fact Check: Video claiming eating bitter guard or radish over ladyfinger is harmful is fake as per doctors",
+        "Claim_URL": "https://archive.md/HeVAk",
+        "What_(Claim)": "eating bitter guard or radish over ladyfinger is harmful",
+        "About_Subject": "bitter gourd, radish, lady finger",
+        "About_Person": "vegetable consumers",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News08_27dec-1.jpg"
+    },
+    "2": {
+        "Story_Date": "26th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-video-showing-blue-colored-apple-made-in-china-is-fake/",
+        "Headline": "Fact Check: Video showing blue-colored apple made in China is fake",
+        "Claim_URL": "https://www.instagram.com/p/B6EOQlClEUH/",
+        "What_(Claim)": "The blue apple in China",
+        "About_Subject": "Blue apple",
+        "About_Person": "China",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News06_26dec-1.jpg"
+    },
+    "3": {
+        "Story_Date": "24th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-combiflam-can-kill-you-is-misleading/",
+        "Headline": "Fact Check: Post claiming Combiflam can kill you is fake",
+        "Claim_URL": "https://www.facebook.com/photo.php?fbid=630783567369657&set=a.181662292281789&type=3&theater",
+        "What_(Claim)": "कॉम्बिफ्लेम की एक गोली आपकी जान भी ले सकती है",
+        "About_Subject": "Combiflam side effects",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News01_27dec-1.jpg"
+    },
+    "4": {
+        "Story_Date": "23rd Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-video-of-man-throwing-stone-at-a-bus-is-old-and-is-from-surat-no-relation-with-caa-protests/",
+        "Headline": "Fact Check: Video of man throwing stone at a bus is old and is from Surat, no relation with CAA protests",
+        "Claim_URL": "http://archive.md/wip/RZsoq",
+        "What_(Claim)": "Delhi Police is maligning the esteemed Juman uncle, damaging government property in his disguise”. Another claim is “Juman Chacha giving his invaluable contribution to the progress of the country",
+        "About_Subject": "CAA protest",
+        "About_Person": "CAA NRC Protesters",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News03_19dec.jpg"
+    },
+    "5": {
+        "Story_Date": "23rd Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-tongue-exercise-cures-alzheimers-and-other-illnesses-is-misleading/",
+        "Headline": "Fact Check: Post claiming tongue exercise cures Alzheimer’s and other illnesses is misleading",
+        "Claim_URL": "NA",
+        "What_(Claim)": "जीभ की एक्सरसाइज (जीभ बाहर निकालना और इसे 10 मिनट तक दाएं से बाएं घुमाना) आपको अल्जाइमर से बचा सकती है",
+        "About_Subject": "Alzhiemers ",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News04_23dec.jpg"
+    },
+    "6": {
+        "Story_Date": "20th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-giving-birth-cant-be-measured-in-del-pain-is-subjective-fake-post-getting-viral/",
+        "Headline": "Fact Check: Giving birth can’t be measured in del, pain is subjective, fake post getting viral",
+        "Claim_URL": "NA",
+        "What_(Claim)": "A human body can bear only up to 45 DEL (unit) of pain.",
+        "About_Subject": "Pregnancy",
+        "About_Person": "Pregnant women",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News01_20dec.jpg"
+    },
+    "7": {
+        "Story_Date": "19th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-wild-aubergine-can-cure-any-type-of-cancer-is-fake/",
+        "Headline": "Fact Check: Post claiming wild aubergine can cure any type of cancer is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "wild aubergine can cure any type of cancer",
+        "About_Subject": "Cancer treatment",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News02_18dec.jpg"
+    },
+    "8": {
+        "Story_Date": "17th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-pictures-from-abroad-are-being-shared-as-assam-detention-centers/",
+        "Headline": "Fact Check: Pictures From Abroad Are Being Shared As Assam Detention Centers",
+        "Claim_URL": "http://archive.md/DdAmi",
+        "What_(Claim)": "If it is acceptable for you to live under such circumstances, then you are bound to remain silent. A picture of Detention Center of Assam",
+        "About_Subject": "Assam detention centers",
+        "About_Person": "NRC CAA",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/5.jpg"
+    },
+    "9": {
+        "Story_Date": "14th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-does-the-5-second-rule-really-exist-it-is-a-myth/",
+        "Headline": "Fact Check: Does the 5-second rule really exist? No, it is a myth",
+        "Claim_URL": "NA",
+        "What_(Claim)": "5 Second rule confirmed: if we drop this food on the floor, you can eat it",
+        "About_Subject": "Dropped food",
+        "About_Person": "Consumers",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News_May5_11.jpg"
+    },
+    "10": {
+        "Story_Date": "13th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-the-post-claiming-that-baking-soda-can-cure-cancer-is-fake/",
+        "Headline": "Fact Check: The post claiming that baking soda can cure cancer is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "baking soda can cure cancer",
+        "About_Subject": "Cancer treatment",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/cancer-baking-soda.jpg"
+    },
+    "11": {
+        "Story_Date": "13th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/quick-fact-check-misleading-post-claiming-sprouted-wheat-can-cure-diabetes-resurfaces/",
+        "Headline": "Quick Fact Check: Misleading Post Claiming Sprouted Wheat Can Cure Diabetes Resurfaces",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Sprouted Wheat Can Cure Diabetes ",
+        "About_Subject": "Sprouts for diabetes treatment",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/dibetic-misleading.jpg"
+    },
+    "12": {
+        "Story_Date": "12th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-post-showing-blue-colored-fruit-named-moon-melon-is-fake-there-is-no-such-fruit/",
+        "Headline": "Fact Check: Post showing blue-colored fruit named Moon melon is fake, there is no such fruit",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Bue-colored fruit named Moon melon in Japan",
+        "About_Subject": "Blue-colored fruit",
+        "About_Person": "Japan",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News02_12dec-2.jpg"
+    },
+    "13": {
+        "Story_Date": "10th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-fake-post-on-hiv-infected-blood-in-pepsi-going-viral/",
+        "Headline": "Fact Check: Fake post on HIV-infected blood in Pepsi getting viral",
+        "Claim_URL": "NA",
+        "What_(Claim)": "HIV-infected blood in Pepsi",
+        "About_Subject": "Pepsi",
+        "About_Person": "Consumers",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News03_10dec.jpg"
+    },
+    "14": {
+        "Story_Date": "9th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-that-a-smoothie-can-cure-diabetes-is-misleading/",
+        "Headline": "Fact Check: Post claiming that a smoothie can cure diabetes is misleading",
+        "Claim_URL": "NA",
+        "What_(Claim)": "2 bananas, 5 kiwis, 2 apples with skin, 1 coat of cabbage, and 1/2 liter of water can cure diabetes",
+        "About_Subject": "Smoothie as diabetes treatment",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News09_09dec_2-1-1.jpg"
+    },
+    "15": {
+        "Story_Date": "6th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-that-burning-camphor-and-inhaling-the-smell-combats-air-pollution-is-misleading/",
+        "Headline": "Fact Check: Post claiming that burning camphor and inhaling the smell combats air pollution is misleading",
+        "Claim_URL": "NA",
+        "What_(Claim)": "burning camphor and inhaling the smell combats air pollution",
+        "About_Subject": "Camphor smell for air pollution",
+        "About_Person": "Common man",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/6.jpg"
+    },
+    "16": {
+        "Story_Date": "4th Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-101-year-old-woman-delivered-a-baby-is-fake/",
+        "Headline": "Fact Check: Post claiming 101-year-old woman delivered a baby is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "101-year-old woman delivered a baby",
+        "About_Subject": "Delivery of a child",
+        "About_Person": "101-year old woman",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/8-1.jpg"
+    },
+    "17": {
+        "Story_Date": "3rd Dec 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-no-this-home-made-mixture-cannot-cure-cancer-in-3-days/",
+        "Headline": "Fact Check: No, this home-made mixture cannot cure cancer in 3 days",
+        "Claim_URL": "NA",
+        "What_(Claim)": " last stage cancer can be cured in 72 hours by consuming a home-made mixture made of walnut, sprouted grains, honey, garlic, and lemon",
+        "About_Subject": "Cancer treatment",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News05_3dec.jpg"
+    },
+    "18": {
+        "Story_Date": "25th Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-that-bee-venom-treatment-heals-infection-is-misleading/",
+        "Headline": "Fact Check: Post claiming that Bee Venom treatment heals infection is misleading",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Bee Venom treatment heals infection",
+        "About_Subject": "infection",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/Fake_News09_25nov.jpg"
+    },
+    "19": {
+        "Story_Date": "21st Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-children-recently-vaccinated-with-polio-vaccine-spreads-virus-causing-hfmd-is-fake/",
+        "Headline": "Fact Check: Post claiming children recently vaccinated with polio vaccine spreads virus causing HFMD is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "children recently vaccinated with polio vaccine spreads virus causing HFMD",
+        "About_Subject": "Polio vaccine",
+        "About_Person": "Children",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/Fake_News05_20nov-1.jpg"
+    },
+    "20": {
+        "Story_Date": "21st Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-this-jnu-student-is-23-years-old-not-43/",
+        "Headline": "Fact Check: This JNU student is 23 years old, not 43",
+        "Claim_URL": "NA",
+        "What_(Claim)": "This JNU student is 43 years old",
+        "About_Subject": "JNU student protest",
+        "About_Person": "JNU",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/Fake_News04_19Nov-1.jpg"
+    },
+    "21": {
+        "Story_Date": "20th Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-this-video-of-man-on-fire-is-not-from-kannur-airport-but-from-morocco/",
+        "Headline": "Fact Check: This video of man on fire is not from Kannur Airport but from Morocco",
+        "Claim_URL": "NA",
+        "What_(Claim)": "this video is from Kannur Airport and this person caught fire while charging his phone.",
+        "About_Subject": "Phone defect",
+        "About_Person": "Kannur resident's Phone explodes",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/Fake_News03_19Nov-1.jpg"
+    },
+    "22": {
+        "Story_Date": "19th Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-photo-of-delhis-kotla-mosque-is-being-shared-as-ayodhyas/",
+        "Headline": "Fact Check: Photo of Delhi’s Kotla Mosque is being shared as Ayodhya’s",
+        "Claim_URL": "NA",
+        "What_(Claim)": "last namaz at ayodhya mosque",
+        "About_Subject": "Ayodhya Mosque",
+        "About_Person": "Ram Mandir vivad",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/Fake_News05_13Nov-1.jpg"
+    },
+    "23": {
+        "Story_Date": "19th Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-no-up-police-did-not-issue-any-aids-related-warning-the-viral-post-is-fake/",
+        "Headline": "Fact Check: No, UP Police did not issue any AIDS-related warning, the viral post is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "UP Police issues AIDS-related warning",
+        "About_Subject": "AIDs related",
+        "About_Person": "AIDS spreaders",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/Fake_News07_13Nov-1.jpg"
+    },
+    "24": {
+        "Story_Date": "18th Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-these-are-not-real-birds-this-is-miniature-artwork/",
+        "Headline": "Fact Check: These are not real birds, this is miniature artwork",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Real birds",
+        "About_Subject": "Smallest birds",
+        "About_Person": "miniature birds",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/Fake_News03_14Nov-1.jpg"
+    },
+    "25": {
+        "Story_Date": "18th Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-post-claiming-that-an-image-created-by-a-japanese-neurologist-determines-the-state-of-mind-is-fake/",
+        "Headline": "Fact Check: Post claiming that an image created by a Japanese Neurologist determines the state of mind is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "image created by a Japanese Neurologist determines the state of mind",
+        "About_Subject": "Brain health",
+        "About_Person": "Common man",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/Fake_News01_18nov-2.jpg"
+    },
+    "26": {
+        "Story_Date": "15th Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-viral-posts-on-lata-mangeshkars-death-are-fake/",
+        "Headline": "Fact Check: Viral posts on Lata Mangeshkar’s death are fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "The greatest singer of the world, Lata Mangeshkar passes away.",
+        "About_Subject": "Death of Lata Mangeshkar",
+        "About_Person": "Lata Mangeshkar",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/Fake_News04_15nov-1.jpg"
+    },
+    "27": {
+        "Story_Date": "13th Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-this-homeopathy-medicine-can-cure-dengue-within-48-hours-is-a-misleading-claim/",
+        "Headline": "Fact Check: This homeopathy medicine can cure dengue within 48 hours is a misleading claim",
+        "Claim_URL": "NA",
+        "What_(Claim)": "EUPATORIUM PERFOIAM 200 is a homeopathic medicine and if 2, 3 drops of the medicine are diluted and consumed for two days, dengue can be cured",
+        "About_Subject": "Dengue treatment",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/Fake_News011_13Nov-1.jpg"
+    },
+    "28": {
+        "Story_Date": "8th Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-that-drinking-cold-water-after-meals-can-cause-cancer-is-fake/",
+        "Headline": "Fact Check: Post claiming that drinking cold water after meals can cause cancer is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "drinking cold water after meals can cause cancer",
+        "About_Subject": "Cancer cause",
+        "About_Person": "Common man",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/Fake_News04_08nov.jpg"
+    },
+    "29": {
+        "Story_Date": "7th Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-that-nestle-accepts-adding-juice-of-beef-in-kitkat-is-fake/",
+        "Headline": "Fact Check: Post claiming that Nestle accepts adding juice of beef in KitKat is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Nestle accepts adding juice of beef in KitKat",
+        "About_Subject": "Kitkat contains beef",
+        "About_Person": "Kitkat and Nestle",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/8.jpg"
+    },
+    "30": {
+        "Story_Date": "7th Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-flu-shots-make-people-contagious-is-a-misleading-post/",
+        "Headline": "Fact Check: Flu shots make people contagious is a misleading post",
+        "Claim_URL": "NA",
+        "What_(Claim)": "people who get flu shots should stay at home for a minimum of 2 weeks as they have an active live walking virus",
+        "About_Subject": "People vaccinated against flu spreading virus",
+        "About_Person": "Vaccinated people",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/11.jpg"
+    },
+    "31": {
+        "Story_Date": "5th Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-no-cream-of-tartar-mixed-with-orange-juice-wont-help-you-quit-smoking/",
+        "Headline": "Fact Check: No, Cream of Tartar Mixed with Orange Juice Won’t Help You Quit Smoking",
+        "Claim_URL": "NA",
+        "What_(Claim)": " the mixture of cream of tartar and orange juice will flush nicotine from your body and will help you quit smoking",
+        "About_Subject": "How to quit smoking",
+        "About_Person": "Smokers",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/Fake_News10_05Nov.jpg"
+    },
+    "32": {
+        "Story_Date": "4th Nov 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-the-post-claiming-that-diabetes-can-be-cured-by-consuming-this-decoction-is-misleading/",
+        "Headline": "Fact Check: The post claiming that diabetes can be cured by consuming this decoction is misleading",
+        "Claim_URL": "NA",
+        "What_(Claim)": "consuming a decoction made from wheat, barley, gum and black seeds can cure diabetes",
+        "About_Subject": "Cure for diabetes",
+        "About_Person": "Diabetic patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/11/Fake_News01_30oct.jpg"
+    },
+    "33": {
+        "Story_Date": "31st Oct 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-old-pictures-of-justin-trudeau-visiting-gurudwara-is-going-viral-with-fake-claim/",
+        "Headline": "Fact Check: Old pictures of Justin Trudeau visiting Gurudwara is going viral with fake claim",
+        "Claim_URL": "NA",
+        "What_(Claim)": "After winning 2019 Canada's Elections, Justin Trudeau visited Gurudwara",
+        "About_Subject": "Canada PM Gurudwara",
+        "About_Person": "Justin Trudeau",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/10/7-2.jpg"
+    },
+    "34": {
+        "Story_Date": "29th Oct 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-viral-post-claiming-cancer-is-not-disease-but-fungus-is-misleading/",
+        "Headline": "Fact Check: Viral post claiming Cancer is not disease but fungus is misleading﻿",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Cancer is not disease but fungus",
+        "About_Subject": "Cancer isnt a disease",
+        "About_Person": "Cancer",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/10/Fake_News02_24oct.jpg"
+    },
+    "35": {
+        "Story_Date": "25th Oct 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-no-a-camel-in-an-image-can-not-help-in-diagnosing-alzheimers/",
+        "Headline": "Fact Check: No, A Camel In An Image Can Not Help In Diagnosing Alzheimer’s",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Spotting Camel In An Image Can Help In Diagnosing Alzheimer’s",
+        "About_Subject": "Diagnosis of Alzhiemers",
+        "About_Person": "Alzhiemers patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/10/Fake_News01_24oct.jpg"
+    },
+    "36": {
+        "Story_Date": "24th Oct 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/society/fact-check-video-of-fake-tata-salt-manufacturing-is-going-viral-with-wrong-claim/",
+        "Headline": "Fact Check: Video of fake Tata salt manufacturing is going viral with wrong claim",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Look at the Tata salt manufacturing.",
+        "About_Subject": "Fake Tata Salt ",
+        "About_Person": " Tata Salt ",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/10/1-19.jpg"
+    },
+    "37": {
+        "Story_Date": "23rd Oct 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-photoshopped-image-of-the-golden-temple-is-going-viral/",
+        "Headline": "Fact Check: Photoshopped image of the Golden Temple is going viral",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Golden Temple during Diwali",
+        "About_Subject": "Golden Temple lit",
+        "About_Person": "Golden Temple",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/10/Fake_News01_18oct-1.jpg"
+    },
+    "38": {
+        "Story_Date": "19th Oct 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-no-miracle-mineral-solution-cannot-cure-diseases-such-as-autism-or-depression/",
+        "Headline": "Fact Check: No, Miracle Mineral Solution cannot cure diseases such as autism or depression, this is a fake news﻿",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Miracle Mineral Solution can cure diseases such as autism or depression,",
+        "About_Subject": "Autism and depression cure",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/10/Fake_News09_18oct.jpg"
+    },
+    "39": {
+        "Story_Date": "18th Oct 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-pricking-needles-on-fingertips-or-pulling-ears-of-the-stroke-victim-can-save-his-life-is-a-misleading-post/",
+        "Headline": "Fact Check: Pricking needles on fingertips or pulling ears of the stroke victim can save his life is a misleading post",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Pricking needles on fingertips or pulling ears of the stroke victim can save his life",
+        "About_Subject": "Stroke prevention",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/10/Fake_News02_18oct.jpg"
+    },
+    "40": {
+        "Story_Date": "9th Oct 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-dr-paribaha-who-survived-the-deadly-attack-admitted-that-the-reason-for-the-attack-was-not-communal/",
+        "Headline": "Fact Check: Dr. Paribaha, who survived the deadly attack, admitted that the reason for the attack was not communal",
+        "Claim_URL": "NA",
+        "What_(Claim)": "An 85-year-old Mohammed Shahid died of a heart attack. The mob lynched a young and talented Hindu doctor Dr. Paribaha Mukherjee in Bengal. But you guys will keep quiet on this mob lynching because the one who dies was a Hindu",
+        "About_Subject": "Doctor's Mob Lynching in West Bengal",
+        "About_Person": "Mob Lynching",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/10/Fake_News02_9oct.jpg"
+    },
+    "41": {
+        "Story_Date": "7th Oct 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-these-religious-books-were-not-found-in-bihar-gutter-old-picture-from-saudi-arabia-is-getting-viral-with-wrong-context/",
+        "Headline": "Fact Check: These religious books were not found in Bihar gutter; Old picture from Saudi Arabia is getting viral with wrong context",
+        "Claim_URL": "NA",
+        "What_(Claim)": "These religious books were found in Bihar gutter",
+        "About_Subject": "Quran found in gutter",
+        "About_Person": "Quran",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/10/Fake_News08_07oct-1.jpg"
+    },
+    "42": {
+        "Story_Date": "30th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-this-man-in-burqa-has-nothing-to-do-with-rss/",
+        "Headline": "Fact Check: This man in burqa has nothing to do with RSS",
+        "Claim_URL": "NA",
+        "What_(Claim)": "This man in burqa is RSS man",
+        "About_Subject": "RSS man In Burka",
+        "About_Person": "RSS ",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/debt30.jpg"
+    },
+    "43": {
+        "Story_Date": "30th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-the-man-these-women-were-beating-was-not-any-mla-he-was-a-union-leader/",
+        "Headline": "Fact Check: The man these women were beating was not any MLA, he was a union leader",
+        "Claim_URL": "NA",
+        "What_(Claim)": "“What a great welcome to the BJP MLA by this woman. This is what every woman should do in today’s era #HowdyModi",
+        "About_Subject": "BJP MLA beaten",
+        "About_Person": "BJP",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Fake_News05_26sep-6.jpg"
+    },
+    "44": {
+        "Story_Date": "30th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-this-policeman-was-not-beaten-in-surat-video-from-mp-is-going-viral-with-wrong-claim/",
+        "Headline": "Fact Check: This policeman was not beaten in Surat, video from MP is going viral with wrong claim",
+        "Claim_URL": "NA",
+        "What_(Claim)": "his policeman was beaten in Surat",
+        "About_Subject": "Policemen beaten in Surat",
+        "About_Person": "Policemen",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Fake_News06_25sep-3.jpg"
+    },
+    "45": {
+        "Story_Date": "26th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-photoshopped-image-of-a-chest-x-ray-going-viral-with-a-bizarre-narrative/",
+        "Headline": "Fact Check: Morphed image of a chest x-ray going viral with a bizarre narrative",
+        "Claim_URL": "NA",
+        "What_(Claim)": "cockroach in a chest x-ray ",
+        "About_Subject": "Xray of a person",
+        "About_Person": "Patient",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Image-4.jpg"
+    },
+    "46": {
+        "Story_Date": "26th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-picture-showing-worlds-largest-tulsi-tree-in-karnataka-is-fake/",
+        "Headline": "Fact Check: Picture showing world’s largest Tulsi tree in Karnataka is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "world’s largest Tulsi tree in Karnataka",
+        "About_Subject": "Largest Tulsi Plant",
+        "About_Person": "NA",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Tulsi-Final.jpg"
+    },
+    "47": {
+        "Story_Date": "24th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-no-this-illusion-cannot-determine-your-state-of-mind/",
+        "Headline": "Fact Check: No, this illusion cannot determine your state of mind",
+        "Claim_URL": "NA",
+        "What_(Claim)": "illusion can determine your state of mind",
+        "About_Subject": "Illusion for mental state",
+        "About_Person": "Mental patient",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Fake_News03_23sep.jpg"
+    },
+    "48": {
+        "Story_Date": "23rd Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-no-the-new-born-baby-is-not-105-years-old-she-is-suffering-from-a-skin-disease/",
+        "Headline": "Fact Check: No, the new-born baby is not 105 years old, she is suffering from a skin disease ",
+        "Claim_URL": "NA",
+        "What_(Claim)": "the new-born baby is 105 years old",
+        "About_Subject": "Age of new born baby",
+        "About_Person": "New born",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Fake_News02_23sep.jpg"
+    },
+    "49": {
+        "Story_Date": "23rd Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-sprouted-wheat-can-cure-diabetes-and-prevent-heart-attack-is-misleading/",
+        "Headline": "Fact Check: Post claiming sprouted wheat can cure diabetes and prevent heart attack is misleading",
+        "Claim_URL": "NA",
+        "What_(Claim)": "if sprouted wheat is consumed for 2 days empty stomach in morning, diabetes can be cured completely",
+        "About_Subject": "Diabetes cure",
+        "About_Person": "Diabetic patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Health-Misleading.jpg"
+    },
+    "50": {
+        "Story_Date": "17th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-no-arvind-kejriwal-did-not-hold-the-bottle-of-liquor-viral-picture-is-photoshopped/",
+        "Headline": "Fact Check: No, Arvind Kejriwal did not hold the bottle of liquor, viral picture is Photoshopped",
+        "Claim_URL": "NA",
+        "What_(Claim)": "ਸਵੇਰੇ ਕੋੜੀ ਦਵਾਈ ਪੀਕੇ ਪੇਟ ਦੇ ਮੱਛਰ ਮਾਰਦੇ ਸਾਡੇ ਦਿੱਲੀ ਦੇ ਮਾਲਕ ਸ਼੍ਰੀ ਘੁੰਘਰ ਸੇਠ",
+        "About_Subject": "Kejriwal with liquor bottle",
+        "About_Person": "Arvind Kejriwal ",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Fake_News05_16sep-1.jpg"
+    },
+    "51": {
+        "Story_Date": "14th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-sucking-cancer-by-mouth-false-claims-by-a-baba-going-viral/",
+        "Headline": "Fact Check: Sucking cancer by mouth? False claims by a baba going viral",
+        "Claim_URL": "NA",
+        "What_(Claim)": "baba claims to be the ichchhadhari naag who cures cancer and other diseases by sucking it from the mouth of the patient",
+        "About_Subject": "Cancer treatment",
+        "About_Person": "Cancer patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/image-215.png"
+    },
+    "52": {
+        "Story_Date": "13th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-old-video-of-halo-effect-viral-as-full-rainbow-spotted-in-gujarat/",
+        "Headline": "Fact Check: Old video of Halo effect viral as full rainbow spotted in Gujarat",
+        "Claim_URL": "NA",
+        "What_(Claim)": "circle visible around the sun is a full rainbow visible once in 100-250 year",
+        "About_Subject": "Full rainbow",
+        "About_Person": "Halo effect",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Fake_News10_13sep.jpg"
+    },
+    "53": {
+        "Story_Date": "10th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-ginger-is-10000-times-more-effective-than-chemotherapy-is-a-misleading-claim/",
+        "Headline": "Fact Check: Ginger is 10,000 times more effective than chemotherapy is a misleading claim",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Ginger is 10,000 times more effective than chemotherapy",
+        "About_Subject": "Cancer treatment",
+        "About_Person": "Cancer patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Fake_News05_10sep.jpg"
+    },
+    "54": {
+        "Story_Date": "6th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-pepaero-cures-dengue-in-48-hours-is-a-misleading-claim/",
+        "Headline": "Fact Check: Pepaero cures dengue in 48 hours is a misleading claim",
+        "Claim_URL": "NA",
+        "What_(Claim)": "a medicine named Pepaero cures dengue in 48 hours",
+        "About_Subject": "Dengue treatment",
+        "About_Person": "Dengue patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Fake_News_08_06sep.jpg"
+    },
+    "55": {
+        "Story_Date": "5th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-okra-soaked-water-cannot-cure-diabetes/",
+        "Headline": "Fact Check: Okra-soaked water cannot cure diabetes",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Okra-soaked water cures diabetes",
+        "About_Subject": "Diabetes treatment",
+        "About_Person": "Diabetic patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Fake_News_09_05sep-1.jpg"
+    },
+    "56": {
+        "Story_Date": "4th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-kejriwal-did-not-wear-bomb-disposal-suit-old-morphed-picture-is-going-viral/",
+        "Headline": "Fact Check: Kejriwal Did Not Wear Bomb Disposal Suit, Old Morphed Picture Is Going Viral",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Chief Minister of Delhi Arvind Kejriwal can be seen wearing a bomb disposal suit",
+        "About_Subject": "Kejariwar in Bomb disposal suit",
+        "About_Person": "Bomb disposal suit",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Fake_News_2_04sep-1.jpg"
+    },
+    "57": {
+        "Story_Date": "4th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-noodles-being-surgically-removed-from-intestines-is-fake/",
+        "Headline": "Fact Check: Post claiming noodles being surgically removed from intestines is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "noodles being surgically removed from intestines",
+        "About_Subject": "Noodles in intestines",
+        "About_Person": "Patient",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Fake_News_05_04sep.jpg"
+    },
+    "58": {
+        "Story_Date": "4th Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-slaked-lime-cures-70-diseases-is-misleading/",
+        "Headline": "Fact Check: Post claiming slaked lime cures 70 diseases is misleading",
+        "Claim_URL": "NA",
+        "What_(Claim)": "slaked lime cures 70 diseases",
+        "About_Subject": "Slaked lime",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Fake_News_10_3sep2019.jpg"
+    },
+    "59": {
+        "Story_Date": "2nd Sep 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-viral-post-regarding-contraceptive-pills-is-misleading/",
+        "Headline": "Fact Check: Viral post regarding contraceptive pills is misleading",
+        "Claim_URL": "NA",
+        "What_(Claim)": "I-Pill and Unwanted 72 contain arsenic",
+        "About_Subject": "Ipill and unwanted 72",
+        "About_Person": "Contraceptive user",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/09/Fake-News-104-1.jpg"
+    },
+    "60": {
+        "Story_Date": "27th Aug 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-vrindavan-iskcon-temple-has-not-flooded-viral-video-is-of-2015-kolkata/",
+        "Headline": "Fact Check: Vrindavan ISKCON temple has not flooded; viral video is of 2015 Kolkata",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Due to heavy Rains in Vrindavan, Mathura, the ISKCON Mandir was flooded! Lord Krishna Devotees continue to do Keertan ",
+        "About_Subject": "Vrindavan ISKCON temple flooded",
+        "About_Person": " ISKCON temple",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/08/2-1.jpg"
+    },
+    "61": {
+        "Story_Date": "27th Aug 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-photoshopped-image-of-prime-minister-modi-is-going-viral/",
+        "Headline": "Fact Check: Photoshopped image of Prime Minister Modi is going viral",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Muslim skullcaps are forbidden in India but not in the UAE",
+        "About_Subject": "PM Modi in islamic attire",
+        "About_Person": "PM Modi",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/08/fake_News_2-8.jpg"
+    },
+    "62": {
+        "Story_Date": "24th Aug 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-no-a-drowned-person-cannot-revive-if-covered-in-salt/",
+        "Headline": "Fact Check: No, a drowned person cannot revive if covered in salt",
+        "Claim_URL": "NA",
+        "What_(Claim)": "a drowned person can revive if covered in salt",
+        "About_Subject": "drowned person revival",
+        "About_Person": "drowned person",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/08/Capture-10.png"
+    },
+    "63": {
+        "Story_Date": "20th Aug 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-post-claiming-putin-addressed-russian-parliament-in-saffron-clothes-is-fake/",
+        "Headline": "Fact Check: Post claiming Putin addressed Russian Parliament in Saffron clothes is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Putin, President of Russia, won the hearts of all Hindus by giving a speech in saffron cloths in Moscow Parliament today",
+        "About_Subject": "Putin in Indian attire",
+        "About_Person": "Putin",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/08/fake_News_3-11.jpg"
+    },
+    "64": {
+        "Story_Date": "13th Aug 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-this-woman-is-infosys-foundation-chairman-sudha-murthy-not-parle-ji-girl/",
+        "Headline": "Fact Check: This Woman Is Infosys Foundation Chairman Sudha Murthy, Not Parle Ji Girl",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Remember Parle-G biscuit girl, Neru Deshpande, now 64 years old, is the girl who was clicked for Parle-G biscuit when she was 4 years old.",
+        "About_Subject": "Parle G girl is now old",
+        "About_Person": "Parle G girl",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/08/fake_News_3-5.jpg"
+    },
+    "65": {
+        "Story_Date": "13th Aug 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-woman-appearing-in-the-video-is-a-fake-asi-from-gurdaspur/",
+        "Headline": "Fact Check: Woman appearing in the video is a fake ASI from Gurdaspur",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Gurdaspur lady ASI arrested",
+        "About_Subject": " Lady ASI arrested",
+        "About_Person": "Gurdaspur ASI",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/08/Fake-Hoshiarpur.jpg"
+    },
+    "66": {
+        "Story_Date": "12th Aug 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-old-video-of-dawoodi-bohra-community-procession-is-going-viral-with-wrong-claim/",
+        "Headline": "Fact Check: Old Video Of Dawoodi Bohra Community Procession Is Going Viral With Wrong Claim",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Secular religion that once opposed BHARAT MATA KI JAY n. Now chanting VANDE MATARAM with Indian flag. Effect of abolition of Article 370 and 35A. #KashmirHamaraHai #KashmirMeinTiranga",
+        "About_Subject": "Muslim community chanting Vande Mataram",
+        "About_Person": "Muslim Community",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/08/fake_News_01-1.jpg"
+    },
+    "67": {
+        "Story_Date": "12th Aug 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-no-pm-modi-was-not-touching-saudi-kings-feet/",
+        "Headline": "Fact Check: No, PM Modi Was Not Touching Saudi King’s Feet, Viral Picture Is Photoshopped",
+        "Claim_URL": "NA",
+        "What_(Claim)": " PM Modi is touching Saudi King's feet",
+        "About_Subject": "Saudi king image",
+        "About_Person": "Narendra Modi",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/08/Modi-In-Hindi.jpg"
+    },
+    "68": {
+        "Story_Date": "7th Aug 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-no-this-exercise-cannot-cure-heart-blockage-in-7-days/",
+        "Headline": "Fact Check: No, this exercise cannot cure heart blockage and back pain in 7 days",
+        "Claim_URL": "NA",
+        "What_(Claim)": "this exercise can cure heart blockage and back pain in 7 days",
+        "About_Subject": "Heart blockache and backache cure",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/08/fake_News_5-2.jpg"
+    },
+    "69": {
+        "Story_Date": "7th Aug 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-this-buddhist-monks-is-114-years-old-not-144-years-old/",
+        "Headline": "Fact Check: This Buddhist Monk Is 114 Years Old, Not 144 Years Old",
+        "Claim_URL": "NA",
+        "What_(Claim)": "144 years old Buddhist monk",
+        "About_Subject": "144 year old Monk",
+        "About_Person": "Buddhist Monk",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/08/fake_News-101-1.jpg"
+    },
+    "70": {
+        "Story_Date": "7th Aug 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-this-woman-is-old-and-mentally-ill-not-a-child-kidnapper/",
+        "Headline": "FACT CHECK: This woman is old and mentally ill, not a child kidnapper",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Rajasthan बच्चा चोर गिरोह दाखिल। सक्रिय रहें, सावधान रहें व् अपने बच्चों का ख्याल रखें",
+        "About_Subject": "Child lifting gang active in Rajasthan",
+        "About_Person": "Child lifting gang",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/08/fake_News_2-2.jpg"
+    },
+    "71": {
+        "Story_Date": "2nd Aug 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-no-knuckle-cracking-does-not-cause-arthritis/",
+        "Headline": "Fact Check: No, Knuckle Cracking Does Not Cause Arthritis",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Knuckle Cracking Causes Arthritis",
+        "About_Subject": "effects of knuckle cracking on joint health",
+        "About_Person": "Human being",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/08/fake_News2.jpg"
+    },
+    "72": {
+        "Story_Date": "1st Aug 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-shahrukh-khan-did-not-wear-owasis-partys-t-shirt/",
+        "Headline": "Fact Check: Shahrukh Khan did not wear Owasi’s party’s T shirt",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Shahrukh Khan wears Owasi’s party’s T shirt",
+        "About_Subject": "Shah Rukh Khan supports Owaisi",
+        "About_Person": "Shah Rukh Khan",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/08/fake_News_4-1.jpg"
+    },
+    "73": {
+        "Story_Date": "31st Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-telanganas-shivalinga-is-being-shared-as-sri-lankas/",
+        "Headline": "FACT CHECK: Telangana’s Shivalinga is being shared as Sri Lanka’s",
+        "Claim_URL": "NA",
+        "What_(Claim)": "श्रीलंका के Jaffna शहर में 108 फिट का दुनिया का सबसे बड़ा शिवलिंग बनके तैयार.",
+        "About_Subject": "Largest Shivling",
+        "About_Person": "Shivling",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_5-10.jpg"
+    },
+    "74": {
+        "Story_Date": "31st Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-caripill-cures-dengue-in-48-hours-is-misleading/",
+        "Headline": "Fact Check: Post claiming Caripill cures dengue in 48 hours is misleading",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Caripill cures dengue in 48 hours",
+        "About_Subject": "Dengue treatment",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_7-6.jpg"
+    },
+    "75": {
+        "Story_Date": "29th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-no-gujarat-police-did-not-seize-weapons-from-a-mosque/",
+        "Headline": "Fact Check: No, Gujarat police did not seize weapons from a mosque",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Gujarat police seized weapons from a mosque",
+        "About_Subject": "Gujarat police",
+        "About_Person": "Gujarat mosque",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_1-1-1-1.jpg"
+    },
+    "76": {
+        "Story_Date": "29th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-no-paracetamol-does-not-remain-in-the-body-for-5-years/",
+        "Headline": "Fact Check: No, Paracetamol does not remain in the body for 5 years",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Paracetamol remains in the body for 5 years",
+        "About_Subject": "Paracetamol",
+        "About_Person": "Paracetamol consumers",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_2-13.jpg"
+    },
+    "77": {
+        "Story_Date": "29th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-no-child-did-not-die-due-to-floods-in-bihar/",
+        "Headline": "Fact Check: No, Child didn’t die due to floods in Bihar",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Child died due to floods in Bihar",
+        "About_Subject": "Flood Video",
+        "About_Person": "Bihar",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/Bihar-Baby-FInal-1.jpg"
+    },
+    "78": {
+        "Story_Date": "26th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-no-mr-vaccine-does-not-cause-infertility-the-viral-post-is-fake/",
+        "Headline": "Fact Check: No, MR Vaccine does not cause infertility, the viral post is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "MR Vaccine causes infertility",
+        "About_Subject": "MR Vaccine",
+        "About_Person": "vaccine recipient",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_4-10.jpg"
+    },
+    "79": {
+        "Story_Date": "24th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-photo-of-rajasthan-shivalinga-is-being-falsly-reported-as-mecca-madinas/",
+        "Headline": "Fact Check: Photo of Rajasthan Shivalinga is being falsly reported as Mecca Madina’s",
+        "Claim_URL": "NA",
+        "What_(Claim)": "For the first time in history, Shivalinga of Mecca Madina is shown here, all Hindus should share.",
+        "About_Subject": "Macca Madina Shivling",
+        "About_Person": "Hindus, Muslims",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_3-12.jpg"
+    },
+    "80": {
+        "Story_Date": "24th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-deodorants-cause-breast-cancer-is-fake/",
+        "Headline": "Fact Check: Post claiming deodorants cause breast cancer is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "deodorants cause breast cancer ",
+        "About_Subject": "Breast cancer cause",
+        "About_Person": "Any person",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_5-6.jpg"
+    },
+    "81": {
+        "Story_Date": "23rd Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-this-lion-did-not-attack-a-church-leader-its-a-scene-from-a-film/",
+        "Headline": "Fact Check: This lion did not attack a church leader, it’s a scene from a film",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Church Leader Mauled By Lion After Trying To Prove God Would Intervene.” The post further states",
+        "About_Subject": "Lion attack priest",
+        "About_Person": "Priest",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News-96-1.jpg"
+    },
+    "82": {
+        "Story_Date": "22nd Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-rahul-gandhi-was-not-reading-kannada-newspaper/",
+        "Headline": "Fact Check: Rahul Gandhi was not reading Kannada Newspaper",
+        "Claim_URL": "NA",
+        "What_(Claim)": "A person, who can’t read Hindi properly, is pretending to read Kannada.",
+        "About_Subject": "Rahul Gandhi Kannada News Paper",
+        "About_Person": "Rahul Gandhi ",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_5-5.jpg"
+    },
+    "83": {
+        "Story_Date": "22nd Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-the-red-dot-eye-test-to-check-your-vision-is-fake/",
+        "Headline": "Fact Check: The red dot eye test to check your vision is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "red dot eye test to check your vision",
+        "About_Subject": "Eye checkup",
+        "About_Person": "eye patient ",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_6-6.jpg"
+    },
+    "84": {
+        "Story_Date": "19th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-two-handfuls-of-cashews-equivalent-to-a-prozac-dose-is-fake/",
+        "Headline": "Fact Check: Post claiming two handfuls of cashews equivalent to a Prozac dose is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "two handfuls of cashews equivalent to a Prozac dose",
+        "About_Subject": "Prozac dose as anti-depressent",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_12-2.jpg"
+    },
+    "85": {
+        "Story_Date": "18th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-no-unesco-did-not-declare-idly-as-the-healthiest-breakfast-of-the-world/",
+        "Headline": "Fact Check: No, UNESCO did not declare idly as the healthiest breakfast of the world",
+        "Claim_URL": "NA",
+        "What_(Claim)": "UNESCO declares idly as the healthiest breakfast of the world",
+        "About_Subject": "UNESCO",
+        "About_Person": "Idly consumers",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_1-8.jpg"
+    },
+    "86": {
+        "Story_Date": "17th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-coconut-oil-can-prevent-dengue-is-fake/",
+        "Headline": "Fact Check: Post claiming coconut oil can prevent dengue is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "coconut oil can prevent dengue",
+        "About_Subject": "dengue prevention",
+        "About_Person": "Dengue patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_.jpg"
+    },
+    "87": {
+        "Story_Date": "16th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-the-school-shown-in-this-viral-image-is-not-from-delhi-but-from-bihar/",
+        "Headline": "Fact Check: The school shown in this viral image is not from Delhi, but from Bihar",
+        "Claim_URL": "NA",
+        "What_(Claim)": "school shown in this viral image is from Delhi",
+        "About_Subject": "School",
+        "About_Person": "school students",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_3-6-1.jpg"
+    },
+    "88": {
+        "Story_Date": "18th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-post-claiming-bangladeshi-citizen-burnt-while-celebrating-indias-loss-in-world-cup-is-fake-7/",
+        "Headline": "Fact Check: Post claiming Bangladeshi man burnt to death while celebrating India’s loss in world cup is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Bangladeshi man burnt to death while celebrating India’s loss in world cup",
+        "About_Subject": "Cricket World Cup 2019",
+        "About_Person": "Cricket Match",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/Bangladeshi-man.jpg"
+    },
+    "89": {
+        "Story_Date": "16th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-this-skeleton-has-not-been-excavated-in-kurukshetra-italian-artists-work-is-going-viral-with-misleading-claim/",
+        "Headline": "FACT CHECK: This skeleton has not been excavated in Kurukshetra, Italian artists’ work is going viral with misleading claim",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Archaeologists found a 80-feet long human skeleton which is similar to the description of Ghatotkach, the son of Bhima of Mahabharata",
+        "About_Subject": "Kurukshetra skeleton",
+        "About_Person": "Skeleton",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_4-6.jpg"
+    },
+    "90": {
+        "Story_Date": "16th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-cheap-and-harmful-tablets-contain-tissue-paper-is-fake/",
+        "Headline": "Fact Check: Post claiming cheap and harmful tablets contain tissue paper is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "cheap and harmful tablets contain tissue paper",
+        "About_Subject": "Cheap tablets",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_1-6.jpg"
+    },
+    "91": {
+        "Story_Date": "15th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-lemons-are-10000-times-stronger-than-chemotherapy-is-a-fake-claim/",
+        "Headline": "Fact Check: ‘Lemons are 10000 times stronger than chemotherapy’ is a fake claim",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Lemons are 10000 times stronger than chemotherapy",
+        "About_Subject": "Lemons",
+        "About_Person": "Cancer Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_6-3.jpg"
+    },
+    "92": {
+        "Story_Date": "15th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-no-ravi-shastri-did-not-have-a-liquor-bottle-during-team-photo-shoot/",
+        "Headline": "Fact Check: No, Ravi Shastri did not have a liquor bottle during team photoshoot",
+        "Claim_URL": "NA",
+        "What_(Claim)": " Ravi Shastri have a bottle of liquor during team photo-shoot",
+        "About_Subject": "Ravi Shastri with liquor ",
+        "About_Person": "Ravi Shastri",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/Ravi-shastri-1.jpg"
+    },
+    "93": {
+        "Story_Date": "12th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-no-the-photographer-did-not-cry-after-dhoni-lost-his-wicket-in-wc-2019-the-viral-post-is-fake/",
+        "Headline": "Fact Check: No, the photographer did not cry after Dhoni lost his wicket in WC 2019, the viral post is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "the photographer cried after Dhoni lost his wicket in WC 2019",
+        "About_Subject": "Photographers actions",
+        "About_Person": "Dhoni",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_7-1-1.jpg"
+    },
+    "94": {
+        "Story_Date": "12th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-mother-killed-children-by-mixing-cough-syrup-with-milk-is-fake/",
+        "Headline": "Fact Check: Post claiming mother killed children by mixing cough syrup with milk is fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "mother killed children by mixing cough syrup with milk",
+        "About_Subject": "Reaction of couh syrup with milk",
+        "About_Person": "Children",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_14-1.jpg"
+    },
+    "95": {
+        "Story_Date": "11th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-post-claiming-onions-absorb-bacteria-to-prevent-flu-is-fake/",
+        "Headline": "Fact Check: Post Claiming Onions Absorb Bacteria To Prevent Flu Is Fake",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Onions Absorb Bacteria To Prevent Flu",
+        "About_Subject": "Onions",
+        "About_Person": "Flu Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_9-1.jpg"
+    },
+    "96": {
+        "Story_Date": "10th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-calling-a-sleeping-persons-name-can-cause-brain-damage-is-a-fake-post/",
+        "Headline": "Fact Check: Calling a sleeping person’s name can cause brain damage is a fake post",
+        "Claim_URL": "NA",
+        "What_(Claim)": "you should not call out a person’s name while he is sleeping as it causes brain damage",
+        "About_Subject": "Brain damage cause",
+        "About_Person": "A sleeping person",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_15.jpg"
+    },
+    "97": {
+        "Story_Date": "9th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-nirmala-sitharaman-never-said-35000-cr-led-bulbs-were-distribution-under-ujala-scheme/",
+        "Headline": "Fact Check: Nirmala Sitharaman never said 35000 cr LED bulbs were distribution under UJALA scheme",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Nirmala Sitharaman said 35000 cr LED bulbs were distribution under UJALA scheme",
+        "About_Subject": "Ujwala Scheme",
+        "About_Person": "NIrmala Sitaraman",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_2-5.jpg"
+    },
+    "98": {
+        "Story_Date": "9th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-false-claims-of-curing-cancer-getting-viral/",
+        "Headline": "Fact Check: False claims of curing cancer getting viral",
+        "Claim_URL": "NA",
+        "What_(Claim)": " no one must die of cancer except out of carelessness",
+        "About_Subject": "Cancer cause",
+        "About_Person": "Patients",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_9.jpg"
+    },
+    "99": {
+        "Story_Date": "8th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/health/fact-check-no-microwave-ovens-are-not-banned-in-japan/",
+        "Headline": "Fact Check: No, Microwave ovens are not banned in Japan",
+        "Claim_URL": "NA",
+        "What_(Claim)": "Microwave ovens are banned in Japan",
+        "About_Subject": "Microwave ovens",
+        "About_Person": "China",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_6-2.jpg"
+    },
+    "100": {
+        "Story_Date": "8th Jul 2019",
+        "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-old-muharram-video-is-going-viral-in-the-name-of-tabrez-supporters-procession/",
+        "Headline": "Fact Check: Old Muharram Video Is Going Viral In The Name Of Tabrez Supporters’ Procession",
+        "Claim_URL": "NA",
+        "What_(Claim)": "The biggest procession in Agra in support of Tabaraz Ansari, you have to say Allah Hu Akbar if you want to stay in India, Dalit Muslims come together for the procession.",
+        "About_Subject": "Tabrez Ansari lynching",
+        "About_Person": "Tabrez Ansari",
+        "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_6-1.jpg"
+    }
 }
-
-
-]
