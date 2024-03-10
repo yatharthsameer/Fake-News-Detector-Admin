@@ -40,9 +40,111 @@ if app.debug:
 app.logger.info("Flask application started")
 
 # Load the data from the JSON file
-with open("data_with_images_part2.json", "r") as file:
+with open("csvProcessing/hindi.json", "r") as file:
     data = json.load(file)
     print("Data loaded successfully.")
+import nltk
+from nltk.corpus import stopwords
+from werkzeug.utils import secure_filename
+from DeepImageSearch import Load_Data, Search_Setup
+import os
+
+
+# Define a function to load stopwords from a local file
+def load_stopwords(path):
+    with open(path, "r") as file:
+        stopwords = file.read().splitlines()
+    return set(stopwords)
+
+
+# Path to your local stopwords file
+local_stopwords_path = "english"
+
+# Load the stopwords
+stop_words = load_stopwords(local_stopwords_path)
+
+
+# Load the data from the JSON file
+with open("csvProcessing/hindi.json", "r") as file:
+    data = json.load(file)
+    print("Data loaded successfully.")
+
+
+def tokenize(text):
+    """Tokenize the text into individual keywords or tokens, excluding stop words."""
+    tokens = set(text.lower().split())
+    return tokens.difference(stop_words)
+
+
+def calculate_match_percentage(query_tokens, text_tokens):
+    """Calculate the matching percentage based on the number of tokens that match."""
+    if query_tokens:
+        matching_tokens = query_tokens.intersection(text_tokens)
+        return len(matching_tokens) / len(query_tokens)
+    return 0
+
+
+def fact_check(query, data, limit=None):
+    print(f"Fact-checking the query: {query}")
+    query_tokens = tokenize(query)
+    scores = []
+
+    # Iterate through data.items() for the new dictionary structure
+    for id, obj in data.items():
+        headline_tokens = tokenize(obj["Headline"])
+        claim_tokens = tokenize(obj["What_(Claim)"])
+        # Adjust image and subject/person tokenization based on the presence of data
+        img_tokens = (
+            tokenize(obj["img"]) if "img" in obj and obj["img"] != "NA" else set()
+        )
+        about_person_tokens = (
+            tokenize(obj["About_Person"])
+            if "About_Person" in obj and obj["About_Person"] != "NA"
+            else set()
+        )
+        about_subject_tokens = (
+            tokenize(obj["About_Subject"])
+            if "About_Subject" in obj and obj["About_Subject"] != "NA"
+            else set()
+        )
+
+        # Calculate matches
+        headline_match = calculate_match_percentage(query_tokens, headline_tokens)
+        claim_match = calculate_match_percentage(query_tokens, claim_tokens)
+        img_match = calculate_match_percentage(query_tokens, img_tokens)
+        about_person_match = calculate_match_percentage(
+            query_tokens, about_person_tokens
+        )
+        about_subject_match = calculate_match_percentage(
+            query_tokens, about_subject_tokens
+        )
+
+        avg_match = (
+            headline_match
+            + claim_match
+            + img_match
+            + about_person_match
+            + about_subject_match
+        ) / 5
+        scores.append((avg_match, obj))
+
+    # Rank and limit the results
+    top_matches = sorted(scores, key=lambda x: x[0], reverse=True)[:limit]
+    print(f"Found {len(top_matches)} top matches.")
+    return top_matches
+
+
+@app.route("/search", methods=["POST"])
+def search():
+    query = request.json.get("query", "")
+    limit = request.json.get("limit", 10)
+    # Adjust the fact_check call to correctly iterate through the updated data structure
+    results = fact_check(query, data, limit)
+    response_data = [
+        {"percentage": round(match[0] * 100, 2), "data": match[1]} for match in results
+    ]
+    print(f"Search completed for query: {query}")
+    return jsonify(response_data)
 
 
 image_list = Load_Data().from_folder(["./ImageMatching/data"])
@@ -78,6 +180,7 @@ st.run_index()
 #             return jsonify({"similar_images": similar_images})
 #         except Exception as e:
 #             return jsonify({"error": str(e)}), 500
+
 @app.route("/upload", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
@@ -92,36 +195,25 @@ def upload_file():
         filepath = os.path.join("./", filename)
         file.save(filepath)
         try:
-            # Get similar images using the uploaded image
-            similar_images = st.get_similar_images(
-                image_path=filepath, number_of_images=10
-            )
-            print(f"Found similar images: {similar_images}")
-
+            similar_images = st.get_similar_images(image_path=filepath, number_of_images=10)
+            
             response_data = []
-            for img_info in similar_images:  # Iterate through the list of dictionaries
-                # Extract the index from the image path
-                image_index = (
-                    int(img_info["path"].split("_")[-1].split(".")[0]) - 1
-                )  # Adjust index to 0-based
-                print(image_index)
-
-                # Fetch the corresponding object from the JSON data
-                corresponding_object = data[image_index]
-                print(corresponding_object)
-
-                # Append the object and its match percentage to the response data
-                response_data.append(
-                    {
+            for img_info in similar_images:
+                image_id = img_info["path"].split("_")[-1].split(".")[0]  # Assuming this gets the ID
+                # Fetch the corresponding object from the JSON data using ID
+                corresponding_object = data.get(image_id)
+                if corresponding_object:
+                    response_data.append({
                         "percentage": round(img_info["match_percentage"], 2),
                         "data": corresponding_object,
-                    }
-                )
-                print("response_data",response_data)
+                    })
+                else:
+                    print(f"No corresponding object found for ID {image_id}")
 
             return jsonify(response_data)
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+
 # Load the pre-computed embeddings and associated texts from the CSV file
 # embeddings_df = pd.read_csv("text_embeddings.csv")
 # # Extract embeddings and convert them to float32
@@ -172,7 +264,7 @@ tokenizer = AutoTokenizer.from_pretrained("ai4bharat/indic-bert")
 model = AutoModel.from_pretrained("ai4bharat/indic-bert")
 
 # Load the data from the JSON file
-with open("data_with_images_part2.json", "r", encoding="utf-8") as file:
+with open("csvProcessing/hindi.json", "r", encoding="utf-8") as file:
     data = json.load(file)
     print("Data loaded successfully.")
 
@@ -267,25 +359,29 @@ def upload_image_url():
 @app.route("/searchEmbed", methods=["POST"])
 def search_embed():
     query = request.json.get("query", "")
-    query_embedding = get_embedding(query)  # This should be 1-D
+    query_embedding = get_embedding(
+        query
+    )  # Assuming get_embedding is defined elsewhere
 
-    # Compute cosine similarities, ensuring embeddings are 1-D
-    cosine_similarities = [
-        1 - cosine(query_embedding, emb.squeeze()) for emb in embeddings
-    ]  # Use .squeeze() to make 1-D
+    # Load embeddings and IDs
+    embeddings_df = pd.read_csv("indicbert_text_embeddings.csv")
+    embeddings = embeddings_df.drop(columns=["ID", "Text"]).values
+    ids = embeddings_df["ID"].values
 
-    # Get the top 10 most similar indices and their scores
+    cosine_similarities = [1 - cosine(query_embedding, emb) for emb in embeddings]
     top_10_indices = np.argsort(cosine_similarities)[::-1][:10]
-    top_10_scores = np.array(cosine_similarities)[top_10_indices]
 
-    # Prepare the response data
     response_data = []
-    for index, score in zip(top_10_indices, top_10_scores):
-        matched_item = {
-            "percentage": round(score * 100, 2),
-            "data": data[index],  # Use the item from `data.json` directly
-        }
-        response_data.append(matched_item)
+    for index in top_10_indices:
+        id = ids[index]
+        matched_item = data.get(str(id))  # Ensure IDs are strings if necessary
+        if matched_item:
+            response_data.append(
+                {
+                    "percentage": round(cosine_similarities[index] * 100, 2),
+                    "data": matched_item,
+                }
+            )
 
     return jsonify(response_data)
 
@@ -297,7 +393,7 @@ def append_story():
     print(request_data)
 
     # Define the path for the JSON file where data will be appended
-    file_path = "data_with_images_part2.json"
+    file_path = "csvProcessing/hindi.json"
 
     # Check if the file exists. If not, create an empty list to start with
     if not os.path.exists(file_path):
