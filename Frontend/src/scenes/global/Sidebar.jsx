@@ -95,28 +95,28 @@ const Sidebar = () => {
               <Box ml="35px">
                 <img
                   alt="profile-user"
-                  width="60px"
-                  height="60px"
+                  width="40px"
+                  height="40px"
                   src={`../../logo.jpeg`}
                   style={{ cursor: "pointer", borderRadius: "100%" }}
                 />
               </Box>
-              <Box flex="1" ml="20px">
+              <Box flex="1" ml="10px">
                 <Typography
-                  variant="h4"
+                  variant="h5"
                   color={colors.grey[100]}
                   fontWeight="bold"
                   sx={{ m: "0" }}
                 >
-                  Fake News
+                  Misleading Data
                 </Typography>
                 <Typography
-                  variant="h4"
+                  variant="h5"
                   color={colors.grey[100]}
                   fontWeight="bold"
                   sx={{ m: "0" }}
                 >
-                  Detector
+                  Predictor
                 </Typography>
               </Box>
               <Box mr="20px">
@@ -170,7 +170,7 @@ const Sidebar = () => {
               Pages
             </Typography> */}
             <Item
-              title="Submit Claim"
+              title="Add fact check"
               to="/form"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
