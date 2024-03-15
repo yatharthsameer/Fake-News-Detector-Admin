@@ -10,6 +10,8 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { ButtonBase } from "@mui/material";
+
 import { tokens } from "../../theme";
 import { mockTransactions, mockNewsData } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
@@ -32,6 +34,19 @@ const Dashboard = () => {
   const [chartData, setChartData] = React.useState([]);
   const [imageUrl, setImageUrl] = useState(""); // Add this state
 const [errorMessage, setErrorMessage] = useState("");
+const [currentPage, setCurrentPage] = useState(1);
+const [itemsPerPage, setItemsPerPage] = useState(10);
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentItems = results.slice(indexOfFirstItem, indexOfLastItem);
+
+const handleNext = () => {
+  setCurrentPage(currentPage + 1);
+};
+
+const handlePrev = () => {
+  setCurrentPage(currentPage - 1);
+};
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -88,11 +103,11 @@ const [errorMessage, setErrorMessage] = useState("");
       console.log(searchQuery);
 
       // Make a POST request for text search
-      fetch("https://factcheckerbtp.vishvasnews.com/search", {
+      fetch("http://localhost:8080/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "charset": "utf-8",
+          charset: "utf-8",
         },
         body: JSON.stringify({ query: searchQuery }),
       })
@@ -111,7 +126,7 @@ const [errorMessage, setErrorMessage] = useState("");
       formData.append("file", selectedImageFile);
 
       // Make a POST request for image upload
-      fetch("https://factcheckerbtp.vishvasnews.com/upload", {
+      fetch("http://127.0.0.1/upload", {
         method: "POST",
         body: formData, // Send the form data
       })
@@ -126,12 +141,12 @@ const [errorMessage, setErrorMessage] = useState("");
         });
     } else if (searchType === "link" && imageUrl.trim()) {
       const imgURLQ = imageUrl.trim();
-      fetch("https://factcheckerbtp.vishvasnews.com/uploadImageURL", {
+      fetch("http://127.0.0.1/uploadImageURL", {
         // Use the correct endpoint
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "charset": "utf-8",
+          charset: "utf-8",
         },
         body: JSON.stringify({ image_url: imgURLQ }),
       })
@@ -340,34 +355,44 @@ const [errorMessage, setErrorMessage] = useState("");
               gridRow="span 2"
               backgroundColor={colors.primary[400]}
               p="30px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center" // Centers content vertically in the box
+              alignItems="center" // Centers content horizontally in the box
+              height="100%" // Make sure the box takes up all available vertical space
             >
-              <Typography variant="h5" fontWeight="600">
-                False News
-              </Typography>
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                mt="25px"
+              
+              {/* Results header */}
+             
+              {/* Number of articles and query match text */}
+              <Typography
+                variant="h3" // Larger variant for more emphasis
+                color={colors.greenAccent[100]}
+                gutterBottom
+                sx={{
+                  fontWeight: "bold", // Bold font weight for emphasis
+                  textAlign: "center", // Center-align the text
+                  marginBottom: "20px", // Space below the text
+                }}
               >
-                <ProgressCircle size="125" progress={highestMatch / 100} />
-                <Typography
-                  variant="h4"
-                  color={colors.greenAccent[100]}
-                  sx={{ mt: "15px" }}
-                >
-                  Match
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "10px", // Adjust the desired font size
-                  }}
-                >
-                  Disclaimer: This site uses AI technology for decision-making.
-                  We are not liable for AI decisions but commit to correcting
-                  any errors with valid proof.
-                </Typography>
-              </Box>
+                {results.length} False news articles in our database matched
+                with your query.
+              </Typography>
+
+              {/* Disclaimer text */}
+              <Typography
+                variant="body2" // Smaller variant for less emphasis
+                color={colors.grey[100]}
+                sx={{
+                  textAlign: "center", // Center-align the text
+                  maxWidth: "80%", // Set a max-width for better readability on wider screens
+                  marginTop: "20px", // Space above the disclaimer
+                }}
+              >
+                Disclaimer: This site uses AI technology for decision-making. We
+                are not liable for AI decisions but commit to correcting any
+                errors with valid proof.
+              </Typography>
             </Box>
 
             {/* <Box
@@ -397,8 +422,11 @@ const [errorMessage, setErrorMessage] = useState("");
                 justifyContent="space-between"
                 alignItems="center"
                 borderBottom={`1px solid ${colors.primary[400]}`}
-                colors={colors.grey[100]}
                 p="15px"
+                position="sticky"
+                top={0}
+                zIndex={10}
+                bgcolor={colors.primary[400]} // Background color same as the box to blend in
               >
                 <Typography
                   color={colors.grey[100]}
@@ -408,61 +436,89 @@ const [errorMessage, setErrorMessage] = useState("");
                 >
                   Top Matches
                 </Typography>
-                
-              </Box>
-              {Array.isArray(results) ? (
-
-              results.map((result, index) => (
-                <Box
-                  key={index}
-                  display="flex"
-                  flexDirection="row"
-                  alignItems="flex-start"
-                  borderBottom={`1px solid ${colors.primary[400]}`}
-                  p=" 13px 35px"
-                >
-                  <img
-                    src={result.data.img} // Display the image from the result
-                    alt="News"
-                    width="110px"
-                    height="95px"
-                    style={{ marginRight: "20px" }}
-                  />
-                  {/* Display other details from the result like the image, headline, etc.
-                 You can also display the matching percentage using result.percentage */}
-                  <div>
-                    <Typography
-                      color={colors.greenAccent[100]}
-                      variant="h5"
-                      fontWeight="600"
-                    >
-                      <a
-                        href={result.data.Story_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          color: colors.greenAccent[100],
-                          textDecoration: "none",
-                        }}
-                      >
-                        {result.data.Headline}
-                      </a>
-                    </Typography>
-                    <Typography color={colors.grey[100]}>
-                      {result.data.Story_Date}
-                    </Typography>
-                    <Typography color={colors.grey[100]}>
-                      {result.percentage}% match
-                    </Typography>
-                  </div>
+                <Box>
+                  <Button
+                    onClick={handlePrev}
+                    disabled={currentPage === 1}
+                    variant="contained"
+                    sx={{ mr: 1 }}
+                  >
+                    Prev
+                  </Button>
+                  <Button
+                    onClick={handleNext}
+                    disabled={
+                      currentPage === Math.ceil(results.length / itemsPerPage)
+                    }
+                    variant="contained"
+                    sx={{ ml: 1 }}
+                  >
+                    Next
+                  </Button>
                 </Box>
-             ))):
-             
-             (
-  <Typography color="error">Error: Results are not available.</Typography>
-)}
-             
-             
+              </Box>
+              {Array.isArray(currentItems) ? (
+                currentItems.map((result, index) => (
+                  <Box
+                    key={index}
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="flex-start"
+                    borderBottom={`1px solid ${colors.primary[400]}`}
+                    p=" 13px 35px"
+                  >
+                    <ButtonBase
+                      onClick={() =>
+                        window.open(result.data.Story_URL, "_blank")
+                      }
+                      sx={{
+                        marginRight: "20px",
+                        borderRadius: "4px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <img
+                        src={result.data.img} // Display the image from the result
+                        alt="News"
+                        width="110px"
+                        height="95px"
+                        style={{ marginRight: "20px" }}
+                      />
+                    </ButtonBase>
+                    {/* Display other details from the result like the image, headline, etc.
+                 You can also display the matching percentage using result.percentage */}
+                    <div>
+                      <Typography
+                        color={colors.greenAccent[100]}
+                        variant="h5"
+                        fontWeight="600"
+                      >
+                        <a
+                          href={result.data.Story_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: colors.greenAccent[100],
+                            textDecoration: "none",
+                          }}
+                        >
+                          {result.data.Headline}
+                        </a>
+                      </Typography>
+                      <Typography color={colors.grey[100]}>
+                        {result.data.Story_Date}
+                      </Typography>
+                      {/* <Typography color={colors.grey[100]}>
+                        {result.percentage}% match
+                      </Typography> */}
+                    </div>
+                  </Box>
+                ))
+              ) : (
+                <Typography color="error">
+                  Error: Results are not available.
+                </Typography>
+              )}
             </Box>
             <Box
               gridColumn="span 5"
@@ -484,13 +540,6 @@ const [errorMessage, setErrorMessage] = useState("");
                   >
                     Timeline
                   </Typography>
-                  {/* <Typography
-                variant="h3"
-                fontWeight="bold"
-                color={colors.greenAccent[500]}
-              >
-                $59,342.32
-              </Typography> */}
                 </Box>
                 <Box>
                   <IconButton>

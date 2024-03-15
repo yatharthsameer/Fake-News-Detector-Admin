@@ -11,7 +11,7 @@ logging.basicConfig(
 )
 
 # Load the JSON file
-json_file_path = "csvProcessing/hindi.json"  # Update path as needed
+json_file_path = "csvProcessing/allData.json"  # Update path as needed
 logging.info(f"Loading data from {json_file_path}")
 try:
     with open(json_file_path, "r", encoding="utf-8") as file:

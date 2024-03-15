@@ -14,7 +14,7 @@ def convert_csv_to_json(csv_filename, json_filename):
     json_data = {}
     with open(csv_filename, mode="r", encoding="utf-8") as csvfile:
         csvreader = csv.DictReader(csvfile)
-        for i, row in enumerate(csvreader, start=1):  # Start counting from 1
+        for i, row in enumerate(csvreader, start=1260):  # Start counting from 1
             json_data[i] = {  # Use i as the ID
                 "Story_Date": row.get("Story Date"),
                 "Story_URL": row.get("Story URL"),
@@ -23,6 +23,7 @@ def convert_csv_to_json(csv_filename, json_filename):
                 "What_(Claim)": row.get("What (Claim)"),
                 "About_Subject": row.get("About Subject"),
                 "About_Person": row.get("About Person"),
+                "img": row.get("Image"),
             }
 
     with open(json_filename, mode="w", encoding="utf-8") as jsonfile:
@@ -117,16 +118,16 @@ def download_images(urls_with_ids, folder):
 
 
 # Set your paths and folder name
-csv_filename = "hindi.csv"
+csv_filename = "rest6k.csv"
 
-json_file_path = "test.json"
+json_file_path = "allData.json"
 output_txt_file = "test.txt"
-updated_json_path = "test.json"
+updated_json_path = "allData.json"
 folder_name = "../data"  # Adjust path as needed
 
 # Process sequence
 # convert_csv_to_json(csv_filename, json_file_path)  # Convert CSV to JSON first
-fetch_and_log_image_urls(json_file_path, output_txt_file)
-update_json_with_image_links(json_file_path, output_txt_file, updated_json_path)
+# fetch_and_log_image_urls(json_file_path, output_txt_file)
+# update_json_with_image_links(json_file_path, output_txt_file, updated_json_path)
 image_urls = extract_img_links(updated_json_path)
 download_images(image_urls, folder_name)

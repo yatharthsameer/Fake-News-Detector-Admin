@@ -40,7 +40,7 @@ if app.debug:
 app.logger.info("Flask application started")
 
 # Load the data from the JSON file
-with open("csvProcessing/hindi.json", "r") as file:
+with open("csvProcessing/allData.json", "r") as file:
     data = json.load(file)
     print("Data loaded successfully.")
 import nltk
@@ -65,7 +65,7 @@ stop_words = load_stopwords(local_stopwords_path)
 
 
 # Load the data from the JSON file
-with open("csvProcessing/hindi.json", "r") as file:
+with open("csvProcessing/allData.json", "r") as file:
     data = json.load(file)
     print("Data loaded successfully.")
 
@@ -129,19 +129,25 @@ def fact_check(query, data, limit=None):
         scores.append((avg_match, obj))
 
     # Rank and limit the results
-    top_matches = sorted(scores, key=lambda x: x[0], reverse=True)[:limit]
-    print(f"Found {len(top_matches)} top matches.")
+    sorted_results = sorted(scores, key=lambda x: x[0], reverse=True)
+
+    # Filter out the results where the match is 1% or less
+    top_matches = [match for match in sorted_results if match[0] > 0.01]
+
+    print(f"Found {len(top_matches)} top matches with more than 1% match.")
     return top_matches
 
 
 @app.route("/search", methods=["POST"])
 def search():
     query = request.json.get("query", "")
-    limit = request.json.get("limit", 10)
-    # Adjust the fact_check call to correctly iterate through the updated data structure
-    results = fact_check(query, data, limit)
+    # Removed the 'limit' parameter since you do not want to limit the responses
+    results = fact_check(query, data)
+    # Filter out the results where the match is 1% or less
     response_data = [
-        {"percentage": round(match[0] * 100, 2), "data": match[1]} for match in results
+        {"percentage": round(match[0] * 100, 2), "data": match[1]}
+        for match in results
+        if match[0] > 0.01
     ]
     print(f"Search completed for query: {query}")
     return jsonify(response_data)
@@ -264,7 +270,7 @@ tokenizer = AutoTokenizer.from_pretrained("ai4bharat/indic-bert")
 model = AutoModel.from_pretrained("ai4bharat/indic-bert")
 
 # Load the data from the JSON file
-with open("csvProcessing/hindi.json", "r", encoding="utf-8") as file:
+with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
     data = json.load(file)
     print("Data loaded successfully.")
 
@@ -369,7 +375,7 @@ def search_embed():
     ids = embeddings_df["ID"].values
 
     cosine_similarities = [1 - cosine(query_embedding, emb) for emb in embeddings]
-    top_10_indices = np.argsort(cosine_similarities)[::-1][:10]
+    top_10_indices = np.argsort(cosine_similarities)[::-1][:15]
 
     response_data = []
     for index in top_10_indices:
@@ -393,7 +399,7 @@ def append_story():
     print(request_data)
 
     # Define the path for the JSON file where data will be appended
-    file_path = "csvProcessing/hindi.json"
+    file_path = "csvProcessing/allData.json"
 
     # Check if the file exists. If not, create an empty list to start with
     if not os.path.exists(file_path):

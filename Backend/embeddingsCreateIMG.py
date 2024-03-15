@@ -5,7 +5,7 @@ image_list = Load_Data().from_folder(["data"])
 
 # Set up the search engine
 st = Search_Setup(
-    image_list=image_list, model_name="vgg19", pretrained=True, image_count=5389
+    image_list=image_list, model_name="vgg19", pretrained=True, image_count=7777
 )
 
 # Index the images
