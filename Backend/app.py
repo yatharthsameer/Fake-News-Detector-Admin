@@ -153,14 +153,22 @@ def search():
     query = request.json.get("query", "")
     # Log the query
     log_query("text", query)
-    # Removed the 'limit' parameter since you do not want to limit the responses
     results = fact_check(query, data)
-    # Filter out the results where the match is 1% or less
-    response_data = [
-        {"percentage": round(match[0] * 100, 2), "data": match[1]}
-        for match in results
-        if match[0] > 0.01
-    ]
+
+    seen_headlines = set()  # Set to keep track of seen headlines
+    response_data = []
+    for match in results:
+        if match[0] > 0.01:  # Filter out the results where the match is 1% or less
+            headline = match[1]["Headline"]
+            # Check if headline has already been added
+            if headline not in seen_headlines:
+                seen_headlines.add(headline)  # Mark headline as seen
+                response_data.append(
+                    {"percentage": round(match[0] * 100, 2), "data": match[1]}
+                )
+            else:
+                print(f"Duplicate headline found and skipped: {headline}")
+
     print(f"Search completed for query: {query}")
     return jsonify(response_data)
 
@@ -213,18 +221,25 @@ def upload_file():
         filepath = os.path.join("./", filename)
         file.save(filepath)
         try:
+            
             similar_images = st.get_similar_images(image_path=filepath, number_of_images=10)
             
+            seen_headlines = set()  # Set to keep track of seen headlines
             response_data = []
             for img_info in similar_images:
-                image_id = img_info["path"].split("_")[-1].split(".")[0]  # Assuming this gets the ID
-                # Fetch the corresponding object from the JSON data using ID
+                image_id = img_info["path"].split("_")[-1].split(".")[0]  # Get the ID
                 corresponding_object = data.get(image_id)
                 if corresponding_object:
-                    response_data.append({
-                        "percentage": round(img_info["match_percentage"], 2),
-                        "data": corresponding_object,
-                    })
+                    headline = corresponding_object['Headline']
+                    # Check if headline has already been added
+                    if headline not in seen_headlines:
+                        seen_headlines.add(headline)  # Mark headline as seen
+                        response_data.append({
+                            "percentage": round(img_info["match_percentage"], 2),
+                            "data": corresponding_object,
+                        })
+                    else:
+                        print(f"Duplicate headline found: {headline}")
                 else:
                     print(f"No corresponding object found for ID {image_id}")
 
