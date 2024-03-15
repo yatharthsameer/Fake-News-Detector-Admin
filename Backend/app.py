@@ -29,6 +29,16 @@ handler = RotatingFileHandler("flask_app.log", maxBytes=10000, backupCount=3)
 handler.setLevel(logging.WARNING)  # Adjust this level as needed
 handler.setFormatter(formatter)
 app.logger.addHandler(handler)
+import csv
+from datetime import datetime
+
+
+def log_query(query_type, query_content):
+    with open("query_log.csv", mode="a", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        # Write the time stamp, type of query, and the query/image/file sent
+        writer.writerow([datetime.now(), query_type, query_content])
+
 
 # Log to console in DEBUG mode
 if app.debug:
@@ -141,6 +151,8 @@ def fact_check(query, data, limit=None):
 @app.route("/search", methods=["POST"])
 def search():
     query = request.json.get("query", "")
+    # Log the query
+    log_query("text", query)
     # Removed the 'limit' parameter since you do not want to limit the responses
     results = fact_check(query, data)
     # Filter out the results where the match is 1% or less

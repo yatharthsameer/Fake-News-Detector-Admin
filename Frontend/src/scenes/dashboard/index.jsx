@@ -103,7 +103,7 @@ const handlePrev = () => {
       console.log(searchQuery);
 
       // Make a POST request for text search
-      fetch("http://localhost:8080/search", {
+      fetch("https://factcheckerbtp.vishvasnews.com/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +126,7 @@ const handlePrev = () => {
       formData.append("file", selectedImageFile);
 
       // Make a POST request for image upload
-      fetch("http://127.0.0.1/upload", {
+      fetch("https://factcheckerbtp.vishvasnews.com/upload", {
         method: "POST",
         body: formData, // Send the form data
       })
@@ -141,7 +141,7 @@ const handlePrev = () => {
         });
     } else if (searchType === "link" && imageUrl.trim()) {
       const imgURLQ = imageUrl.trim();
-      fetch("http://127.0.0.1/uploadImageURL", {
+      fetch("https://factcheckerbtp.vishvasnews.com/uploadImageURL", {
         // Use the correct endpoint
         method: "POST",
         headers: {
