@@ -32,8 +32,14 @@ app.logger.addHandler(handler)
 import csv
 from datetime import datetime
 
+import base64
+
 
 def log_query(query_type, query_content):
+    # Convert image to base64 if it's a file
+    if query_type == "image":
+        image_binary = query_content.read()
+        query_content = base64.b64encode(image_binary).decode("utf-8")
     with open("query_log.csv", mode="a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         # Write the time stamp, type of query, and the query/image/file sent
@@ -217,6 +223,8 @@ def upload_file():
         return jsonify({"error": "No selected file"}), 400
 
     if file:
+        log_query("image", file)
+
         filename = secure_filename("test.jpg")
         filepath = os.path.join("./", filename)
         file.save(filepath)
