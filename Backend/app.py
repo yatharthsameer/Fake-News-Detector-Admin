@@ -56,7 +56,7 @@ if app.debug:
 app.logger.info("Flask application started")
 
 # Load the data from the JSON file
-with open("csvProcessing/allData.json", "r") as file:
+with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
     data = json.load(file)
     print("Data loaded successfully.")
 import nltk
@@ -203,22 +203,36 @@ def search():
             # print(f"Duplicate headline found and skipped: {headline}")
 
     # Format the top matches
-    top_matches = {str(i): match[1] for i, match in enumerate(results[:40], start=1)}
-    top_matches_str = json.dumps(top_matches, indent=2, ensure_ascii=False)   # Construct the prompt
-    # Extract only the relevant fields for Gemini analysis
-    gemini_input_objects = {
-        str(i): {
-            "Headline": match_data["Headline"],
-            "What_(Claim)": match_data["What_(Claim)"],
-            "About_Subject": match_data["About_Subject"],
-            "About_Person": match_data["About_Person"],
-            "Story_URL": match_data["Story_URL"],
-        }
-        for i, (_, match_data) in enumerate(
-            results[:40], start=1
-        )  # Note the tuple unpacking here
-    }
-    gemini_input_str = json.dumps(gemini_input_objects, indent=2, ensure_ascii=False)
+    seen_headlines_top = set()  # Initialize an empty set to keep track of seen headlines
+    top_matches = {}
+
+    for i, (_, match_data) in enumerate(results[:40], start=1):
+        headline = match_data["Headline"]
+        if (
+            headline not in seen_headlines_top
+        ):  # Check if the headline has not been seen before
+            seen_headlines_top.add(
+                headline
+            )  # Add the headline to the set of seen headlines
+            top_matches[str(i)] = match_data  # Add the match data to top_matches
+    print(top_matches)
+    seen_headlines = set()  # Initialize a set to track seen headlines
+
+    gemini_input_objects = {}
+    for i, (_, match_data) in enumerate(results[:40], start=1):
+        headline = match_data["Headline"]
+        if headline not in seen_headlines:
+            seen_headlines.add(headline)  # Add the headline to the set of seen headlines
+            gemini_input_objects[str(i)] = {
+                "Story_Date": match_data["Story_Date"],
+                "Headline": match_data["Headline"],
+                "What_(Claim)": match_data["What_(Claim)"],
+                "About_Subject": match_data["About_Subject"],
+                "About_Person": match_data["About_Person"],
+                "Story_URL": match_data["Story_URL"],
+            }
+
+        gemini_input_str = json.dumps(gemini_input_objects, indent=2, ensure_ascii=False)
 
     prompt = f"""
 You are an advanced AI specializing in debunking fake news. Your task is to analyze a series of news articles based on a specific query and determine their relevance to the query.
@@ -276,7 +290,7 @@ Query: "{query}"\n\n
 }}
  """
 
-    print(prompt)
+    # print(prompt)
     # Gemini API call would go here, assuming `gemini_api_response` is the response from the API
     # For demonstration, let's assume we receive a response like this:
     genai.configure(api_key="AIzaSyDd26SvuTQqx5kIW50llUWnWCMtP4bZpWg")
@@ -346,7 +360,7 @@ Query: "{query}"\n\n
     # Remove the 'numeric_percentage' key from each item as it was only needed for sorting
     for item in sorted_enhanced_response_data:
         item.pop("numeric_percentage", None)
-
+    print(sorted_enhanced_response_data)
     return jsonify(sorted_enhanced_response_data)
 
 # @app.route("/search", methods=["POST"])
