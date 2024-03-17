@@ -119,6 +119,9 @@ const handlePrev = () => {
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
+          setErrorMessage(
+            "The server encountered some issue, please click search again."
+          );
         });
     } else if (searchType === "image" && selectedImageFile) {
       // Create a FormData instance to send the file
@@ -138,6 +141,9 @@ const handlePrev = () => {
         })
         .catch((error) => {
           console.error("Error uploading image:", error);
+          setErrorMessage(
+            "The server encountered some issue, please click search again."
+          );
         });
     } else if (searchType === "link" && imageUrl.trim()) {
       const imgURLQ = imageUrl.trim();
@@ -166,6 +172,8 @@ const handlePrev = () => {
   };
 
   const highestMatch = results.length > 0 ? results[0].percentage : 0;
+  console.log("highestMatch",highestMatch);
+  
 
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
@@ -355,62 +363,36 @@ const handlePrev = () => {
               gridRow="span 2"
               backgroundColor={colors.primary[400]}
               p="30px"
-              display="flex"
-              flexDirection="column"
-              justifyContent="center" // Centers content vertically in the box
-              alignItems="center" // Centers content horizontally in the box
-              height="100%" // Make sure the box takes up all available vertical space
             >
-              
-              {/* Results header */}
-             
-              {/* Number of articles and query match text */}
-              <Typography
-                variant="h3" // Larger variant for more emphasis
-                color={colors.greenAccent[100]}
-                gutterBottom
-                sx={{
-                  fontWeight: "bold", // Bold font weight for emphasis
-                  textAlign: "center", // Center-align the text
-                  marginBottom: "20px", // Space below the text
-                }}
-              >
-                {results.length} False news articles in our database matched
-                with your query.
+              <Typography variant="h5" fontWeight="600">
+                False News
               </Typography>
-
-              {/* Disclaimer text */}
-              <Typography
-                variant="body2" // Smaller variant for less emphasis
-                color={colors.grey[100]}
-                sx={{
-                  textAlign: "center", // Center-align the text
-                  maxWidth: "80%", // Set a max-width for better readability on wider screens
-                  marginTop: "20px", // Space above the disclaimer
-                }}
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                mt="25px"
               >
-                Disclaimer: This site uses AI technology for decision-making. We
-                are not liable for AI decisions but commit to correcting any
-                errors with valid proof.
-              </Typography>
+                <ProgressCircle size="125" progress={highestMatch / 100} />
+                <Typography
+                  variant="h5"
+                  color={colors.greenAccent[100]}
+                  sx={{ mt: "15px" }}
+                >
+                  This claim has upto {highestMatch}% match with debunked
+                  stories in our Database
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: "10px", // Adjust the desired font size
+                  }}
+                >
+                  Disclaimer: This site uses AI technology for decision-making.
+                  We are not liable for AI decisions but commit to correcting
+                  any errors with valid proof.
+                </Typography>
+              </Box>
             </Box>
-
-            {/* <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ padding: "30px 30px 0 30px" }}
-          >
-            Sales Quantity
-          </Typography>
-          <Box height="250px" mt="-20px">
-            <BarChart isDashboard={true} />
-          </Box>
-        </Box> */}
             <Box
               gridColumn="span 7"
               gridRow="span 4"
@@ -512,6 +494,11 @@ const handlePrev = () => {
                         {result.percentage}% match
                       </Typography> */}
                     </div>
+                    {errorMessage && (
+                      <Typography color="error" sx={{ p: 2 }}>
+                        {errorMessage}
+                      </Typography>
+                    )}
                   </Box>
                 ))
               ) : (
