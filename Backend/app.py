@@ -322,8 +322,8 @@ Query: "{query}"\n\n
 
     try:
         response_data = json.loads(response_text)
-    except json.JSONDecodeError as e:
-        print("Parsing error" ,e.message)
+    except :
+        print("Parsing error" )
         return jsonify(response_data_TFIDF)
 
         # Assume response_text is a JSON string that looks like: {"1": "75%", "2": "50%", "3": "25%"}
