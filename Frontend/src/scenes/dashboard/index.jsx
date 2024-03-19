@@ -119,9 +119,10 @@ const handlePrev = () => {
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
-          setErrorMessage(
-            "The server encountered some issue, please click search again."
-          );
+            setErrorMessage(
+              "The server encountered some issue, please click search again."
+            );
+
         });
     } else if (searchType === "image" && selectedImageFile) {
       // Create a FormData instance to send the file

@@ -1,0 +1,1499 @@
+Data loaded successfully.
+Data loaded successfully.
+Data loaded successfully.
+ * Serving Flask app 'app'
+ * Debug mode: on
+Data loaded successfully.
+Data loaded successfully.
+Data loaded successfully.
+Fact-checking the query: priyanka chopra said something religious
+Found 111 top matches with more than 1% match.
+
+    You are an award wininng analyser CHatAnalyser.Your task is the following:
+
+    For the following json objects in NEWS_OBJECTS containing information about debunked fake news articles decide how similar is the QUERY_CLAIM and the json objects in NEWS_OBJECTS, assign a percentage similarity to each object in NEWS_OBJECTS, to capture the meaning of the objects in NEWS_OBJECTS with respect to the QUERY_CLAIM and output the key value pair in the same format as the EXPECTED_OUTPUT for every key of json object in the NEWS_OBJECTS.
+    Pay special attention to the following fields in NEWS_OBJECTS:"Headline","What_(Claim)","About_Subject" &"About_Person", while assigning a percentage similarity score to each object in NEWS_OBJECTS with respect to the QUERY_CLAIM.
+EXAMPLE INPUT:
+
+      [ 
+
+ "1": {
+        "Story_URL": "https://www.vishvasnews.com/ai-check/fact-check-pm-modi/",
+
+        "Headline": "Fact Check: पीएम मोदी और अमेरिकी राष्ट्रपति जो बाइडेन की वायरल तस्वीरें AI निर्मित हैं",
+
+        "What_(Claim)": "पीएम मोदी और अमेरिकी राष्ट्रपति कुर्ता-पायजामा पहनकर टहल रहे हैं।",
+
+        "About_Subject": "PM ans USA President",
+
+        "About_Person": "Narendra Modi, Joe Biden ",
+        },
+
+"2": {
+
+        "Story_URL": "https://www.vishvas/act-check-artificially-generated-photo-of-elon-musk-in-moroccos-chefchaouen-goes-viral-as-real/",
+
+        "Headline": "Fact Check: मोरक्को की ‘ब्लू सिटी’ में नजर आ रहे एलन मस्क की यह तस्वीर असल नहीं, AI जनरेटेड है",
+
+        "What_(Claim)": "एलन मस्क मोरक्को में यात्रा कर रहे हैं",
+
+        "About_Subject": "AI generated image",
+
+        "About_Person": "Elon Musk"
+
+    }
+     ]
+
+
+QUERY_CLAIM: “did elon musk go to morocco and the city”
+
+
+       Note: In this example "1" and “2” are the indexes of the json objects in NEWS_OBJECTS.
+
+
+EXPECTED_OUTPUT_FORMAT:
+{
+“1” : “0%”,
+“2” : “70%”
+}
+
+    
+
+
+    --------------end of example ----------------------------------------
+
+    Now your task is to generate a similar reponse for QUERY_CLAIM : "priyanka chopra said something religious"  with respect to the NEWS_OBJECTS.
+
+Here is the QUERY_CLAIM : "priyanka chopra said something religious" , and the 
+NEWS_OBJECTS:
+{
+  "1": {
+    "Story_Date": "27th May 2022",
+    "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-fake-religious-statement-in-the-name-of-actress-priyanka-chopra-went-viral/",
+    "Headline": "Fact Check: Fake religious statement in the name of actress Priyanka Chopra went viral",
+    "Claim_URL": "https://perma.cc/J93E-FGPX",
+    "What_(Claim)": " Priyanka Chopra  religious statement ",
+    "About_Subject": "Shiv",
+    "About_Person": "Priyanka Chopra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/05/Fake_News_8-1.jpg"
+  },
+  "2": {
+    "Story_Date": "29th Mar 2019",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-priyanka-gandhi-is-not-wearing-cross-the-viral-image-is-photoshopped/",
+    "Headline": "Fact Check: Priyanka Gandhi is not wearing cross, the viral image is photoshopped",
+    "Claim_URL": "NA",
+    "What_(Claim)": " Priyanka Gandhi is wearing cross",
+    "About_Subject": "Priyanka Gandhi wearing cross",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/03/fake-18.jpg"
+  },
+  "3": {
+    "Story_Date": "25th Jan 2022",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-this-picture-of-priyanka-vadra-and-rahul-gandhi-is-edited-the-booklet-they-were-holding-had-youth-manifesto-written-on-it/",
+    "Headline": "Fact Check: This picture of Priyanka Vadra and Rahul Gandhi is edited; The booklet they were holding had Youth Manifesto written on it",
+    "Claim_URL": "https://www.instagram.com/p/CZBQFEWrQD0/",
+    "What_(Claim)": "Priyanka Vadra and Rahul Gandhi have a book in their hands. On which it is written “Only Yogi will come.",
+    "About_Subject": "Congress Youth Manifesto",
+    "About_Person": "Priyanka Vadra and Rahul Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/01/Fake_News_Jan24_18.jpg"
+  },
+  "4": {
+    "Story_Date": "19th Feb 2021",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-priyanka-gandhi-did-not-tweet-about-royal-bath-viral-post-is-fake/",
+    "Headline": "Fact Check: Priyanka Gandhi Did Not Tweet About Royal Bath, Viral Post Is Fake",
+    "Claim_URL": "https://twitter.com/PriyankagaINC",
+    "What_(Claim)": "Priyanka Vadra’s first tweet on Kumbh Mela",
+    "About_Subject": "Kumbh",
+    "About_Person": "Priyanka Gandhi ",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2021/02/Fake_News4-2.jpg"
+  },
+  "5": {
+    "Story_Date": "23rd Nov 2020",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-priyanka-gandhi-did-not-make-an-objectionable-tweet-about-nehru-viral-post-is-fake/",
+    "Headline": "Fact Check: Priyanka Gandhi Did Not Make An Objectionable Tweet About Nehru, Viral Post Is Fake",
+    "Claim_URL": "https://archive.is/SUyXK",
+    "What_(Claim)": "Priyanka Gandhi on 20 November expressing anger and disappointment with Nehru’s family",
+    "About_Subject": "---------",
+    "About_Person": "Priyanka Gandhi, Jawahar Lal Nehru",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/11/Fake_News_November23_4-1.jpg"
+  },
+  "6": {
+    "Story_Date": "10th Oct 2020",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-this-picture-of-priyanka-and-rahul-gandhi-is-from-2019-viral-claim-is-fake/",
+    "Headline": "Fact Check: This Picture Of Priyanka And Rahul Gandhi Is From 2019, viral claim is fake",
+    "Claim_URL": "https://archive.fo/wip/4zb4w",
+    "What_(Claim)": "Priyanka Rahul Laughing while visiting Hathras victim’s family",
+    "About_Subject": "Hathras Victims",
+    "About_Person": "Rahul Gandhi, Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/10/Fake_News1_07oct-1.jpg"
+  },
+  "7": {
+    "Story_Date": "29th Mar 2019",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-the-cross-in-the-locket-of-priyanka-gandhi-is-photoshopped/",
+    "Headline": "Fact Check: प्रियंका गांधी ने नहीं पहना हुआ है क्रॉस, फर्जी है फोटो",
+    "Claim_URL": "NA",
+    "What_(Claim)": " Priyanka Gandhi is wearing cross",
+    "About_Subject": "Priyanka Gandhi wearing cross",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/03/fake-18.jpg"
+  },
+  "8": {
+    "Story_Date": "6th Jun 2023",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-rahul-gandhi-never-said-he-or-his-family-is-muslim-edited-breaking-plate-viral/",
+    "Headline": "Fact Check: Rahul Gandhi Never Said He Or His Family Is Muslim, Edited Breaking Plate Viral",
+    "Claim_URL": "https://www.facebook.com/photo?fbid=2454064631427182&set=a.779310992235896",
+    "What_(Claim)": "Rahul Gandhi said he is a Muslim",
+    "About_Subject": "Rahul Gandhi family",
+    "About_Person": "Rahul Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/06/Fake_-rahul-eng-1.jpg"
+  },
+  "9": {
+    "Story_Date": "6th Jun 2023",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-rahul-gandhi-never-said-he-or-his-family-is-muslim-edited-breaking-plate-viral/",
+    "Headline": "Fact Check: Rahul Gandhi Never Said He Or His Family Is Muslim, Edited Breaking Plate Viral",
+    "Claim_URL": "https://www.facebook.com/photo?fbid=2454064631427182&set=a.779310992235896",
+    "What_(Claim)": "Rahul Gandhi said he is a Muslim",
+    "About_Subject": "Rahul Gandhi family",
+    "About_Person": "Rahul Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/06/Fake_-rahul-eng-1.jpg"
+  },
+  "10": {
+    "Story_Date": "26th Sep 2023",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-priyanka-gandhi-did-not-call-congress-leaders-greedy-for-power-edited-video-viral/",
+    "Headline": "Fact Check : प्रियंका गांधी ने कांग्रेस नेताओं को नहीं बताया सत्ता का लोभी, वायरल वीडियो एडिटेड",
+    "Claim_URL": "https://perma.cc/BNK4-S6VZ",
+    "What_(Claim)": "प्रियंका गांधी ने कांग्रेस नेताओं को बताया सत्ता का लोभी",
+    "About_Subject": "Priyanka Gandhi called Congress leaders greedy ",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/09/Fake_15.jpg"
+  },
+  "11": {
+    "Story_Date": "15th Jul 2022",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-kolhapur-case-of-religious-killing-just-a-rumour/",
+    "Headline": "Fact Check: Kolhapur case of religious killing just a rumour",
+    "Claim_URL": "https://perma.cc/832C-VMMK",
+    "What_(Claim)": " Hindu supporter of Nupur Sharma killed a Muslim man in Kolhapur,",
+    "About_Subject": "Kolhapur  religious killing ",
+    "About_Person": "NA",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/07/Fake_News_5-5-1.jpg"
+  },
+  "12": {
+    "Story_Date": "27th May 2022",
+    "Story_URL": "https://www.vishvasnews.com/society/fact-check-fake-religious-statement-in-the-name-of-priyanka-chopra-went-viral/",
+    "Headline": "Fact check: प्रियंका चोपड़ा के नाम पर फेक धार्मिक बयान हुआ वायरल",
+    "Claim_URL": "https://perma.cc/J93E-FGPX",
+    "What_(Claim)": "प्रियंका चोपड़ा का धार्मिक बयान",
+    "About_Subject": "Shiv",
+    "About_Person": "Priyanka Chopra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/05/Fake_News_7.jpg"
+  },
+  "13": {
+    "Story_Date": "4th Jan 2022",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-users-sharing-old-video-of-girls-teaching-a-lesson-to-a-men-on-social-media-by-linking-him-to-priyanka-gandhi/",
+    "Headline": "Fact Check – मनचले को सबक सिखाती लड़कियों का पुराना वीडियो प्रियंका गांधी से जोड़कर सोशल मीडिया पर शेयर कर रहे यूजर्स",
+    "Claim_URL": "https://archive.ph/wip/jcf77",
+    "What_(Claim)": "एक युवक स्कूल की लड़कियों के साथ बदतमीजी कर रहा था. लड़कियों ने प्रियंका गांधी जी द्वारा शुरू की गई मुहिम #लड़कीहूँलड़सकतीहूँ का भरपूर उपयोग करते हुए युवक को छठी का दूध याद दिला दिया.",
+    "About_Subject": "Inspired by Priyanka Gandhi slogan",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/01/Fake_News_Jan4_4.jpg"
+  },
+  "14": {
+    "Story_Date": "20th Nov 2021",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-video-of-men-beating-a-woman-is-from-uttar-pradesh-not-rajasthan/",
+    "Headline": "Fact Check: उत्तर प्रदेश के वीडियो को राजस्थान का बताकर फैलाया जा रहा है भ्रम",
+    "Claim_URL": "https://www.facebook.com/100057450075979/videos/1074889019942382",
+    "What_(Claim)": "प्रियंका जी जनता जानना चाहती है कि.. कांग्रेस शासित राज्य की लड़की कब लड़ सकेगी? महिलाओं पर इस तरह का अत्याचार बर्दास्त नही किया जाए। मामले को गंभीरता पूर्वक लेकर दोषियों को सजा दिलाया जाए यही अपील है राजस्थान सरकार से। Priyanka Gandhi Vadra Rahul Gandhi",
+    "About_Subject": "Elections",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2021/11/Fake_News_Nov20_2.jpg"
+  },
+  "15": {
+    "Story_Date": "18th Oct 2021",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-chattisgarh-jashpur-speeding-car-accident-does-not-have-communal-angle-viral-claim-is-misleading/",
+    "Headline": "Fact Check: छत्तीसगढ़ के धार्मिक जुलूस में हुई घटना में नहीं है कोई कम्युनल एंगल, भ्रामक पोस्ट हुई वायरल",
+    "Claim_URL": "https://www.facebook.com/watch/?v=902983843951772",
+    "What_(Claim)": "A speeding vehicle runs over a Hindu religious procession in Jashpur, Chattisgarh, without any provocation whatsoever.This is second such instance of communal profiling and assault on Hindus while CM Bhupesh Baghel is busy helping the Gandhi siblings find political ground in UP",
+    "About_Subject": "religious procession",
+    "About_Person": "Hindus",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2021/10/Fake_News_Oct18_1.jpg"
+  },
+  "16": {
+    "Story_Date": "16th Sep 2021",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-no-maulvi-did-priyanka-gandhi-robert-vadras-marriage-viral-claim-is-fake/",
+    "Headline": "Fact Check: किसी मौलवी ने नहीं कराई प्रियंका गांधी-रॉबर्ट वाड्रा की शादी, वायरल दावा फर्जी है",
+    "Claim_URL": "https://twitter.com/TheRisky39/status/1395663888021037058",
+    "What_(Claim)": "ये सिर्फ नाम के गांधी हैं। असलियत में तो मुल्ले ही हैं। वरना प्रियंका का शादी में मौलवी का क्या काम है।” साथ ही उन्होंने एक फोटो भी शेयर की है। वहीं, फोटो पर लिखा है- “मुझ अज्ञानी को कोई यह बताए कि शादी में मौलवी को बुलाया जाता है या निकाह में।",
+    "About_Subject": "Priyanka Gandhi Wedding",
+    "About_Person": "Priyanka Gandhi ",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2021/09/Fake_News_September16_1.jpg"
+  },
+  "17": {
+    "Story_Date": "12th Nov 2020",
+    "Story_URL": "https://www.vishvasnews.com/english/viral/who-director-general-said-he-was-identified-as-contact-of-covid-19-positive-person-not-tested-coronavirus-positive/",
+    "Headline": "Fact Check: WHO Director-General Said He Was Identified As Contact Of COVID-19 Positive Person, Not Tested Coronavirus Positive",
+    "Claim_URL": "https://archive.md/7TjQB",
+    "What_(Claim)": "WHO Director-General Said He Was Identified As COVID-19 Positive",
+    "About_Subject": "Tested Covid Positive",
+    "About_Person": "WHO Director",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/11/Fake_News_November12_16.jpg"
+  },
+  "18": {
+    "Story_Date": "7th Oct 2020",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-this-picture-of-priyanka-and-rahul-gandhi-laughing-is-from-2019-not-from-recent-hathras-visit/",
+    "Headline": "Fact Check: प्रियंका और राहुल गांधी की हंसते हुए ये तस्वीर 2019 की है, हाल की नहीं",
+    "Claim_URL": "https://archive.fo/wip/4zb4w",
+    "What_(Claim)": "Priyanka Rahul Laughing while visiting Hathras victim’s family",
+    "About_Subject": "Hathras Victims",
+    "About_Person": "Rahul Gandhi, Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/10/Fake_News1_07oct.jpg"
+  },
+  "19": {
+    "Story_Date": "30th Sep 2020",
+    "Story_URL": "https://www.vishvasnews.com/english/viral/quick-fact-check-fake-post-claiming-who-said-coronavirus-is-losing-potency-resurfaces/",
+    "Headline": "Quick Fact Check: Fake post Claiming WHO Said Coronavirus Is Losing Potency Resurfaces",
+    "Claim_URL": "NA",
+    "What_(Claim)": "WHO Said Coronavirus Is Losing Potency",
+    "About_Subject": "Statement on Covid 19 potency",
+    "About_Person": "WHO",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/09/Fake_News_September30_19.jpg"
+  },
+  "20": {
+    "Story_Date": "11th Aug 2020",
+    "Story_URL": "https://www.vishvasnews.com/politics/quick-fact-check-the-cross-in-the-locket-of-priyanka-gandhi-is-photoshopped/",
+    "Headline": "Quick Fact Check: प्रियंका गांधी को लेकर वायरल जनेऊ और क्रॉस वाला पोस्ट झूठा है",
+    "Claim_URL": "http://archive.fo/wip/ss5oI",
+    "What_(Claim)": " प्रियंका गांधी अयोध्या में जनेऊ और केरल में क्रॉस पहनती हैं",
+    "About_Subject": "Priyanka Gandhi is christian",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/08/2-6.jpg"
+  },
+  "21": {
+    "Story_Date": "5th Apr 2020",
+    "Story_URL": "https://www.vishvasnews.com/politics/rahul-and-priyanka-gandhi-old-video-viral-name-of-lockdown-break/",
+    "Headline": "Fact Check : राहुल-प्रियंका के तीन महीने पुराने वीडियो को अब किया जा रहा है लॉकडाउन के उल्‍लंघन के नाम पर वायरल",
+    "Claim_URL": "http://archive.md/1KCBh",
+    "What_(Claim)": "This is Rahul Gandhi & Priyanka Vadra breaking Lock-down Regulations saying they need to visit friends",
+    "About_Subject": "Covid Lockdown",
+    "About_Person": "Priyanka Gandhi, Rahul Gandhi ",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/04/Lead-5-APril.jpg"
+  },
+  "22": {
+    "Story_Date": "6th Dec 2019",
+    "Story_URL": "https://www.vishvasnews.com/society/fact-check-video-video-isnt-of-hyderabd-rape-victims-last-rites/",
+    "Headline": "Fact Check: ये हैदराबाद रेप पीड़िता का नहीं, राजस्थान के शहीद पीरा राम के अंतिम संस्कार का वीडियो है",
+    "Claim_URL": "https://www.facebook.com/groups/naveenpattnaik/permalink/2484220251687400/",
+    "What_(Claim)": "Last Ritual of Hyderabad rape victime …Plz Forgive us Sister…",
+    "About_Subject": "Priyanka Reddy's Cremation",
+    "About_Person": "Priyanka Reddy",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News01_06dec.jpg"
+  },
+  "23": {
+    "Story_Date": "7th Oct 2019",
+    "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-these-religious-books-were-not-found-in-bihar-gutter-old-picture-from-saudi-arabia-is-getting-viral-with-wrong-context/",
+    "Headline": "Fact Check: These religious books were not found in Bihar gutter; Old picture from Saudi Arabia is getting viral with wrong context",
+    "Claim_URL": "NA",
+    "What_(Claim)": "These religious books were found in Bihar gutter",
+    "About_Subject": "Quran found in gutter",
+    "About_Person": "Quran",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/10/Fake_News08_07oct-1.jpg"
+  },
+  "24": {
+    "Story_Date": "9th Jul 2019",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-nirmala-sitharaman-never-said-35000-cr-led-bulbs-were-distribution-under-ujala-scheme/",
+    "Headline": "Fact Check: Nirmala Sitharaman never said 35000 cr LED bulbs were distribution under UJALA scheme",
+    "Claim_URL": "NA",
+    "What_(Claim)": "Nirmala Sitharaman said 35000 cr LED bulbs were distribution under UJALA scheme",
+    "About_Subject": "Ujwala Scheme",
+    "About_Person": "NIrmala Sitaraman",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_2-5.jpg"
+  },
+  "25": {
+    "Story_Date": "17th May 2019",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-products-with-hindu-gods-images-were-present-at-amazon/",
+    "Headline": "Fact Check: अमेजन की अमेरिकी वेबसाइट पर मौजूद थे हिंदू धार्मिक प्रतीकों वाले प्रोडक्ट्स, विरोध के बाद हटाए गए",
+    "Claim_URL": "NA",
+    "What_(Claim)": "अमेजन कर रहा हिंदू धार्मिक प्रतीक चिह्नों का अपमान",
+    "About_Subject": "Ecommerce website Amazon insulting Hindu religious symbols",
+    "About_Person": "Amazon, Hindu religious symbols",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/05/AmazonMarketPlace.jpg"
+  },
+  "26": {
+    "Story_Date": "22nd Apr 2019",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-photo-that-shows-priyanka-chaturvedi-wearing-namo-again-kurti-is-photoshopped/",
+    "Headline": "Fact Check: फोटो एडिटिंग टूल्स का इस्तेमाल करके दूसरी महिला के चेहरे पर प्रियंका चतुर्वेदी का चेहरा चिपकाया गया है",
+    "Claim_URL": "NA",
+    "What_(Claim)": "कांग्रेस छोड़ कर शिवसेना में शामिल हो चुकी प्रियंका चतुर्वेदी को ‘नमो अगेन’ लिखा कुर्ता पहने देखा जा सकता है",
+    "About_Subject": "Priyanka Chaturvedi joins BJP",
+    "About_Person": "Priyanka Chaturvedi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/04/fake1-10.jpg"
+  },
+  "27": {
+    "Story_Date": "7th Oct 2023",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-priyanka-gandhis-old-picture-from-2009-is-being-shared-linking-it-to-the-recent-elections/",
+    "Headline": "Fact Check : प्रियंका गांधी की साल 2009 की पुरानी तस्‍वीर हालिया चुनाव से जोड़ते हुए की जा रही शेयर",
+    "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=pfbid022zzeZNpymxBQLbeTumtR1rjSbUJ2KPh8CR6t9bxXi8WbcpCszTGfHjHeG8hPWsGol&id=100086771097083",
+    "What_(Claim)": "हालिया चुनाव से पहले प्रियंका गांधी साड़ी पहनकर मंदिर पहुंची।",
+    "About_Subject": "Election",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/10/Fake_2-7.jpg"
+  },
+  "28": {
+    "Story_Date": "7th Jul 2023",
+    "Story_URL": "https://www.vishvasnews.com/punjabi/society/fact-check-this-video-of-brutality-with-tribal-youth-is-from-the-old-incident-of-2021/",
+    "Headline": "Fact Check: ਆਦਿਵਾਸੀ ਯੁਵਕ ਦੇ ਨਾਲ ਬਰਬਰਤਾ ਦਾ ਇਹ ਵੀਡੀਓ 2021 ਦੀ ਪੁਰਾਣੀ ਘਟਨਾ ਦਾ ਹੈ",
+    "Claim_URL": "https://www.facebook.com/100073479577864/videos/726464949489430",
+    "What_(Claim)": "ਇਹ ਘਟਨਾ ਕੁਝ ਦਿਨ ਪਹਿਲਾਂ ਮੱਧ ਪ੍ਰਦੇਸ਼ ਵਿੱਚ ਵਾਪਰੀ ਸੀ ਜਿੱਥੇ ਨੀਮਚ ਕਸਬੇ ਵਿੱਚ ਇੱਕ ਆਦਿਵਾਸੀ ਨੂੰ ਟਰੱਕ ਦੇ ਪਿੱਛੇ ਜਾਨਵਰਾਂ ਵਾਂਗ ਬੰਨ੍ਹ ਕੇ ਘਸੀਟਿਆ ਗਿਆ।",
+    "About_Subject": "Religious",
+    "About_Person": "No",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/07/image-16.png"
+  },
+  "29": {
+    "Story_Date": "5th Oct 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-kejriwal-did-not-say-that-modi-and-shah-would-destroy-pakistan-edited-clip-goes-viral/",
+    "Headline": "Fact Check: केजरीवाल ने नहीं कही थी मोदी, शाह के पाकिस्तान को बर्बाद कर देने की बात, एडिटेड क्लिप वायरल",
+    "Claim_URL": "https://www.facebook.com/reel/837121618133996",
+    "What_(Claim)": "Kejriwal said that Modi and Shah would destroy Pakistan",
+    "About_Subject": "Kejriwal and MOdi",
+    "About_Person": "na",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/10/fack.2.jpg"
+  },
+  "30": {
+    "Story_Date": "6th Sep 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-meerut-neeraj-chopra-statue-javeline-stolen-post-is-rumour/",
+    "Headline": "Fact Check : मेरठ में नीरज चोपड़ा की प्रतिमा से भाला चोरी नहीं हुआ, पुलिस ने बताया अफवाह",
+    "Claim_URL": "https://twitter.com/imayankindian/status/1698967795877425496",
+    "What_(Claim)": "विश्व चैंपियन नीरज चोपड़ा के स्टैच्यू का भाला चोरी हो गया है।",
+    "About_Subject": "javeline stolen in meerut",
+    "About_Person": "Neeraj Chopra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/09/Fake_bhala.jpg"
+  },
+  "31": {
+    "Story_Date": "6th Sep 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-meerut-neeraj-chopra-statue-javeline-stolen-post-is-rumour/",
+    "Headline": "Fact Check : मेरठ में नीरज चोपड़ा की प्रतिमा से भाला चोरी नहीं हुआ, पुलिस ने बताया अफवाह",
+    "Claim_URL": "https://twitter.com/imayankindian/status/1698967795877425496",
+    "What_(Claim)": "विश्व चैंपियन नीरज चोपड़ा के स्टैच्यू का भाला चोरी हो गया है।",
+    "About_Subject": "Meerut Police",
+    "About_Person": "Neeraj Chopra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/09/Fake_bhala.jpg"
+  },
+  "32": {
+    "Story_Date": "30th Oct 2023",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-pm-modi-did-not-say-hindutva-is-a-card-gimmick-for-bjp-viral-clip-is-edited/",
+    "Headline": "Fact Check: PM Modi Did Not Say ‘Hindutva Is a Card Gimmick For BJP’, Viral Clip Is Edited",
+    "Claim_URL": "https://perma.cc/8A6V-KAYY",
+    "What_(Claim)": "PM Modi Said ‘Hindutva Is a Card Gimmick For BJP’",
+    "About_Subject": "Hindutva",
+    "About_Person": "PM Modi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/10/vishvasnews2-4-1.jpg"
+  },
+  "33": {
+    "Story_Date": "2nd Aug 2023",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-a-part-of-priyanka-gandhis-speech-in-gwalior-was-tampered-with-and-made-viral/",
+    "Headline": "Fact Check : प्रियंका गांधी के ग्वालियर में दिए गए भाषण के एक हिस्से के साथ छेड़छाड़ करके किया गया वायरल",
+    "Claim_URL": "https://perma.cc/V7T9-YZ4N",
+    "What_(Claim)": "प्रियंका गांधी के वीडियो में कांग्रेस शासन के वक्‍त के घोटालों का जिक्र",
+    "About_Subject": "Election",
+    "About_Person": "Priyanka Gandhi ",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/08/Fake-priyanka.jpg"
+  },
+  "34": {
+    "Story_Date": "1st May 2023",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-the-old-video-of-brijbhushan-sharan-singh-being-slapped-is-now-viral/",
+    "Headline": "Fact Check : थप्‍पड़ मारने का बृजभूषण शरण सिंह का पुराना वीडियो अब वायरल",
+    "Claim_URL": "https://www.facebook.com/matumranaprathap.rana/videos/728359479076519",
+    "What_(Claim)": "This is Disgusting…A young wrestler came & said to Brijbhushan on stage, Sir, we need justice. On hearing this, BJP MP Brijbhushan started slapping him",
+    "About_Subject": "Against Brijbhushan",
+    "About_Person": "BrijBhushan",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/05/misleading-img.jpg"
+  },
+  "35": {
+    "Story_Date": "10th Apr 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-the-video-of-an-elderly-woman-walking-on-the-shallow-water-of-narmada-river-has-gone-viral-with-baseless-claims/",
+    "Headline": "Fact Check : नर्मदा नदी के उथले पानी पर चलने वाली बुजुर्ग महिला का वीडियो बेबुनियाद दावे के साथ वायरल",
+    "Claim_URL": "https://perma.cc/LZY7-CLJQ",
+    "What_(Claim)": "तिलवारा घाट जबलपुर। देखिए नर्मदा माई का चमत्कार। जिस गहराई में अच्छे अच्छे तैराक मां नर्मदा जी में तैर नहीं पाते उस गहराई में बूढ़ी नर्मदा मां में चल रही",
+    "About_Subject": "Religious ",
+    "About_Person": "Narmda River",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/04/Fake_mislarmadaead_new-formate.jpg"
+  },
+  "36": {
+    "Story_Date": "2nd Mar 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-priyanka-gandhi-and-robert-vadras-wedding-photo-viral-again-with-false-claim/",
+    "Headline": "Fact Check: प्रियंका गांधी और रॉबर्ट वाड्रा की शादी की तस्वीर फिर से गलत दावे के साथ हुई वायरल",
+    "Claim_URL": "https://www.facebook.com/photo/?fbid=249770884041059&set=a.106237918394357",
+    "What_(Claim)": "मौलवी ने कराई थी प्रियंका गांधी और रॉबर्ट वाड्रा की शादी।",
+    "About_Subject": "Congress Party ",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/03/fake-1122.jpg"
+  },
+  "37": {
+    "Story_Date": "21st Feb 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-priyanka-gandhi-vadra-fake-statement-viral/",
+    "Headline": "Fact Check: प्रियंका गांधी वाड्रा के नाम से फर्जी बयान वायरल",
+    "Claim_URL": "https://perma.cc/VN8T-7MV9",
+    "What_(Claim)": "प्रियंका गांधी ने कहा है कि मुसलमानों के बिना हमारा काम नहीं चलेगा।",
+    "About_Subject": "Statement over muslims",
+    "About_Person": "Priyanka Gandhi Vadra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/02/Fake_News_4-1.jpg"
+  },
+  "38": {
+    "Story_Date": "2nd Dec 2022",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-hardik-patel-five-years-old-video-being-shared-in-wrong-context/",
+    "Headline": "Fact Check : हार्दिक पटेल के 5 साल पुराने वीडियो को गुजरात चुनाव से जोड़कर गलत संदर्भ में किया जा रहा शेयर",
+    "Claim_URL": "https://www.facebook.com/baby.mufflerman/posts/1595142404271906/",
+    "What_(Claim)": "हार्दिक पटेल ने कहा BJP को वोट नही देना है। ",
+    "About_Subject": " Patel said don't vote BJP.",
+    "About_Person": "hardik patel",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/12/Miasleading-hindi-4-1.jpg"
+  },
+  "39": {
+    "Story_Date": "14th Nov 2022",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-bageshwar-dham-peethadhishwars-photo-viral-with-false-and-objectionable-claims/",
+    "Headline": "Fact Check : बागेश्वर धाम के पीठाधीश्वर की तस्‍वीर झूठे और आपत्तिजनक दावे के साथ वायरल",
+    "Claim_URL": "https://perma.cc/4N63-WP98",
+    "What_(Claim)": "बागेश्वर धाम वाले छि… बाबा भक्तों की दीदी के साथ सत्संग की तैयारी करते हुए…..इस पर क्या कहोगे अंधभक्तों…",
+    "About_Subject": "Anti Religious",
+    "About_Person": "Dhirendra Shastri",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/11/Fake_News22_Jan2020-Recovered.jpg"
+  },
+  "40": {
+    "Story_Date": "12th Nov 2022",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-fake-post-is-being-used-to-spoil-the-image-of-alia-bhatt/",
+    "Headline": "Fact Check : आलिया भट्ट की छवि खराब करने के लिए इस्‍तेमाल की जा रही है फर्जी पोस्‍ट",
+    "Claim_URL": "https://perma.cc/6LSC-FAKA",
+    "What_(Claim)": "पूछ रही है #आलिया_भट्ट’।",
+    "About_Subject": "Anti Religious",
+    "About_Person": "Alia Bhatt",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/11/Fake_News22_hindi-1.jpg"
+  }
+}
+
+here is the QUERY_CLAIM : "priyanka chopra said something religious"   
+{
+  "1": "100%"
+}
+{'1': '100%'}
+Fact-checking the query: priyanka chopra said something religious
+Found 111 top matches with more than 1% match.
+
+    You are an award wininng analyser CHatAnalyser.Your task is the following:
+
+    For the following json objects in NEWS_OBJECTS containing information about debunked fake news articles decide how similar is the QUERY_CLAIM and the json objects in NEWS_OBJECTS, assign a percentage similarity to each object in NEWS_OBJECTS, to capture the meaning of the objects in NEWS_OBJECTS with respect to the QUERY_CLAIM and output the key value pair in the same format as the EXPECTED_OUTPUT for every key of json object in the NEWS_OBJECTS.
+    Pay special attention to the following fields in NEWS_OBJECTS:"Headline","What_(Claim)","About_Subject" &"About_Person", while assigning a percentage similarity score to each object in NEWS_OBJECTS with respect to the QUERY_CLAIM.
+EXAMPLE INPUT:
+
+      [ 
+
+ "1": {
+        "Story_URL": "https://www.vishvasnews.com/ai-check/fact-check-pm-modi/",
+
+        "Headline": "Fact Check: पीएम मोदी और अमेरिकी राष्ट्रपति जो बाइडेन की वायरल तस्वीरें AI निर्मित हैं",
+
+        "What_(Claim)": "पीएम मोदी और अमेरिकी राष्ट्रपति कुर्ता-पायजामा पहनकर टहल रहे हैं।",
+
+        "About_Subject": "PM ans USA President",
+
+        "About_Person": "Narendra Modi, Joe Biden ",
+        },
+
+"2": {
+
+        "Story_URL": "https://www.vishvas/act-check-artificially-generated-photo-of-elon-musk-in-moroccos-chefchaouen-goes-viral-as-real/",
+
+        "Headline": "Fact Check: मोरक्को की ‘ब्लू सिटी’ में नजर आ रहे एलन मस्क की यह तस्वीर असल नहीं, AI जनरेटेड है",
+
+        "What_(Claim)": "एलन मस्क मोरक्को में यात्रा कर रहे हैं",
+
+        "About_Subject": "AI generated image",
+
+        "About_Person": "Elon Musk"
+
+    }
+     ]
+
+
+QUERY_CLAIM: “did elon musk go to morocco and the city”
+
+
+       Note: In this example "1" and “2” are the indexes of the json objects in NEWS_OBJECTS.
+
+
+EXPECTED_OUTPUT_FORMAT:
+{
+“1” : “0%”,
+“2” : “70%”
+}
+
+    
+
+
+    --------------end of example ----------------------------------------
+
+    Now your task is to generate a similar reponse for QUERY_CLAIM : "priyanka chopra said something religious"  with respect to the NEWS_OBJECTS.
+
+Here is the QUERY_CLAIM : "priyanka chopra said something religious" , and the 
+NEWS_OBJECTS:
+{
+  "1": {
+    "Story_Date": "27th May 2022",
+    "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-fake-religious-statement-in-the-name-of-actress-priyanka-chopra-went-viral/",
+    "Headline": "Fact Check: Fake religious statement in the name of actress Priyanka Chopra went viral",
+    "Claim_URL": "https://perma.cc/J93E-FGPX",
+    "What_(Claim)": " Priyanka Chopra  religious statement ",
+    "About_Subject": "Shiv",
+    "About_Person": "Priyanka Chopra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/05/Fake_News_8-1.jpg"
+  },
+  "2": {
+    "Story_Date": "29th Mar 2019",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-priyanka-gandhi-is-not-wearing-cross-the-viral-image-is-photoshopped/",
+    "Headline": "Fact Check: Priyanka Gandhi is not wearing cross, the viral image is photoshopped",
+    "Claim_URL": "NA",
+    "What_(Claim)": " Priyanka Gandhi is wearing cross",
+    "About_Subject": "Priyanka Gandhi wearing cross",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/03/fake-18.jpg"
+  },
+  "3": {
+    "Story_Date": "25th Jan 2022",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-this-picture-of-priyanka-vadra-and-rahul-gandhi-is-edited-the-booklet-they-were-holding-had-youth-manifesto-written-on-it/",
+    "Headline": "Fact Check: This picture of Priyanka Vadra and Rahul Gandhi is edited; The booklet they were holding had Youth Manifesto written on it",
+    "Claim_URL": "https://www.instagram.com/p/CZBQFEWrQD0/",
+    "What_(Claim)": "Priyanka Vadra and Rahul Gandhi have a book in their hands. On which it is written “Only Yogi will come.",
+    "About_Subject": "Congress Youth Manifesto",
+    "About_Person": "Priyanka Vadra and Rahul Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/01/Fake_News_Jan24_18.jpg"
+  },
+  "4": {
+    "Story_Date": "19th Feb 2021",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-priyanka-gandhi-did-not-tweet-about-royal-bath-viral-post-is-fake/",
+    "Headline": "Fact Check: Priyanka Gandhi Did Not Tweet About Royal Bath, Viral Post Is Fake",
+    "Claim_URL": "https://twitter.com/PriyankagaINC",
+    "What_(Claim)": "Priyanka Vadra’s first tweet on Kumbh Mela",
+    "About_Subject": "Kumbh",
+    "About_Person": "Priyanka Gandhi ",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2021/02/Fake_News4-2.jpg"
+  },
+  "5": {
+    "Story_Date": "23rd Nov 2020",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-priyanka-gandhi-did-not-make-an-objectionable-tweet-about-nehru-viral-post-is-fake/",
+    "Headline": "Fact Check: Priyanka Gandhi Did Not Make An Objectionable Tweet About Nehru, Viral Post Is Fake",
+    "Claim_URL": "https://archive.is/SUyXK",
+    "What_(Claim)": "Priyanka Gandhi on 20 November expressing anger and disappointment with Nehru’s family",
+    "About_Subject": "---------",
+    "About_Person": "Priyanka Gandhi, Jawahar Lal Nehru",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/11/Fake_News_November23_4-1.jpg"
+  },
+  "6": {
+    "Story_Date": "10th Oct 2020",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-this-picture-of-priyanka-and-rahul-gandhi-is-from-2019-viral-claim-is-fake/",
+    "Headline": "Fact Check: This Picture Of Priyanka And Rahul Gandhi Is From 2019, viral claim is fake",
+    "Claim_URL": "https://archive.fo/wip/4zb4w",
+    "What_(Claim)": "Priyanka Rahul Laughing while visiting Hathras victim’s family",
+    "About_Subject": "Hathras Victims",
+    "About_Person": "Rahul Gandhi, Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/10/Fake_News1_07oct-1.jpg"
+  },
+  "7": {
+    "Story_Date": "29th Mar 2019",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-the-cross-in-the-locket-of-priyanka-gandhi-is-photoshopped/",
+    "Headline": "Fact Check: प्रियंका गांधी ने नहीं पहना हुआ है क्रॉस, फर्जी है फोटो",
+    "Claim_URL": "NA",
+    "What_(Claim)": " Priyanka Gandhi is wearing cross",
+    "About_Subject": "Priyanka Gandhi wearing cross",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/03/fake-18.jpg"
+  },
+  "8": {
+    "Story_Date": "6th Jun 2023",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-rahul-gandhi-never-said-he-or-his-family-is-muslim-edited-breaking-plate-viral/",
+    "Headline": "Fact Check: Rahul Gandhi Never Said He Or His Family Is Muslim, Edited Breaking Plate Viral",
+    "Claim_URL": "https://www.facebook.com/photo?fbid=2454064631427182&set=a.779310992235896",
+    "What_(Claim)": "Rahul Gandhi said he is a Muslim",
+    "About_Subject": "Rahul Gandhi family",
+    "About_Person": "Rahul Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/06/Fake_-rahul-eng-1.jpg"
+  },
+  "9": {
+    "Story_Date": "6th Jun 2023",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-rahul-gandhi-never-said-he-or-his-family-is-muslim-edited-breaking-plate-viral/",
+    "Headline": "Fact Check: Rahul Gandhi Never Said He Or His Family Is Muslim, Edited Breaking Plate Viral",
+    "Claim_URL": "https://www.facebook.com/photo?fbid=2454064631427182&set=a.779310992235896",
+    "What_(Claim)": "Rahul Gandhi said he is a Muslim",
+    "About_Subject": "Rahul Gandhi family",
+    "About_Person": "Rahul Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/06/Fake_-rahul-eng-1.jpg"
+  },
+  "10": {
+    "Story_Date": "26th Sep 2023",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-priyanka-gandhi-did-not-call-congress-leaders-greedy-for-power-edited-video-viral/",
+    "Headline": "Fact Check : प्रियंका गांधी ने कांग्रेस नेताओं को नहीं बताया सत्ता का लोभी, वायरल वीडियो एडिटेड",
+    "Claim_URL": "https://perma.cc/BNK4-S6VZ",
+    "What_(Claim)": "प्रियंका गांधी ने कांग्रेस नेताओं को बताया सत्ता का लोभी",
+    "About_Subject": "Priyanka Gandhi called Congress leaders greedy ",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/09/Fake_15.jpg"
+  },
+  "11": {
+    "Story_Date": "15th Jul 2022",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-kolhapur-case-of-religious-killing-just-a-rumour/",
+    "Headline": "Fact Check: Kolhapur case of religious killing just a rumour",
+    "Claim_URL": "https://perma.cc/832C-VMMK",
+    "What_(Claim)": " Hindu supporter of Nupur Sharma killed a Muslim man in Kolhapur,",
+    "About_Subject": "Kolhapur  religious killing ",
+    "About_Person": "NA",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/07/Fake_News_5-5-1.jpg"
+  },
+  "12": {
+    "Story_Date": "27th May 2022",
+    "Story_URL": "https://www.vishvasnews.com/society/fact-check-fake-religious-statement-in-the-name-of-priyanka-chopra-went-viral/",
+    "Headline": "Fact check: प्रियंका चोपड़ा के नाम पर फेक धार्मिक बयान हुआ वायरल",
+    "Claim_URL": "https://perma.cc/J93E-FGPX",
+    "What_(Claim)": "प्रियंका चोपड़ा का धार्मिक बयान",
+    "About_Subject": "Shiv",
+    "About_Person": "Priyanka Chopra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/05/Fake_News_7.jpg"
+  },
+  "13": {
+    "Story_Date": "4th Jan 2022",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-users-sharing-old-video-of-girls-teaching-a-lesson-to-a-men-on-social-media-by-linking-him-to-priyanka-gandhi/",
+    "Headline": "Fact Check – मनचले को सबक सिखाती लड़कियों का पुराना वीडियो प्रियंका गांधी से जोड़कर सोशल मीडिया पर शेयर कर रहे यूजर्स",
+    "Claim_URL": "https://archive.ph/wip/jcf77",
+    "What_(Claim)": "एक युवक स्कूल की लड़कियों के साथ बदतमीजी कर रहा था. लड़कियों ने प्रियंका गांधी जी द्वारा शुरू की गई मुहिम #लड़कीहूँलड़सकतीहूँ का भरपूर उपयोग करते हुए युवक को छठी का दूध याद दिला दिया.",
+    "About_Subject": "Inspired by Priyanka Gandhi slogan",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/01/Fake_News_Jan4_4.jpg"
+  },
+  "14": {
+    "Story_Date": "20th Nov 2021",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-video-of-men-beating-a-woman-is-from-uttar-pradesh-not-rajasthan/",
+    "Headline": "Fact Check: उत्तर प्रदेश के वीडियो को राजस्थान का बताकर फैलाया जा रहा है भ्रम",
+    "Claim_URL": "https://www.facebook.com/100057450075979/videos/1074889019942382",
+    "What_(Claim)": "प्रियंका जी जनता जानना चाहती है कि.. कांग्रेस शासित राज्य की लड़की कब लड़ सकेगी? महिलाओं पर इस तरह का अत्याचार बर्दास्त नही किया जाए। मामले को गंभीरता पूर्वक लेकर दोषियों को सजा दिलाया जाए यही अपील है राजस्थान सरकार से। Priyanka Gandhi Vadra Rahul Gandhi",
+    "About_Subject": "Elections",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2021/11/Fake_News_Nov20_2.jpg"
+  },
+  "15": {
+    "Story_Date": "18th Oct 2021",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-chattisgarh-jashpur-speeding-car-accident-does-not-have-communal-angle-viral-claim-is-misleading/",
+    "Headline": "Fact Check: छत्तीसगढ़ के धार्मिक जुलूस में हुई घटना में नहीं है कोई कम्युनल एंगल, भ्रामक पोस्ट हुई वायरल",
+    "Claim_URL": "https://www.facebook.com/watch/?v=902983843951772",
+    "What_(Claim)": "A speeding vehicle runs over a Hindu religious procession in Jashpur, Chattisgarh, without any provocation whatsoever.This is second such instance of communal profiling and assault on Hindus while CM Bhupesh Baghel is busy helping the Gandhi siblings find political ground in UP",
+    "About_Subject": "religious procession",
+    "About_Person": "Hindus",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2021/10/Fake_News_Oct18_1.jpg"
+  },
+  "16": {
+    "Story_Date": "16th Sep 2021",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-no-maulvi-did-priyanka-gandhi-robert-vadras-marriage-viral-claim-is-fake/",
+    "Headline": "Fact Check: किसी मौलवी ने नहीं कराई प्रियंका गांधी-रॉबर्ट वाड्रा की शादी, वायरल दावा फर्जी है",
+    "Claim_URL": "https://twitter.com/TheRisky39/status/1395663888021037058",
+    "What_(Claim)": "ये सिर्फ नाम के गांधी हैं। असलियत में तो मुल्ले ही हैं। वरना प्रियंका का शादी में मौलवी का क्या काम है।” साथ ही उन्होंने एक फोटो भी शेयर की है। वहीं, फोटो पर लिखा है- “मुझ अज्ञानी को कोई यह बताए कि शादी में मौलवी को बुलाया जाता है या निकाह में।",
+    "About_Subject": "Priyanka Gandhi Wedding",
+    "About_Person": "Priyanka Gandhi ",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2021/09/Fake_News_September16_1.jpg"
+  },
+  "17": {
+    "Story_Date": "12th Nov 2020",
+    "Story_URL": "https://www.vishvasnews.com/english/viral/who-director-general-said-he-was-identified-as-contact-of-covid-19-positive-person-not-tested-coronavirus-positive/",
+    "Headline": "Fact Check: WHO Director-General Said He Was Identified As Contact Of COVID-19 Positive Person, Not Tested Coronavirus Positive",
+    "Claim_URL": "https://archive.md/7TjQB",
+    "What_(Claim)": "WHO Director-General Said He Was Identified As COVID-19 Positive",
+    "About_Subject": "Tested Covid Positive",
+    "About_Person": "WHO Director",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/11/Fake_News_November12_16.jpg"
+  },
+  "18": {
+    "Story_Date": "7th Oct 2020",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-this-picture-of-priyanka-and-rahul-gandhi-laughing-is-from-2019-not-from-recent-hathras-visit/",
+    "Headline": "Fact Check: प्रियंका और राहुल गांधी की हंसते हुए ये तस्वीर 2019 की है, हाल की नहीं",
+    "Claim_URL": "https://archive.fo/wip/4zb4w",
+    "What_(Claim)": "Priyanka Rahul Laughing while visiting Hathras victim’s family",
+    "About_Subject": "Hathras Victims",
+    "About_Person": "Rahul Gandhi, Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/10/Fake_News1_07oct.jpg"
+  },
+  "19": {
+    "Story_Date": "30th Sep 2020",
+    "Story_URL": "https://www.vishvasnews.com/english/viral/quick-fact-check-fake-post-claiming-who-said-coronavirus-is-losing-potency-resurfaces/",
+    "Headline": "Quick Fact Check: Fake post Claiming WHO Said Coronavirus Is Losing Potency Resurfaces",
+    "Claim_URL": "NA",
+    "What_(Claim)": "WHO Said Coronavirus Is Losing Potency",
+    "About_Subject": "Statement on Covid 19 potency",
+    "About_Person": "WHO",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/09/Fake_News_September30_19.jpg"
+  },
+  "20": {
+    "Story_Date": "11th Aug 2020",
+    "Story_URL": "https://www.vishvasnews.com/politics/quick-fact-check-the-cross-in-the-locket-of-priyanka-gandhi-is-photoshopped/",
+    "Headline": "Quick Fact Check: प्रियंका गांधी को लेकर वायरल जनेऊ और क्रॉस वाला पोस्ट झूठा है",
+    "Claim_URL": "http://archive.fo/wip/ss5oI",
+    "What_(Claim)": " प्रियंका गांधी अयोध्या में जनेऊ और केरल में क्रॉस पहनती हैं",
+    "About_Subject": "Priyanka Gandhi is christian",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/08/2-6.jpg"
+  },
+  "21": {
+    "Story_Date": "5th Apr 2020",
+    "Story_URL": "https://www.vishvasnews.com/politics/rahul-and-priyanka-gandhi-old-video-viral-name-of-lockdown-break/",
+    "Headline": "Fact Check : राहुल-प्रियंका के तीन महीने पुराने वीडियो को अब किया जा रहा है लॉकडाउन के उल्‍लंघन के नाम पर वायरल",
+    "Claim_URL": "http://archive.md/1KCBh",
+    "What_(Claim)": "This is Rahul Gandhi & Priyanka Vadra breaking Lock-down Regulations saying they need to visit friends",
+    "About_Subject": "Covid Lockdown",
+    "About_Person": "Priyanka Gandhi, Rahul Gandhi ",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/04/Lead-5-APril.jpg"
+  },
+  "22": {
+    "Story_Date": "6th Dec 2019",
+    "Story_URL": "https://www.vishvasnews.com/society/fact-check-video-video-isnt-of-hyderabd-rape-victims-last-rites/",
+    "Headline": "Fact Check: ये हैदराबाद रेप पीड़िता का नहीं, राजस्थान के शहीद पीरा राम के अंतिम संस्कार का वीडियो है",
+    "Claim_URL": "https://www.facebook.com/groups/naveenpattnaik/permalink/2484220251687400/",
+    "What_(Claim)": "Last Ritual of Hyderabad rape victime …Plz Forgive us Sister…",
+    "About_Subject": "Priyanka Reddy's Cremation",
+    "About_Person": "Priyanka Reddy",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News01_06dec.jpg"
+  },
+  "23": {
+    "Story_Date": "7th Oct 2019",
+    "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-these-religious-books-were-not-found-in-bihar-gutter-old-picture-from-saudi-arabia-is-getting-viral-with-wrong-context/",
+    "Headline": "Fact Check: These religious books were not found in Bihar gutter; Old picture from Saudi Arabia is getting viral with wrong context",
+    "Claim_URL": "NA",
+    "What_(Claim)": "These religious books were found in Bihar gutter",
+    "About_Subject": "Quran found in gutter",
+    "About_Person": "Quran",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/10/Fake_News08_07oct-1.jpg"
+  },
+  "24": {
+    "Story_Date": "9th Jul 2019",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-nirmala-sitharaman-never-said-35000-cr-led-bulbs-were-distribution-under-ujala-scheme/",
+    "Headline": "Fact Check: Nirmala Sitharaman never said 35000 cr LED bulbs were distribution under UJALA scheme",
+    "Claim_URL": "NA",
+    "What_(Claim)": "Nirmala Sitharaman said 35000 cr LED bulbs were distribution under UJALA scheme",
+    "About_Subject": "Ujwala Scheme",
+    "About_Person": "NIrmala Sitaraman",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_2-5.jpg"
+  },
+  "25": {
+    "Story_Date": "17th May 2019",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-products-with-hindu-gods-images-were-present-at-amazon/",
+    "Headline": "Fact Check: अमेजन की अमेरिकी वेबसाइट पर मौजूद थे हिंदू धार्मिक प्रतीकों वाले प्रोडक्ट्स, विरोध के बाद हटाए गए",
+    "Claim_URL": "NA",
+    "What_(Claim)": "अमेजन कर रहा हिंदू धार्मिक प्रतीक चिह्नों का अपमान",
+    "About_Subject": "Ecommerce website Amazon insulting Hindu religious symbols",
+    "About_Person": "Amazon, Hindu religious symbols",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/05/AmazonMarketPlace.jpg"
+  },
+  "26": {
+    "Story_Date": "22nd Apr 2019",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-photo-that-shows-priyanka-chaturvedi-wearing-namo-again-kurti-is-photoshopped/",
+    "Headline": "Fact Check: फोटो एडिटिंग टूल्स का इस्तेमाल करके दूसरी महिला के चेहरे पर प्रियंका चतुर्वेदी का चेहरा चिपकाया गया है",
+    "Claim_URL": "NA",
+    "What_(Claim)": "कांग्रेस छोड़ कर शिवसेना में शामिल हो चुकी प्रियंका चतुर्वेदी को ‘नमो अगेन’ लिखा कुर्ता पहने देखा जा सकता है",
+    "About_Subject": "Priyanka Chaturvedi joins BJP",
+    "About_Person": "Priyanka Chaturvedi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/04/fake1-10.jpg"
+  },
+  "27": {
+    "Story_Date": "7th Oct 2023",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-priyanka-gandhis-old-picture-from-2009-is-being-shared-linking-it-to-the-recent-elections/",
+    "Headline": "Fact Check : प्रियंका गांधी की साल 2009 की पुरानी तस्‍वीर हालिया चुनाव से जोड़ते हुए की जा रही शेयर",
+    "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=pfbid022zzeZNpymxBQLbeTumtR1rjSbUJ2KPh8CR6t9bxXi8WbcpCszTGfHjHeG8hPWsGol&id=100086771097083",
+    "What_(Claim)": "हालिया चुनाव से पहले प्रियंका गांधी साड़ी पहनकर मंदिर पहुंची।",
+    "About_Subject": "Election",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/10/Fake_2-7.jpg"
+  },
+  "28": {
+    "Story_Date": "7th Jul 2023",
+    "Story_URL": "https://www.vishvasnews.com/punjabi/society/fact-check-this-video-of-brutality-with-tribal-youth-is-from-the-old-incident-of-2021/",
+    "Headline": "Fact Check: ਆਦਿਵਾਸੀ ਯੁਵਕ ਦੇ ਨਾਲ ਬਰਬਰਤਾ ਦਾ ਇਹ ਵੀਡੀਓ 2021 ਦੀ ਪੁਰਾਣੀ ਘਟਨਾ ਦਾ ਹੈ",
+    "Claim_URL": "https://www.facebook.com/100073479577864/videos/726464949489430",
+    "What_(Claim)": "ਇਹ ਘਟਨਾ ਕੁਝ ਦਿਨ ਪਹਿਲਾਂ ਮੱਧ ਪ੍ਰਦੇਸ਼ ਵਿੱਚ ਵਾਪਰੀ ਸੀ ਜਿੱਥੇ ਨੀਮਚ ਕਸਬੇ ਵਿੱਚ ਇੱਕ ਆਦਿਵਾਸੀ ਨੂੰ ਟਰੱਕ ਦੇ ਪਿੱਛੇ ਜਾਨਵਰਾਂ ਵਾਂਗ ਬੰਨ੍ਹ ਕੇ ਘਸੀਟਿਆ ਗਿਆ।",
+    "About_Subject": "Religious",
+    "About_Person": "No",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/07/image-16.png"
+  },
+  "29": {
+    "Story_Date": "5th Oct 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-kejriwal-did-not-say-that-modi-and-shah-would-destroy-pakistan-edited-clip-goes-viral/",
+    "Headline": "Fact Check: केजरीवाल ने नहीं कही थी मोदी, शाह के पाकिस्तान को बर्बाद कर देने की बात, एडिटेड क्लिप वायरल",
+    "Claim_URL": "https://www.facebook.com/reel/837121618133996",
+    "What_(Claim)": "Kejriwal said that Modi and Shah would destroy Pakistan",
+    "About_Subject": "Kejriwal and MOdi",
+    "About_Person": "na",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/10/fack.2.jpg"
+  },
+  "30": {
+    "Story_Date": "6th Sep 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-meerut-neeraj-chopra-statue-javeline-stolen-post-is-rumour/",
+    "Headline": "Fact Check : मेरठ में नीरज चोपड़ा की प्रतिमा से भाला चोरी नहीं हुआ, पुलिस ने बताया अफवाह",
+    "Claim_URL": "https://twitter.com/imayankindian/status/1698967795877425496",
+    "What_(Claim)": "विश्व चैंपियन नीरज चोपड़ा के स्टैच्यू का भाला चोरी हो गया है।",
+    "About_Subject": "javeline stolen in meerut",
+    "About_Person": "Neeraj Chopra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/09/Fake_bhala.jpg"
+  },
+  "31": {
+    "Story_Date": "6th Sep 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-meerut-neeraj-chopra-statue-javeline-stolen-post-is-rumour/",
+    "Headline": "Fact Check : मेरठ में नीरज चोपड़ा की प्रतिमा से भाला चोरी नहीं हुआ, पुलिस ने बताया अफवाह",
+    "Claim_URL": "https://twitter.com/imayankindian/status/1698967795877425496",
+    "What_(Claim)": "विश्व चैंपियन नीरज चोपड़ा के स्टैच्यू का भाला चोरी हो गया है।",
+    "About_Subject": "Meerut Police",
+    "About_Person": "Neeraj Chopra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/09/Fake_bhala.jpg"
+  },
+  "32": {
+    "Story_Date": "30th Oct 2023",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-pm-modi-did-not-say-hindutva-is-a-card-gimmick-for-bjp-viral-clip-is-edited/",
+    "Headline": "Fact Check: PM Modi Did Not Say ‘Hindutva Is a Card Gimmick For BJP’, Viral Clip Is Edited",
+    "Claim_URL": "https://perma.cc/8A6V-KAYY",
+    "What_(Claim)": "PM Modi Said ‘Hindutva Is a Card Gimmick For BJP’",
+    "About_Subject": "Hindutva",
+    "About_Person": "PM Modi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/10/vishvasnews2-4-1.jpg"
+  },
+  "33": {
+    "Story_Date": "2nd Aug 2023",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-a-part-of-priyanka-gandhis-speech-in-gwalior-was-tampered-with-and-made-viral/",
+    "Headline": "Fact Check : प्रियंका गांधी के ग्वालियर में दिए गए भाषण के एक हिस्से के साथ छेड़छाड़ करके किया गया वायरल",
+    "Claim_URL": "https://perma.cc/V7T9-YZ4N",
+    "What_(Claim)": "प्रियंका गांधी के वीडियो में कांग्रेस शासन के वक्‍त के घोटालों का जिक्र",
+    "About_Subject": "Election",
+    "About_Person": "Priyanka Gandhi ",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/08/Fake-priyanka.jpg"
+  },
+  "34": {
+    "Story_Date": "1st May 2023",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-the-old-video-of-brijbhushan-sharan-singh-being-slapped-is-now-viral/",
+    "Headline": "Fact Check : थप्‍पड़ मारने का बृजभूषण शरण सिंह का पुराना वीडियो अब वायरल",
+    "Claim_URL": "https://www.facebook.com/matumranaprathap.rana/videos/728359479076519",
+    "What_(Claim)": "This is Disgusting…A young wrestler came & said to Brijbhushan on stage, Sir, we need justice. On hearing this, BJP MP Brijbhushan started slapping him",
+    "About_Subject": "Against Brijbhushan",
+    "About_Person": "BrijBhushan",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/05/misleading-img.jpg"
+  },
+  "35": {
+    "Story_Date": "10th Apr 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-the-video-of-an-elderly-woman-walking-on-the-shallow-water-of-narmada-river-has-gone-viral-with-baseless-claims/",
+    "Headline": "Fact Check : नर्मदा नदी के उथले पानी पर चलने वाली बुजुर्ग महिला का वीडियो बेबुनियाद दावे के साथ वायरल",
+    "Claim_URL": "https://perma.cc/LZY7-CLJQ",
+    "What_(Claim)": "तिलवारा घाट जबलपुर। देखिए नर्मदा माई का चमत्कार। जिस गहराई में अच्छे अच्छे तैराक मां नर्मदा जी में तैर नहीं पाते उस गहराई में बूढ़ी नर्मदा मां में चल रही",
+    "About_Subject": "Religious ",
+    "About_Person": "Narmda River",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/04/Fake_mislarmadaead_new-formate.jpg"
+  },
+  "36": {
+    "Story_Date": "2nd Mar 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-priyanka-gandhi-and-robert-vadras-wedding-photo-viral-again-with-false-claim/",
+    "Headline": "Fact Check: प्रियंका गांधी और रॉबर्ट वाड्रा की शादी की तस्वीर फिर से गलत दावे के साथ हुई वायरल",
+    "Claim_URL": "https://www.facebook.com/photo/?fbid=249770884041059&set=a.106237918394357",
+    "What_(Claim)": "मौलवी ने कराई थी प्रियंका गांधी और रॉबर्ट वाड्रा की शादी।",
+    "About_Subject": "Congress Party ",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/03/fake-1122.jpg"
+  },
+  "37": {
+    "Story_Date": "21st Feb 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-priyanka-gandhi-vadra-fake-statement-viral/",
+    "Headline": "Fact Check: प्रियंका गांधी वाड्रा के नाम से फर्जी बयान वायरल",
+    "Claim_URL": "https://perma.cc/VN8T-7MV9",
+    "What_(Claim)": "प्रियंका गांधी ने कहा है कि मुसलमानों के बिना हमारा काम नहीं चलेगा।",
+    "About_Subject": "Statement over muslims",
+    "About_Person": "Priyanka Gandhi Vadra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/02/Fake_News_4-1.jpg"
+  },
+  "38": {
+    "Story_Date": "2nd Dec 2022",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-hardik-patel-five-years-old-video-being-shared-in-wrong-context/",
+    "Headline": "Fact Check : हार्दिक पटेल के 5 साल पुराने वीडियो को गुजरात चुनाव से जोड़कर गलत संदर्भ में किया जा रहा शेयर",
+    "Claim_URL": "https://www.facebook.com/baby.mufflerman/posts/1595142404271906/",
+    "What_(Claim)": "हार्दिक पटेल ने कहा BJP को वोट नही देना है। ",
+    "About_Subject": " Patel said don't vote BJP.",
+    "About_Person": "hardik patel",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/12/Miasleading-hindi-4-1.jpg"
+  },
+  "39": {
+    "Story_Date": "14th Nov 2022",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-bageshwar-dham-peethadhishwars-photo-viral-with-false-and-objectionable-claims/",
+    "Headline": "Fact Check : बागेश्वर धाम के पीठाधीश्वर की तस्‍वीर झूठे और आपत्तिजनक दावे के साथ वायरल",
+    "Claim_URL": "https://perma.cc/4N63-WP98",
+    "What_(Claim)": "बागेश्वर धाम वाले छि… बाबा भक्तों की दीदी के साथ सत्संग की तैयारी करते हुए…..इस पर क्या कहोगे अंधभक्तों…",
+    "About_Subject": "Anti Religious",
+    "About_Person": "Dhirendra Shastri",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/11/Fake_News22_Jan2020-Recovered.jpg"
+  },
+  "40": {
+    "Story_Date": "12th Nov 2022",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-fake-post-is-being-used-to-spoil-the-image-of-alia-bhatt/",
+    "Headline": "Fact Check : आलिया भट्ट की छवि खराब करने के लिए इस्‍तेमाल की जा रही है फर्जी पोस्‍ट",
+    "Claim_URL": "https://perma.cc/6LSC-FAKA",
+    "What_(Claim)": "पूछ रही है #आलिया_भट्ट’।",
+    "About_Subject": "Anti Religious",
+    "About_Person": "Alia Bhatt",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/11/Fake_News22_hindi-1.jpg"
+  }
+}
+
+here is the QUERY_CLAIM : "priyanka chopra said something religious"   
+{
+  "1": "95%",
+  "2": "85%",
+  "3": "70%",
+  "4": "75%",
+  "5": "90%",
+  "6": "80%",
+  "7": "95%",
+  "8": "10%",
+  "9": "10%",
+  "10": "85%",
+  "11": "10%",
+  "12": "90%",
+  "13": "65%",
+  "14": "65%",
+  "15": "15%",
+  "16": "80%",
+  "17": "15%",
+  "18": "70%",
+  "19": "20%",
+  "20": "90%",
+  "21": "60%",
+  "22": "25%",
+  "23": "20%",
+  "24": "10%",
+  "25": "80%",
+  "26": "90%",
+  "27": "80%",
+  "28": "15%",
+  "29": "20%",
+  "30": "30%",
+  "31": "30%",
+  "32": "10%",
+  "33": "75%",
+  "34": "25%",
+  "35": "10%",
+  "36": "80%",
+  "37": "90%",
+  "38": "20%",
+  "39": "10%",
+  "40": "15%"
+}
+{'1': '95%', '2': '85%', '3': '70%', '4': '75%', '5': '90%', '6': '80%', '7': '95%', '8': '10%', '9': '10%', '10': '85%', '11': '10%', '12': '90%', '13': '65%', '14': '65%', '15': '15%', '16': '80%', '17': '15%', '18': '70%', '19': '20%', '20': '90%', '21': '60%', '22': '25%', '23': '20%', '24': '10%', '25': '80%', '26': '90%', '27': '80%', '28': '15%', '29': '20%', '30': '30%', '31': '30%', '32': '10%', '33': '75%', '34': '25%', '35': '10%', '36': '80%', '37': '90%', '38': '20%', '39': '10%', '40': '15%'}
+Data loaded successfully.
+Data loaded successfully.
+Data loaded successfully.
+Data loaded successfully.
+Data loaded successfully.
+Data loaded successfully.
+Fact-checking the query: priyanka chopra said something religious
+Found 111 top matches with more than 1% match.
+
+    You are an award wininng analyser CHatAnalyser.Your task is the following:
+
+    For the following json objects in NEWS_OBJECTS containing information about debunked fake news articles decide how similar is the QUERY_CLAIM and the json objects in NEWS_OBJECTS, assign a percentage similarity to each object in NEWS_OBJECTS, to capture the meaning of the objects in NEWS_OBJECTS with respect to the QUERY_CLAIM and output the key value pair in the same format as the EXPECTED_OUTPUT for every key of json object in the NEWS_OBJECTS.
+    Pay special attention to the following fields in NEWS_OBJECTS:"Headline","What_(Claim)","About_Subject" &"About_Person", while assigning a percentage similarity score to EVERY object in NEWS_OBJECTS with respect to the QUERY_CLAIM.
+EXAMPLE INPUT:
+
+      [ 
+
+ "1": {
+        "Story_URL": "https://www.vishvasnews.com/ai-check/fact-check-pm-modi/",
+
+        "Headline": "Fact Check: पीएम मोदी और अमेरिकी राष्ट्रपति जो बाइडेन की वायरल तस्वीरें AI निर्मित हैं",
+
+        "What_(Claim)": "पीएम मोदी और अमेरिकी राष्ट्रपति कुर्ता-पायजामा पहनकर टहल रहे हैं।",
+
+        "About_Subject": "PM ans USA President",
+
+        "About_Person": "Narendra Modi, Joe Biden ",
+        },
+
+"2": {
+
+        "Story_URL": "https://www.vishvas/act-check-artificially-generated-photo-of-elon-musk-in-moroccos-chefchaouen-goes-viral-as-real/",
+
+        "Headline": "Fact Check: मोरक्को की ‘ब्लू सिटी’ में नजर आ रहे एलन मस्क की यह तस्वीर असल नहीं, AI जनरेटेड है",
+
+        "What_(Claim)": "एलन मस्क मोरक्को में यात्रा कर रहे हैं",
+
+        "About_Subject": "AI generated image",
+
+        "About_Person": "Elon Musk"
+
+    }
+     ]
+
+
+QUERY_CLAIM: “did elon musk go to morocco and the city”
+
+
+       Note: In this example "1" and “2” are the indexes of the json objects in NEWS_OBJECTS.
+
+
+EXPECTED_OUTPUT_FORMAT:
+{
+“1” : “0%”,
+“2” : “70%”
+}
+
+    
+
+
+    --------------end of example ----------------------------------------
+
+    Now your task is to generate a similar reponse for QUERY_CLAIM : "priyanka chopra said something religious"  with respect to the NEWS_OBJECTS.
+
+Here is the QUERY_CLAIM : "priyanka chopra said something religious" , and the 
+NEWS_OBJECTS:
+{
+  "1": {
+    "Story_Date": "27th May 2022",
+    "Story_URL": "https://www.vishvasnews.com/english/viral/fact-check-fake-religious-statement-in-the-name-of-actress-priyanka-chopra-went-viral/",
+    "Headline": "Fact Check: Fake religious statement in the name of actress Priyanka Chopra went viral",
+    "Claim_URL": "https://perma.cc/J93E-FGPX",
+    "What_(Claim)": " Priyanka Chopra  religious statement ",
+    "About_Subject": "Shiv",
+    "About_Person": "Priyanka Chopra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/05/Fake_News_8-1.jpg"
+  },
+  "2": {
+    "Story_Date": "29th Mar 2019",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-priyanka-gandhi-is-not-wearing-cross-the-viral-image-is-photoshopped/",
+    "Headline": "Fact Check: Priyanka Gandhi is not wearing cross, the viral image is photoshopped",
+    "Claim_URL": "NA",
+    "What_(Claim)": " Priyanka Gandhi is wearing cross",
+    "About_Subject": "Priyanka Gandhi wearing cross",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/03/fake-18.jpg"
+  },
+  "3": {
+    "Story_Date": "25th Jan 2022",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-this-picture-of-priyanka-vadra-and-rahul-gandhi-is-edited-the-booklet-they-were-holding-had-youth-manifesto-written-on-it/",
+    "Headline": "Fact Check: This picture of Priyanka Vadra and Rahul Gandhi is edited; The booklet they were holding had Youth Manifesto written on it",
+    "Claim_URL": "https://www.instagram.com/p/CZBQFEWrQD0/",
+    "What_(Claim)": "Priyanka Vadra and Rahul Gandhi have a book in their hands. On which it is written “Only Yogi will come.",
+    "About_Subject": "Congress Youth Manifesto",
+    "About_Person": "Priyanka Vadra and Rahul Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/01/Fake_News_Jan24_18.jpg"
+  },
+  "4": {
+    "Story_Date": "19th Feb 2021",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-priyanka-gandhi-did-not-tweet-about-royal-bath-viral-post-is-fake/",
+    "Headline": "Fact Check: Priyanka Gandhi Did Not Tweet About Royal Bath, Viral Post Is Fake",
+    "Claim_URL": "https://twitter.com/PriyankagaINC",
+    "What_(Claim)": "Priyanka Vadra’s first tweet on Kumbh Mela",
+    "About_Subject": "Kumbh",
+    "About_Person": "Priyanka Gandhi ",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2021/02/Fake_News4-2.jpg"
+  },
+  "5": {
+    "Story_Date": "23rd Nov 2020",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-priyanka-gandhi-did-not-make-an-objectionable-tweet-about-nehru-viral-post-is-fake/",
+    "Headline": "Fact Check: Priyanka Gandhi Did Not Make An Objectionable Tweet About Nehru, Viral Post Is Fake",
+    "Claim_URL": "https://archive.is/SUyXK",
+    "What_(Claim)": "Priyanka Gandhi on 20 November expressing anger and disappointment with Nehru’s family",
+    "About_Subject": "---------",
+    "About_Person": "Priyanka Gandhi, Jawahar Lal Nehru",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/11/Fake_News_November23_4-1.jpg"
+  },
+  "6": {
+    "Story_Date": "10th Oct 2020",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-this-picture-of-priyanka-and-rahul-gandhi-is-from-2019-viral-claim-is-fake/",
+    "Headline": "Fact Check: This Picture Of Priyanka And Rahul Gandhi Is From 2019, viral claim is fake",
+    "Claim_URL": "https://archive.fo/wip/4zb4w",
+    "What_(Claim)": "Priyanka Rahul Laughing while visiting Hathras victim’s family",
+    "About_Subject": "Hathras Victims",
+    "About_Person": "Rahul Gandhi, Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/10/Fake_News1_07oct-1.jpg"
+  },
+  "7": {
+    "Story_Date": "29th Mar 2019",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-the-cross-in-the-locket-of-priyanka-gandhi-is-photoshopped/",
+    "Headline": "Fact Check: प्रियंका गांधी ने नहीं पहना हुआ है क्रॉस, फर्जी है फोटो",
+    "Claim_URL": "NA",
+    "What_(Claim)": " Priyanka Gandhi is wearing cross",
+    "About_Subject": "Priyanka Gandhi wearing cross",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/03/fake-18.jpg"
+  },
+  "8": {
+    "Story_Date": "6th Jun 2023",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-rahul-gandhi-never-said-he-or-his-family-is-muslim-edited-breaking-plate-viral/",
+    "Headline": "Fact Check: Rahul Gandhi Never Said He Or His Family Is Muslim, Edited Breaking Plate Viral",
+    "Claim_URL": "https://www.facebook.com/photo?fbid=2454064631427182&set=a.779310992235896",
+    "What_(Claim)": "Rahul Gandhi said he is a Muslim",
+    "About_Subject": "Rahul Gandhi family",
+    "About_Person": "Rahul Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/06/Fake_-rahul-eng-1.jpg"
+  },
+  "9": {
+    "Story_Date": "6th Jun 2023",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-rahul-gandhi-never-said-he-or-his-family-is-muslim-edited-breaking-plate-viral/",
+    "Headline": "Fact Check: Rahul Gandhi Never Said He Or His Family Is Muslim, Edited Breaking Plate Viral",
+    "Claim_URL": "https://www.facebook.com/photo?fbid=2454064631427182&set=a.779310992235896",
+    "What_(Claim)": "Rahul Gandhi said he is a Muslim",
+    "About_Subject": "Rahul Gandhi family",
+    "About_Person": "Rahul Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/06/Fake_-rahul-eng-1.jpg"
+  },
+  "10": {
+    "Story_Date": "26th Sep 2023",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-priyanka-gandhi-did-not-call-congress-leaders-greedy-for-power-edited-video-viral/",
+    "Headline": "Fact Check : प्रियंका गांधी ने कांग्रेस नेताओं को नहीं बताया सत्ता का लोभी, वायरल वीडियो एडिटेड",
+    "Claim_URL": "https://perma.cc/BNK4-S6VZ",
+    "What_(Claim)": "प्रियंका गांधी ने कांग्रेस नेताओं को बताया सत्ता का लोभी",
+    "About_Subject": "Priyanka Gandhi called Congress leaders greedy ",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/09/Fake_15.jpg"
+  },
+  "11": {
+    "Story_Date": "15th Jul 2022",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-kolhapur-case-of-religious-killing-just-a-rumour/",
+    "Headline": "Fact Check: Kolhapur case of religious killing just a rumour",
+    "Claim_URL": "https://perma.cc/832C-VMMK",
+    "What_(Claim)": " Hindu supporter of Nupur Sharma killed a Muslim man in Kolhapur,",
+    "About_Subject": "Kolhapur  religious killing ",
+    "About_Person": "NA",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/07/Fake_News_5-5-1.jpg"
+  },
+  "12": {
+    "Story_Date": "27th May 2022",
+    "Story_URL": "https://www.vishvasnews.com/society/fact-check-fake-religious-statement-in-the-name-of-priyanka-chopra-went-viral/",
+    "Headline": "Fact check: प्रियंका चोपड़ा के नाम पर फेक धार्मिक बयान हुआ वायरल",
+    "Claim_URL": "https://perma.cc/J93E-FGPX",
+    "What_(Claim)": "प्रियंका चोपड़ा का धार्मिक बयान",
+    "About_Subject": "Shiv",
+    "About_Person": "Priyanka Chopra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/05/Fake_News_7.jpg"
+  },
+  "13": {
+    "Story_Date": "4th Jan 2022",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-users-sharing-old-video-of-girls-teaching-a-lesson-to-a-men-on-social-media-by-linking-him-to-priyanka-gandhi/",
+    "Headline": "Fact Check – मनचले को सबक सिखाती लड़कियों का पुराना वीडियो प्रियंका गांधी से जोड़कर सोशल मीडिया पर शेयर कर रहे यूजर्स",
+    "Claim_URL": "https://archive.ph/wip/jcf77",
+    "What_(Claim)": "एक युवक स्कूल की लड़कियों के साथ बदतमीजी कर रहा था. लड़कियों ने प्रियंका गांधी जी द्वारा शुरू की गई मुहिम #लड़कीहूँलड़सकतीहूँ का भरपूर उपयोग करते हुए युवक को छठी का दूध याद दिला दिया.",
+    "About_Subject": "Inspired by Priyanka Gandhi slogan",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/01/Fake_News_Jan4_4.jpg"
+  },
+  "14": {
+    "Story_Date": "20th Nov 2021",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-video-of-men-beating-a-woman-is-from-uttar-pradesh-not-rajasthan/",
+    "Headline": "Fact Check: उत्तर प्रदेश के वीडियो को राजस्थान का बताकर फैलाया जा रहा है भ्रम",
+    "Claim_URL": "https://www.facebook.com/100057450075979/videos/1074889019942382",
+    "What_(Claim)": "प्रियंका जी जनता जानना चाहती है कि.. कांग्रेस शासित राज्य की लड़की कब लड़ सकेगी? महिलाओं पर इस तरह का अत्याचार बर्दास्त नही किया जाए। मामले को गंभीरता पूर्वक लेकर दोषियों को सजा दिलाया जाए यही अपील है राजस्थान सरकार से। Priyanka Gandhi Vadra Rahul Gandhi",
+    "About_Subject": "Elections",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2021/11/Fake_News_Nov20_2.jpg"
+  },
+  "15": {
+    "Story_Date": "18th Oct 2021",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-chattisgarh-jashpur-speeding-car-accident-does-not-have-communal-angle-viral-claim-is-misleading/",
+    "Headline": "Fact Check: छत्तीसगढ़ के धार्मिक जुलूस में हुई घटना में नहीं है कोई कम्युनल एंगल, भ्रामक पोस्ट हुई वायरल",
+    "Claim_URL": "https://www.facebook.com/watch/?v=902983843951772",
+    "What_(Claim)": "A speeding vehicle runs over a Hindu religious procession in Jashpur, Chattisgarh, without any provocation whatsoever.This is second such instance of communal profiling and assault on Hindus while CM Bhupesh Baghel is busy helping the Gandhi siblings find political ground in UP",
+    "About_Subject": "religious procession",
+    "About_Person": "Hindus",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2021/10/Fake_News_Oct18_1.jpg"
+  },
+  "16": {
+    "Story_Date": "16th Sep 2021",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-no-maulvi-did-priyanka-gandhi-robert-vadras-marriage-viral-claim-is-fake/",
+    "Headline": "Fact Check: किसी मौलवी ने नहीं कराई प्रियंका गांधी-रॉबर्ट वाड्रा की शादी, वायरल दावा फर्जी है",
+    "Claim_URL": "https://twitter.com/TheRisky39/status/1395663888021037058",
+    "What_(Claim)": "ये सिर्फ नाम के गांधी हैं। असलियत में तो मुल्ले ही हैं। वरना प्रियंका का शादी में मौलवी का क्या काम है।” साथ ही उन्होंने एक फोटो भी शेयर की है। वहीं, फोटो पर लिखा है- “मुझ अज्ञानी को कोई यह बताए कि शादी में मौलवी को बुलाया जाता है या निकाह में।",
+    "About_Subject": "Priyanka Gandhi Wedding",
+    "About_Person": "Priyanka Gandhi ",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2021/09/Fake_News_September16_1.jpg"
+  },
+  "17": {
+    "Story_Date": "12th Nov 2020",
+    "Story_URL": "https://www.vishvasnews.com/english/viral/who-director-general-said-he-was-identified-as-contact-of-covid-19-positive-person-not-tested-coronavirus-positive/",
+    "Headline": "Fact Check: WHO Director-General Said He Was Identified As Contact Of COVID-19 Positive Person, Not Tested Coronavirus Positive",
+    "Claim_URL": "https://archive.md/7TjQB",
+    "What_(Claim)": "WHO Director-General Said He Was Identified As COVID-19 Positive",
+    "About_Subject": "Tested Covid Positive",
+    "About_Person": "WHO Director",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/11/Fake_News_November12_16.jpg"
+  },
+  "18": {
+    "Story_Date": "7th Oct 2020",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-this-picture-of-priyanka-and-rahul-gandhi-laughing-is-from-2019-not-from-recent-hathras-visit/",
+    "Headline": "Fact Check: प्रियंका और राहुल गांधी की हंसते हुए ये तस्वीर 2019 की है, हाल की नहीं",
+    "Claim_URL": "https://archive.fo/wip/4zb4w",
+    "What_(Claim)": "Priyanka Rahul Laughing while visiting Hathras victim’s family",
+    "About_Subject": "Hathras Victims",
+    "About_Person": "Rahul Gandhi, Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/10/Fake_News1_07oct.jpg"
+  },
+  "19": {
+    "Story_Date": "30th Sep 2020",
+    "Story_URL": "https://www.vishvasnews.com/english/viral/quick-fact-check-fake-post-claiming-who-said-coronavirus-is-losing-potency-resurfaces/",
+    "Headline": "Quick Fact Check: Fake post Claiming WHO Said Coronavirus Is Losing Potency Resurfaces",
+    "Claim_URL": "NA",
+    "What_(Claim)": "WHO Said Coronavirus Is Losing Potency",
+    "About_Subject": "Statement on Covid 19 potency",
+    "About_Person": "WHO",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/09/Fake_News_September30_19.jpg"
+  },
+  "20": {
+    "Story_Date": "11th Aug 2020",
+    "Story_URL": "https://www.vishvasnews.com/politics/quick-fact-check-the-cross-in-the-locket-of-priyanka-gandhi-is-photoshopped/",
+    "Headline": "Quick Fact Check: प्रियंका गांधी को लेकर वायरल जनेऊ और क्रॉस वाला पोस्ट झूठा है",
+    "Claim_URL": "http://archive.fo/wip/ss5oI",
+    "What_(Claim)": " प्रियंका गांधी अयोध्या में जनेऊ और केरल में क्रॉस पहनती हैं",
+    "About_Subject": "Priyanka Gandhi is christian",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/08/2-6.jpg"
+  },
+  "21": {
+    "Story_Date": "5th Apr 2020",
+    "Story_URL": "https://www.vishvasnews.com/politics/rahul-and-priyanka-gandhi-old-video-viral-name-of-lockdown-break/",
+    "Headline": "Fact Check : राहुल-प्रियंका के तीन महीने पुराने वीडियो को अब किया जा रहा है लॉकडाउन के उल्‍लंघन के नाम पर वायरल",
+    "Claim_URL": "http://archive.md/1KCBh",
+    "What_(Claim)": "This is Rahul Gandhi & Priyanka Vadra breaking Lock-down Regulations saying they need to visit friends",
+    "About_Subject": "Covid Lockdown",
+    "About_Person": "Priyanka Gandhi, Rahul Gandhi ",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2020/04/Lead-5-APril.jpg"
+  },
+  "22": {
+    "Story_Date": "6th Dec 2019",
+    "Story_URL": "https://www.vishvasnews.com/society/fact-check-video-video-isnt-of-hyderabd-rape-victims-last-rites/",
+    "Headline": "Fact Check: ये हैदराबाद रेप पीड़िता का नहीं, राजस्थान के शहीद पीरा राम के अंतिम संस्कार का वीडियो है",
+    "Claim_URL": "https://www.facebook.com/groups/naveenpattnaik/permalink/2484220251687400/",
+    "What_(Claim)": "Last Ritual of Hyderabad rape victime …Plz Forgive us Sister…",
+    "About_Subject": "Priyanka Reddy's Cremation",
+    "About_Person": "Priyanka Reddy",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News01_06dec.jpg"
+  },
+  "23": {
+    "Story_Date": "7th Oct 2019",
+    "Story_URL": "https://www.vishvasnews.com/english/world/fact-check-these-religious-books-were-not-found-in-bihar-gutter-old-picture-from-saudi-arabia-is-getting-viral-with-wrong-context/",
+    "Headline": "Fact Check: These religious books were not found in Bihar gutter; Old picture from Saudi Arabia is getting viral with wrong context",
+    "Claim_URL": "NA",
+    "What_(Claim)": "These religious books were found in Bihar gutter",
+    "About_Subject": "Quran found in gutter",
+    "About_Person": "Quran",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/10/Fake_News08_07oct-1.jpg"
+  },
+  "24": {
+    "Story_Date": "9th Jul 2019",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-nirmala-sitharaman-never-said-35000-cr-led-bulbs-were-distribution-under-ujala-scheme/",
+    "Headline": "Fact Check: Nirmala Sitharaman never said 35000 cr LED bulbs were distribution under UJALA scheme",
+    "Claim_URL": "NA",
+    "What_(Claim)": "Nirmala Sitharaman said 35000 cr LED bulbs were distribution under UJALA scheme",
+    "About_Subject": "Ujwala Scheme",
+    "About_Person": "NIrmala Sitaraman",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/07/fake_News_2-5.jpg"
+  },
+  "25": {
+    "Story_Date": "17th May 2019",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-products-with-hindu-gods-images-were-present-at-amazon/",
+    "Headline": "Fact Check: अमेजन की अमेरिकी वेबसाइट पर मौजूद थे हिंदू धार्मिक प्रतीकों वाले प्रोडक्ट्स, विरोध के बाद हटाए गए",
+    "Claim_URL": "NA",
+    "What_(Claim)": "अमेजन कर रहा हिंदू धार्मिक प्रतीक चिह्नों का अपमान",
+    "About_Subject": "Ecommerce website Amazon insulting Hindu religious symbols",
+    "About_Person": "Amazon, Hindu religious symbols",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/05/AmazonMarketPlace.jpg"
+  },
+  "26": {
+    "Story_Date": "22nd Apr 2019",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-photo-that-shows-priyanka-chaturvedi-wearing-namo-again-kurti-is-photoshopped/",
+    "Headline": "Fact Check: फोटो एडिटिंग टूल्स का इस्तेमाल करके दूसरी महिला के चेहरे पर प्रियंका चतुर्वेदी का चेहरा चिपकाया गया है",
+    "Claim_URL": "NA",
+    "What_(Claim)": "कांग्रेस छोड़ कर शिवसेना में शामिल हो चुकी प्रियंका चतुर्वेदी को ‘नमो अगेन’ लिखा कुर्ता पहने देखा जा सकता है",
+    "About_Subject": "Priyanka Chaturvedi joins BJP",
+    "About_Person": "Priyanka Chaturvedi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2019/04/fake1-10.jpg"
+  },
+  "27": {
+    "Story_Date": "7th Oct 2023",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-priyanka-gandhis-old-picture-from-2009-is-being-shared-linking-it-to-the-recent-elections/",
+    "Headline": "Fact Check : प्रियंका गांधी की साल 2009 की पुरानी तस्‍वीर हालिया चुनाव से जोड़ते हुए की जा रही शेयर",
+    "Claim_URL": "https://www.facebook.com/permalink.php?story_fbid=pfbid022zzeZNpymxBQLbeTumtR1rjSbUJ2KPh8CR6t9bxXi8WbcpCszTGfHjHeG8hPWsGol&id=100086771097083",
+    "What_(Claim)": "हालिया चुनाव से पहले प्रियंका गांधी साड़ी पहनकर मंदिर पहुंची।",
+    "About_Subject": "Election",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/10/Fake_2-7.jpg"
+  },
+  "28": {
+    "Story_Date": "7th Jul 2023",
+    "Story_URL": "https://www.vishvasnews.com/punjabi/society/fact-check-this-video-of-brutality-with-tribal-youth-is-from-the-old-incident-of-2021/",
+    "Headline": "Fact Check: ਆਦਿਵਾਸੀ ਯੁਵਕ ਦੇ ਨਾਲ ਬਰਬਰਤਾ ਦਾ ਇਹ ਵੀਡੀਓ 2021 ਦੀ ਪੁਰਾਣੀ ਘਟਨਾ ਦਾ ਹੈ",
+    "Claim_URL": "https://www.facebook.com/100073479577864/videos/726464949489430",
+    "What_(Claim)": "ਇਹ ਘਟਨਾ ਕੁਝ ਦਿਨ ਪਹਿਲਾਂ ਮੱਧ ਪ੍ਰਦੇਸ਼ ਵਿੱਚ ਵਾਪਰੀ ਸੀ ਜਿੱਥੇ ਨੀਮਚ ਕਸਬੇ ਵਿੱਚ ਇੱਕ ਆਦਿਵਾਸੀ ਨੂੰ ਟਰੱਕ ਦੇ ਪਿੱਛੇ ਜਾਨਵਰਾਂ ਵਾਂਗ ਬੰਨ੍ਹ ਕੇ ਘਸੀਟਿਆ ਗਿਆ।",
+    "About_Subject": "Religious",
+    "About_Person": "No",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/07/image-16.png"
+  },
+  "29": {
+    "Story_Date": "5th Oct 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-kejriwal-did-not-say-that-modi-and-shah-would-destroy-pakistan-edited-clip-goes-viral/",
+    "Headline": "Fact Check: केजरीवाल ने नहीं कही थी मोदी, शाह के पाकिस्तान को बर्बाद कर देने की बात, एडिटेड क्लिप वायरल",
+    "Claim_URL": "https://www.facebook.com/reel/837121618133996",
+    "What_(Claim)": "Kejriwal said that Modi and Shah would destroy Pakistan",
+    "About_Subject": "Kejriwal and MOdi",
+    "About_Person": "na",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/10/fack.2.jpg"
+  },
+  "30": {
+    "Story_Date": "6th Sep 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-meerut-neeraj-chopra-statue-javeline-stolen-post-is-rumour/",
+    "Headline": "Fact Check : मेरठ में नीरज चोपड़ा की प्रतिमा से भाला चोरी नहीं हुआ, पुलिस ने बताया अफवाह",
+    "Claim_URL": "https://twitter.com/imayankindian/status/1698967795877425496",
+    "What_(Claim)": "विश्व चैंपियन नीरज चोपड़ा के स्टैच्यू का भाला चोरी हो गया है।",
+    "About_Subject": "javeline stolen in meerut",
+    "About_Person": "Neeraj Chopra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/09/Fake_bhala.jpg"
+  },
+  "31": {
+    "Story_Date": "6th Sep 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-meerut-neeraj-chopra-statue-javeline-stolen-post-is-rumour/",
+    "Headline": "Fact Check : मेरठ में नीरज चोपड़ा की प्रतिमा से भाला चोरी नहीं हुआ, पुलिस ने बताया अफवाह",
+    "Claim_URL": "https://twitter.com/imayankindian/status/1698967795877425496",
+    "What_(Claim)": "विश्व चैंपियन नीरज चोपड़ा के स्टैच्यू का भाला चोरी हो गया है।",
+    "About_Subject": "Meerut Police",
+    "About_Person": "Neeraj Chopra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/09/Fake_bhala.jpg"
+  },
+  "32": {
+    "Story_Date": "30th Oct 2023",
+    "Story_URL": "https://www.vishvasnews.com/english/politics/fact-check-pm-modi-did-not-say-hindutva-is-a-card-gimmick-for-bjp-viral-clip-is-edited/",
+    "Headline": "Fact Check: PM Modi Did Not Say ‘Hindutva Is a Card Gimmick For BJP’, Viral Clip Is Edited",
+    "Claim_URL": "https://perma.cc/8A6V-KAYY",
+    "What_(Claim)": "PM Modi Said ‘Hindutva Is a Card Gimmick For BJP’",
+    "About_Subject": "Hindutva",
+    "About_Person": "PM Modi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/10/vishvasnews2-4-1.jpg"
+  },
+  "33": {
+    "Story_Date": "2nd Aug 2023",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-a-part-of-priyanka-gandhis-speech-in-gwalior-was-tampered-with-and-made-viral/",
+    "Headline": "Fact Check : प्रियंका गांधी के ग्वालियर में दिए गए भाषण के एक हिस्से के साथ छेड़छाड़ करके किया गया वायरल",
+    "Claim_URL": "https://perma.cc/V7T9-YZ4N",
+    "What_(Claim)": "प्रियंका गांधी के वीडियो में कांग्रेस शासन के वक्‍त के घोटालों का जिक्र",
+    "About_Subject": "Election",
+    "About_Person": "Priyanka Gandhi ",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/08/Fake-priyanka.jpg"
+  },
+  "34": {
+    "Story_Date": "1st May 2023",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-the-old-video-of-brijbhushan-sharan-singh-being-slapped-is-now-viral/",
+    "Headline": "Fact Check : थप्‍पड़ मारने का बृजभूषण शरण सिंह का पुराना वीडियो अब वायरल",
+    "Claim_URL": "https://www.facebook.com/matumranaprathap.rana/videos/728359479076519",
+    "What_(Claim)": "This is Disgusting…A young wrestler came & said to Brijbhushan on stage, Sir, we need justice. On hearing this, BJP MP Brijbhushan started slapping him",
+    "About_Subject": "Against Brijbhushan",
+    "About_Person": "BrijBhushan",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/05/misleading-img.jpg"
+  },
+  "35": {
+    "Story_Date": "10th Apr 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-the-video-of-an-elderly-woman-walking-on-the-shallow-water-of-narmada-river-has-gone-viral-with-baseless-claims/",
+    "Headline": "Fact Check : नर्मदा नदी के उथले पानी पर चलने वाली बुजुर्ग महिला का वीडियो बेबुनियाद दावे के साथ वायरल",
+    "Claim_URL": "https://perma.cc/LZY7-CLJQ",
+    "What_(Claim)": "तिलवारा घाट जबलपुर। देखिए नर्मदा माई का चमत्कार। जिस गहराई में अच्छे अच्छे तैराक मां नर्मदा जी में तैर नहीं पाते उस गहराई में बूढ़ी नर्मदा मां में चल रही",
+    "About_Subject": "Religious ",
+    "About_Person": "Narmda River",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/04/Fake_mislarmadaead_new-formate.jpg"
+  },
+  "36": {
+    "Story_Date": "2nd Mar 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-priyanka-gandhi-and-robert-vadras-wedding-photo-viral-again-with-false-claim/",
+    "Headline": "Fact Check: प्रियंका गांधी और रॉबर्ट वाड्रा की शादी की तस्वीर फिर से गलत दावे के साथ हुई वायरल",
+    "Claim_URL": "https://www.facebook.com/photo/?fbid=249770884041059&set=a.106237918394357",
+    "What_(Claim)": "मौलवी ने कराई थी प्रियंका गांधी और रॉबर्ट वाड्रा की शादी।",
+    "About_Subject": "Congress Party ",
+    "About_Person": "Priyanka Gandhi",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/03/fake-1122.jpg"
+  },
+  "37": {
+    "Story_Date": "21st Feb 2023",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-priyanka-gandhi-vadra-fake-statement-viral/",
+    "Headline": "Fact Check: प्रियंका गांधी वाड्रा के नाम से फर्जी बयान वायरल",
+    "Claim_URL": "https://perma.cc/VN8T-7MV9",
+    "What_(Claim)": "प्रियंका गांधी ने कहा है कि मुसलमानों के बिना हमारा काम नहीं चलेगा।",
+    "About_Subject": "Statement over muslims",
+    "About_Person": "Priyanka Gandhi Vadra",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2023/02/Fake_News_4-1.jpg"
+  },
+  "38": {
+    "Story_Date": "2nd Dec 2022",
+    "Story_URL": "https://www.vishvasnews.com/politics/fact-check-hardik-patel-five-years-old-video-being-shared-in-wrong-context/",
+    "Headline": "Fact Check : हार्दिक पटेल के 5 साल पुराने वीडियो को गुजरात चुनाव से जोड़कर गलत संदर्भ में किया जा रहा शेयर",
+    "Claim_URL": "https://www.facebook.com/baby.mufflerman/posts/1595142404271906/",
+    "What_(Claim)": "हार्दिक पटेल ने कहा BJP को वोट नही देना है। ",
+    "About_Subject": " Patel said don't vote BJP.",
+    "About_Person": "hardik patel",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/12/Miasleading-hindi-4-1.jpg"
+  },
+  "39": {
+    "Story_Date": "14th Nov 2022",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-bageshwar-dham-peethadhishwars-photo-viral-with-false-and-objectionable-claims/",
+    "Headline": "Fact Check : बागेश्वर धाम के पीठाधीश्वर की तस्‍वीर झूठे और आपत्तिजनक दावे के साथ वायरल",
+    "Claim_URL": "https://perma.cc/4N63-WP98",
+    "What_(Claim)": "बागेश्वर धाम वाले छि… बाबा भक्तों की दीदी के साथ सत्संग की तैयारी करते हुए…..इस पर क्या कहोगे अंधभक्तों…",
+    "About_Subject": "Anti Religious",
+    "About_Person": "Dhirendra Shastri",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/11/Fake_News22_Jan2020-Recovered.jpg"
+  },
+  "40": {
+    "Story_Date": "12th Nov 2022",
+    "Story_URL": "https://www.vishvasnews.com/viral/fact-check-fake-post-is-being-used-to-spoil-the-image-of-alia-bhatt/",
+    "Headline": "Fact Check : आलिया भट्ट की छवि खराब करने के लिए इस्‍तेमाल की जा रही है फर्जी पोस्‍ट",
+    "Claim_URL": "https://perma.cc/6LSC-FAKA",
+    "What_(Claim)": "पूछ रही है #आलिया_भट्ट’।",
+    "About_Subject": "Anti Religious",
+    "About_Person": "Alia Bhatt",
+    "img": "https://www.vishvasnews.com/wp-content/uploads/2022/11/Fake_News22_hindi-1.jpg"
+  }
+}
+
+here is the QUERY_CLAIM : "priyanka chopra said something religious"   
+{
+  "1": "100%",
+  "2": "1%",
+  "3": "1%",
+  "4": "1%",
+  "5": "1%",
+  "6": "1%",
+  "7": "100%",
+  "8": "1%",
+  "9": "1%",
+  "10": "100%",
+  "11": "1%",
+  "12": "100%",
+  "13": "1%",
+  "14": "1%",
+  "15": "1%",
+  "16": "100%",
+  "17": "1%",
+  "18": "1%",
+  "19": "1%",
+  "20": "100%",
+  "21": "1%",
+  "22": "1%",
+  "23": "1%",
+  "24": "1%",
+  "25": "1%",
+  "26": "100%",
+  "27": "1%",
+  "28": "1%",
+  "29": "1%",
+  "30": "1%",
+  "31": "1%",
+  "32": "1%",
+  "33": "100%",
+  "34": "1%",
+  "35": "1%",
+  "36": "100%",
+  "37": "100%",
+  "38": "1%",
+  "39": "1%",
+  "40": "1%"
+}
+{'1': '100%', '2': '1%', '3': '1%', '4': '1%', '5': '1%', '6': '1%', '7': '100%', '8': '1%', '9': '1%', '10': '100%', '11': '1%', '12': '100%', '13': '1%', '14': '1%', '15': '1%', '16': '100%', '17': '1%', '18': '1%', '19': '1%', '20': '100%', '21': '1%', '22': '1%', '23': '1%', '24': '1%', '25': '1%', '26': '100%', '27': '1%', '28': '1%', '29': '1%', '30': '1%', '31': '1%', '32': '1%', '33': '100%', '34': '1%', '35': '1%', '36': '100%', '37': '100%', '38': '1%', '39': '1%', '40': '1%'}
+Data loaded successfully.
+Data loaded successfully.
+Data loaded successfully.
