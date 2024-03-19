@@ -3,7 +3,11 @@ import torch
 
 
 MODEL_PATH = 'mistralai/Mistral-7B-Instruct-v0.2'
-tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH,torch_dtype=torch.bfloat16)
+tokenizer = AutoTokenizer.from_pretrained(
+    MODEL_PATH,
+    torch_dtype=torch.bfloat16,
+    low_cpu_mem_usage=True,
+)
 model = AutoModelForCausalLM.from_pretrained(MODEL_PATH)
 model.bfloat16()
 tokenizer.padding_side = "left"
