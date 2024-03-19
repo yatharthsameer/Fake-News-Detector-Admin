@@ -23,3 +23,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 flask_app.log
+Backend/query_log.csv
+Backend/metadata-files/
+Backend/data/
+
