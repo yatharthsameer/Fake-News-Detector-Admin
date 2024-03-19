@@ -1,18 +1,24 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 
-# Set device to CPU
-device = torch.device("cpu")
+# Set the model path
+MODEL_PATH = "mistralai/Mistral-7B-Instruct-v0.2"
 
-# Initialize the model and tokenizer with specific arguments for reduced memory usage
-model = AutoModelForCausalLM.from_pretrained(
-    "mistralai/Mistral-7B-Instruct-v0.2",
-    torch_dtype=torch.bfloat16,
-    low_cpu_mem_usage=True,
-)
-tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.2")
+# Initialize the tokenizer
+tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
 
-# Your chat history/messages
+# Initialize the model and convert it to use bfloat16 for memory efficiency
+model = AutoModelForCausalLM.from_pretrained(MODEL_PATH).to(torch.bfloat16())
+
+# Adjust tokenizer padding and pad token settings
+tokenizer.padding_side = "left"
+# Use EOS token as pad token if a specific pad token is not set
+tokenizer.pad_token_id = tokenizer.eos_token_id
+tokenizer.pad_token = tokenizer.eos_token
+# Ensure the model's pad token id is set correctly
+model.config.pad_token_id = tokenizer.eos_token_id
+
+# Example conversation/messages
 messages = [
     {"role": "user", "content": "What is your favourite condiment?"},
     {
@@ -23,19 +29,16 @@ messages = [
 ]
 
 # Tokenize and format the conversation using the chat history template
-encodeds = tokenizer.apply_chat_template(messages, return_tensors="pt")
+encoded_inputs = tokenizer(messages, return_tensors="pt", padding=True)
 
 # Move the model inputs to the CPU
-model_inputs = encodeds.to(device)
-
-# Also ensure the model is using the CPU
-model.to(device)
+model_inputs = encoded_inputs.to("cpu")
 
 # Generate a response from the model
-generated_ids = model.generate(model_inputs, max_new_tokens=1000, do_sample=True)
+generated_ids = model.generate(**model_inputs, max_new_tokens=1000, do_sample=True)
 
 # Decode the generated ids to get the text
-decoded = tokenizer.batch_decode(generated_ids)
+decoded = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
 
 # Print the generated text
 print(decoded[0])
