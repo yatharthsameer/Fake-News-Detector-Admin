@@ -156,12 +156,16 @@ const handlePrev = () => {
       })
         .then((response) => response.json())
         .then((data) => {
+          setIsLoading(false); // Stop loading if there's an error
+
           console.log(data); // Log the top matches returned by the server
           setResults(data);
           setChartData(processChartData(data));
           setApiCallCompleted(true); // Indicate that the API call has completed
         })
         .catch((error) => {
+          setIsLoading(false); // Stop loading if there's an error
+
           console.error("Error uploading image:", error);
           setErrorMessage(
             "The server encountered some issue, please click search again."
@@ -181,6 +185,8 @@ const handlePrev = () => {
       })
         .then((response) => response.json())
         .then((data) => {
+          setIsLoading(false); // Stop loading if there's an error
+
           console.log(data);
           setResults(data);
           setChartData(processChartData(data));
@@ -188,6 +194,8 @@ const handlePrev = () => {
           setErrorMessage(""); // Clear any previous error message
         })
         .catch((error) => {
+          setIsLoading(false); // Stop loading if there's an error
+
           console.error("Error:", error);
           setErrorMessage(error.message); // Set the error message
         });
@@ -347,7 +355,7 @@ const handlePrev = () => {
               </Box>
             ) : (
               <Typography>
-                Drag 'n' drop an image here, or click to select one
+                Drag 'n' drop an image here, or click to select one (jpeg/png)
               </Typography>
             )}
           </Box>

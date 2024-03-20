@@ -154,30 +154,6 @@ def fact_check(query, data, limit=None):
     return top_matches
 
 
-# @app.route("/search", methods=["POST"])
-# def search():
-#     query = request.json.get("query", "")
-#     # Log the query
-#     log_query("text", query)
-#     results = fact_check(query, data)
-#     print(results)
-
-#     seen_headlines = set()  # Set to keep track of seen headlines
-#     response_data = []
-#     for match in results:
-#         if match[0] > 0.01:  # Filter out the results where the match is 1% or less
-#             headline = match[1]["Headline"]
-#             # Check if headline has already been added
-#             if headline not in seen_headlines:
-#                 seen_headlines.add(headline)  # Mark headline as seen
-#                 response_data.append(
-#                     {"percentage": round(match[0] * 100, 2), "data": match[1]}
-#                 )
-#             else:
-#                 print(f"Duplicate headline found and skipped: {headline}")
-
-#     print(f"Search completed for query: {query}")
-#     return jsonify(response_data)
 
 
 @app.route("/search", methods=["POST"])
@@ -697,31 +673,6 @@ st = Search_Setup(
 # Index the images
 st.run_index()
 
-
-# @app.route("/upload", methods=["POST"])
-# def upload_file():
-#     if "file" not in request.files:
-#         return jsonify({"error": "No file part"}), 400
-
-#     file = request.files["file"]
-#     if file.filename == "":
-#         return jsonify({"error": "No selected file"}), 400
-
-
-#     if file:
-#         filename = secure_filename("test.jpg")
-#         filepath = os.path.join("./", filename)
-#         file.save(filepath)
-#         try:
-#             # Get similar images using the uploaded image
-#             similar_images = st.get_similar_images(
-#                 image_path=filepath, number_of_images=10
-#             )
-#             print(f"Found similar images: {similar_images}")
-#             # Send back the similar images' paths or identifiers
-#             return jsonify({"similar_images": similar_images})
-#         except Exception as e:
-#             return jsonify({"error": str(e)}), 500
 
 
 @app.route("/upload", methods=["POST"])
