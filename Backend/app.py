@@ -186,6 +186,9 @@ def search():
     # Log the query
     log_query("text", query)
     results = fact_check(query, data)
+    if len(results) == 0:
+        return jsonify({"error": "Your search yielded 0 matches in our database, Please check your query"}), 404
+
     # print(results)
 
     seen_headlines = set()  # Set to keep track of seen headlines
@@ -283,12 +286,9 @@ Query: "{query}"\n
 News Articles: {gemini_input_str}\n\n
 Here is the query again:\n
 Query: "{query}"\n\n
-    Please provide the similarity scores in the following format, assigning higher percentages to articles that are more similar to the query:\n\n
+    Please provide the similarity scores in the following JSON format, assigning higher percentages to articles that are more similar to the query:\n\n
 {{\n
-  "1": "XX%",\n
-  "2": "XX%",\n
-  "3": "XX%",\n
-  "4": "XX%"\n
+  "index": "match percentage",\n
 }}
  
  """
@@ -296,75 +296,108 @@ Query: "{query}"\n\n
     # print(prompt)
     # Gemini API call would go here, assuming `gemini_api_response` is the response from the API
     # For demonstration, let's assume we receive a response like this:
-    genai.configure(api_key="AIzaSyDd26SvuTQqx5kIW50llUWnWCMtP4bZpWg")
 
-    model = genai.GenerativeModel("gemini-pro")
-    messages = [{"role": "user", "parts": [prompt]}]
-    safety_settings = [
-        {"category": "HARM_CATEGORY_DANGEROUS", "threshold": "BLOCK_NONE"},
-        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-        {
-            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            "threshold": "BLOCK_NONE",
-        },
-        {
-            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-            "threshold": "BLOCK_NONE",
-        },
+    api_keys = [
+        "AIzaSyDd26SvuTQqx5kIW50llUWnWCMtP4bZpWg",
+        "AIzaSyCXmFr_2SiyXrVBD8dAkp-usgCyXA-qH8E",
+        "AIzaSyCr7GxmtXmdS--QrjTAy4oQUjpn9qsPAPw",
     ]
-    gemini_api_response = model.generate_content(
-        messages,
-        safety_settings=safety_settings,
-        generation_config=genai.types.GenerationConfig(
-            temperature=0.2,
-        ),
-    )
-    response_text = gemini_api_response.text
-    print(response_text)
+    attempt = 0
+    max_attempts = 3
+    gemini_response = None
+    gemini_response_valid = False
 
-    try:
-        response_data = json.loads(response_text)
-    except :
-        print("Parsing error" )
-        return jsonify(response_data_TFIDF)
+    while attempt < max_attempts and not gemini_response_valid:
+        try:
+            current_api_key = api_keys[attempt]
+            genai.configure(api_key=current_api_key)
+            model = genai.GenerativeModel("gemini-pro")
+            messages = [{"role": "user", "parts": [prompt]}]
+            safety_settings = [
+                {"category": "HARM_CATEGORY_DANGEROUS", "threshold": "BLOCK_NONE"},
+                {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+                {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+                {
+                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    "threshold": "BLOCK_NONE",
+                },
+            ]
+            gemini_api_response = model.generate_content(
+                messages,
+                safety_settings=safety_settings,
+                generation_config=genai.types.GenerationConfig(
+                    temperature=0.4,
+                ),
+            )
+            response_text = gemini_api_response.text
+            print(response_text)
+            gemini_response_data = json.loads(response_text)  # Attempt to parse the response
 
-        # Assume response_text is a JSON string that looks like: {"1": "75%", "2": "50%", "3": "25%"}
-    gemini_response = json.loads(response_text)
-    print(gemini_response)
-    # print(top_matches)
+            # try:
+            #     response_data = json.loads(response_text)
+            # except :
+            #     print("Parsing error" )
+            #     return jsonify(response_data_TFIDF)
+            if (isinstance(gemini_response_data, dict) and attempt>1):
+                gemini_response_valid = True
+                enhanced_response_data = []
+                for index, percentage in gemini_response_data.items():
+                    if index in top_matches:
+                        # Append both the data from top_matches and the percentage from Gemini response
+                        # Ensure percentage is converted to an integer for sorting
+                        numeric_percentage = int(
+                            percentage.rstrip("%")
+                        )  # Remove '%' and convert to int
 
-    # Prepare the final response data with enhanced match percentages
-    enhanced_response_data = []
-    for index, percentage in gemini_response.items():
-        if index in top_matches:
-            # Append both the data from top_matches and the percentage from Gemini response
-            # Ensure percentage is converted to an integer for sorting
-            numeric_percentage = int(
-                percentage.rstrip("%")
-            )  # Remove '%' and convert to int
+                        if numeric_percentage > 60:
 
-            if numeric_percentage > 60:
+                            enhanced_response_data.append(
 
-                enhanced_response_data.append(
+                                {
+                                    "percentage": numeric_percentage,
+                                    "numeric_percentage": numeric_percentage,
+                                    "data": top_matches[index],
+                                }
+                            )
 
-                    {
-                        "percentage": numeric_percentage,
-                        "numeric_percentage": numeric_percentage,
-                        "data": top_matches[index],
-                    }
+                # Sort the enhanced_response_data by 'numeric_percentage' in descending order
+                sorted_enhanced_response_data = sorted(
+                    enhanced_response_data, key=lambda x: x["numeric_percentage"], reverse=True
                 )
 
-    # Sort the enhanced_response_data by 'numeric_percentage' in descending order
-    sorted_enhanced_response_data = sorted(
-        enhanced_response_data, key=lambda x: x["numeric_percentage"], reverse=True
-    )
+                # Remove the 'numeric_percentage' key from each item as it was only needed for sorting
+                for item in sorted_enhanced_response_data:
+                    item.pop("numeric_percentage", None)
+                print(sorted_enhanced_response_data)
+                return jsonify(sorted_enhanced_response_data)
 
-    # Remove the 'numeric_percentage' key from each item as it was only needed for sorting
-    for item in sorted_enhanced_response_data:
-        item.pop("numeric_percentage", None)
-    print(sorted_enhanced_response_data)
-    return jsonify(sorted_enhanced_response_data)
+            else:
+                raise ValueError("Response format not as expected.")
+
+        except Exception as e:
+            print(f"Attempt {attempt + 1} failed: {str(e)}")
+            attempt += 1  # Move to the next attempt
+
+            # Assume response_text is a JSON string that looks like: {"1": "75%", "2": "50%", "3": "25%"}
+            # gemini_response = json.loads(response_text)
+            # print(gemini_response)
+            # print(top_matches)
+    if not gemini_response_valid:
+        return (
+            jsonify(
+                {
+                    "error": "Failed to get a valid response from the API after multiple attempts."
+                }
+            ),
+            500,
+        )
+
+    # Prepare the final response data with enhanced match percentages
+
 
 # @app.route("/search", methods=["POST"])
 # def search():
@@ -654,15 +687,6 @@ Query: "{query}"\n\n
 #         item.pop("numeric_percentage", None)
 #     print(sorted_enhanced_response_data)
 #     return jsonify(sorted_enhanced_response_data)
-
-
-
-
-
-
-
-
-
 
 
 image_list = Load_Data().from_folder(["./ImageMatching/data"])

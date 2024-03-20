@@ -11,6 +11,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { ButtonBase } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 
 import { tokens } from "../../theme";
 import { mockTransactions, mockNewsData } from "../../data/mockData";
@@ -36,6 +37,9 @@ const Dashboard = () => {
 const [errorMessage, setErrorMessage] = useState("");
 const [currentPage, setCurrentPage] = useState(1);
 const [itemsPerPage, setItemsPerPage] = useState(10);
+const [apiCallCompleted, setApiCallCompleted] = useState(false);
+const [isLoading, setIsLoading] = useState(false);
+
 const indexOfLastItem = currentPage * itemsPerPage;
 const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 const currentItems = results.slice(indexOfFirstItem, indexOfLastItem);
@@ -53,6 +57,7 @@ const handlePrev = () => {
   const [searchType, setSearchType] = React.useState("text"); // Default search type is "text"
   const searchInputRef = React.useRef(null);
   const [isSearchInitiated, setIsSearchInitiated] = React.useState(false);
+
   const urlInputRef = React.useRef(null);
 
   const handleSearchTypeChange = (event) => {
@@ -96,6 +101,8 @@ const handlePrev = () => {
     }
   };
   const handleSearchButtonClick = () => {
+    setIsLoading(true); // Start loading
+
     setIsSearchInitiated(true);
 
     if (searchType === "text") {
@@ -103,7 +110,8 @@ const handlePrev = () => {
       console.log(searchQuery);
 
       // Make a POST request for text search
-      fetch("https://factcheckerbtp.vishvasnews.com/search", {
+      // fetch("https://factcheckerbtp.vishvasnews.com/search", {
+      fetch("http://localhost:8080/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -113,16 +121,28 @@ const handlePrev = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data); // Log the top matches returned by the server
-          setResults(data);
-          setChartData(processChartData(data));
+          setIsLoading(false); // Stop loading after the data is fetched
+
+          if (data.error) {
+            // Handling specific error message from server
+            setErrorMessage(data.error);
+            setApiCallCompleted(true); // Update based on your logic to show the error message
+          } else {
+            console.log(data); // Log the top matches returned by the server
+            setResults(data);
+            setChartData(processChartData(data));
+            setApiCallCompleted(true); // Indicate successful data fetch
+            setErrorMessage(false);
+          }
         })
         .catch((error) => {
-          console.error("Error fetching data:", error);
-            setErrorMessage(
-              "The server encountered some issue, please click search again."
-            );
+          setIsLoading(false); // Stop loading if there's an error
 
+          console.error("Error fetching data:", error);
+          setErrorMessage(
+            "The server encountered some issue, please click search again."
+          );
+          setApiCallCompleted(true);
         });
     } else if (searchType === "image" && selectedImageFile) {
       // Create a FormData instance to send the file
@@ -139,12 +159,14 @@ const handlePrev = () => {
           console.log(data); // Log the top matches returned by the server
           setResults(data);
           setChartData(processChartData(data));
+          setApiCallCompleted(true); // Indicate that the API call has completed
         })
         .catch((error) => {
           console.error("Error uploading image:", error);
           setErrorMessage(
             "The server encountered some issue, please click search again."
           );
+          setApiCallCompleted(true); // Indicate that the API call has completed
         });
     } else if (searchType === "link" && imageUrl.trim()) {
       const imgURLQ = imageUrl.trim();
@@ -348,202 +370,256 @@ const handlePrev = () => {
           Search
         </Button>
       </Box>
-
-      {/* GRID & CHARTS */}
-
-      <Box
-        display="grid"
-        gridTemplateColumns="repeat(12, 1fr)"
-        gridAutoRows="140px"
-        gap="20px"
-      >
-        {isSearchInitiated && (
-          <>
-            <Box
-              gridColumn="span 5"
-              gridRow="span 2"
-              backgroundColor={colors.primary[400]}
-              p="30px"
-            >
-              <Typography variant="h5" fontWeight="600">
-                False News
-              </Typography>
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                mt="25px"
-              >
-                <ProgressCircle size="125" progress={highestMatch / 100} />
-                <Typography
-                  variant="h5"
-                  color={colors.greenAccent[100]}
-                  sx={{ mt: "15px" }}
-                >
-                  This claim has upto {highestMatch}% match with debunked
-                  stories in our Database
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "10px", // Adjust the desired font size
-                  }}
-                >
-                  Disclaimer: This site uses AI technology for decision-making.
-                  We are not liable for AI decisions but commit to correcting
-                  any errors with valid proof.
-                </Typography>
-              </Box>
-            </Box>
-            <Box
-              gridColumn="span 7"
-              gridRow="span 4"
-              backgroundColor={colors.primary[400]}
-              overflow="auto"
-            >
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                borderBottom={`1px solid ${colors.primary[400]}`}
-                p="15px"
-                position="sticky"
-                top={0}
-                zIndex={10}
-                bgcolor={colors.primary[400]} // Background color same as the box to blend in
-              >
-                <Typography
-                  color={colors.grey[100]}
-                  variant="h5"
-                  fontWeight="600"
-                  sx={{ mt: "15px" }}
-                >
-                  Top Matches
-                </Typography>
-                <Box>
-                  <Button
-                    onClick={handlePrev}
-                    disabled={currentPage === 1}
-                    variant="contained"
-                    sx={{ mr: 1 }}
-                  >
-                    Prev
-                  </Button>
-                  <Button
-                    onClick={handleNext}
-                    disabled={
-                      currentPage === Math.ceil(results.length / itemsPerPage)
-                    }
-                    variant="contained"
-                    sx={{ ml: 1 }}
-                  >
-                    Next
-                  </Button>
-                </Box>
-              </Box>
-              {Array.isArray(currentItems) ? (
-                currentItems.map((result, index) => (
-                  <Box
-                    key={index}
-                    display="flex"
-                    flexDirection="row"
-                    alignItems="flex-start"
-                    borderBottom={`1px solid ${colors.primary[400]}`}
-                    p=" 13px 35px"
-                  >
-                    <ButtonBase
-                      onClick={() =>
-                        window.open(result.data.Story_URL, "_blank")
-                      }
-                      sx={{
-                        marginRight: "20px",
-                        borderRadius: "4px",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <img
-                        src={result.data.img} // Display the image from the result
-                        alt="News"
-                        width="110px"
-                        height="95px"
-                        style={{ marginRight: "20px" }}
-                      />
-                    </ButtonBase>
-                    {/* Display other details from the result like the image, headline, etc.
-                 You can also display the matching percentage using result.percentage */}
-                    <div>
-                      <Typography
-                        color={colors.greenAccent[100]}
-                        variant="h5"
-                        fontWeight="600"
-                      >
-                        <a
-                          href={result.data.Story_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            color: colors.greenAccent[100],
-                            textDecoration: "none",
-                          }}
-                        >
-                          {result.data.Headline}
-                        </a>
-                      </Typography>
-                      <Typography color={colors.grey[100]}>
-                        {result.data.Story_Date}
-                      </Typography>
-                      {/* <Typography color={colors.grey[100]}>
-                        {result.percentage}% match
-                      </Typography> */}
-                    </div>
-                    {errorMessage && (
-                      <Typography color="error" sx={{ p: 2 }}>
-                        {errorMessage}
-                      </Typography>
-                    )}
-                  </Box>
-                ))
-              ) : (
-                <Typography color="error">
-                  Error: Results are not available.
-                </Typography>
-              )}
-            </Box>
-            <Box
-              gridColumn="span 5"
-              gridRow="span 2"
-              backgroundColor={colors.primary[400]}
-            >
-              <Box
-                mt="22px"
-                p="0 30px"
-                display="flex "
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Box>
-                  <Typography
-                    variant="h5"
-                    fontWeight="600"
-                    color={colors.grey[100]}
-                  >
-                    Timeline
+      {isLoading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="50vh"
+          flexDirection="column"
+        >
+          <CircularProgress sx={{ color: colors.blueAccent[600] }} />
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Loading...
+          </Typography>
+        </Box>
+      ) : (
+        <>
+          {isSearchInitiated && (
+            <>
+              {errorMessage ? (
+                // Display error message
+                <Box display="flex" justifyContent="center" mt="20px">
+                  <Typography color="error" variant="h2">
+                    {errorMessage}
                   </Typography>
                 </Box>
-                <Box>
-                  <IconButton>
-                    <DownloadOutlinedIcon
-                      sx={{ fontSize: "26px", color: colors.greenAccent[100] }}
-                    />
-                  </IconButton>
-                </Box>
-              </Box>
-              <Box height="250px" m="-20px 0 0 0">
-                <LineChart data={chartData} isDashboard={true} />
-              </Box>
-            </Box>
-          </>
-        )}
-      </Box>
+              ) : (
+                <>
+                  {/* GRID & CHARTS */}
+
+                  <Box
+                    display="grid"
+                    gridTemplateColumns="repeat(12, 1fr)"
+                    gridAutoRows="140px"
+                    gap="20px"
+                  >
+                    <Box
+                      gridColumn="span 5"
+                      gridRow="span 2"
+                      backgroundColor={colors.primary[400]}
+                      p="30px"
+                    >
+                      {apiCallCompleted && (
+                        <Box
+                          display="flex"
+                          flexDirection="column"
+                          alignItems="center"
+                          mt="25px"
+                        >
+                          {
+                            // Check if there are results and display the ProgressCircle and the matching message accordingly
+                            results.length > 0 ? (
+                              <>
+                                <ProgressCircle
+                                  size="125"
+                                  progress={highestMatch / 100}
+                                />
+                                <Typography
+                                  variant="h5"
+                                  color={colors.greenAccent[100]}
+                                  sx={{ mt: "15px" }}
+                                >
+                                  This claim has up to {highestMatch}% match
+                                  with debunked stories in our Database
+                                </Typography>
+                              </>
+                            ) : (
+                              <Typography
+                                variant="h5"
+                                color={colors.greenAccent[100]}
+                                sx={{ mt: "15px" }}
+                              >
+                                This claim does not have any significant match
+                                with debunked stories in our DB.
+                              </Typography>
+                            )
+                          }
+
+                          <Typography
+                            sx={{
+                              fontSize: "10px", // Adjust the desired font size
+                            }}
+                          >
+                            Disclaimer: This section of the website is run by an
+                            AI tool which makes decisions based on deep learning
+                            mechanisms. The parties shall not bear any liability
+                            of the decisions made by the tool, but would ensure
+                            to take down any wrong decision as and when
+                            highlighted by any person or authority with
+                            sufficient proof and justification.
+                          </Typography>
+                        </Box>
+                      )}
+                    </Box>
+                    <Box
+                      gridColumn="span 7"
+                      gridRow="span 4"
+                      backgroundColor={colors.primary[400]}
+                      overflow="auto"
+                    >
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        borderBottom={`1px solid ${colors.primary[400]}`}
+                        p="15px"
+                        position="sticky"
+                        top={0}
+                        zIndex={10}
+                        bgcolor={colors.primary[400]} // Background color same as the box to blend in
+                      >
+                        <Typography
+                          color={colors.grey[100]}
+                          variant="h5"
+                          fontWeight="600"
+                          sx={{ mt: "15px" }}
+                        >
+                          Top Matches
+                        </Typography>
+                        <Box>
+                          <Button
+                            onClick={handlePrev}
+                            disabled={currentPage === 1}
+                            variant="contained"
+                            sx={{ mr: 1 }}
+                          >
+                            Prev
+                          </Button>
+                          <Button
+                            onClick={handleNext}
+                            disabled={
+                              currentPage ===
+                              Math.ceil(results.length / itemsPerPage)
+                            }
+                            variant="contained"
+                            sx={{ ml: 1 }}
+                          >
+                            Next
+                          </Button>
+                        </Box>
+                      </Box>
+                      {Array.isArray(currentItems) ? (
+                        currentItems.map((result, index) => (
+                          <Box
+                            key={index}
+                            display="flex"
+                            flexDirection="row"
+                            alignItems="flex-start"
+                            borderBottom={`1px solid ${colors.primary[400]}`}
+                            p=" 13px 35px"
+                          >
+                            <ButtonBase
+                              onClick={() =>
+                                window.open(result.data.Story_URL, "_blank")
+                              }
+                              sx={{
+                                marginRight: "20px",
+                                borderRadius: "4px",
+                                overflow: "hidden",
+                              }}
+                            >
+                              <img
+                                src={result.data.img} // Display the image from the result
+                                alt="News"
+                                width="110px"
+                                height="95px"
+                                style={{ marginRight: "20px" }}
+                              />
+                            </ButtonBase>
+                            {/* Display other details from the result like the image, headline, etc.
+                 You can also display the matching percentage using result.percentage */}
+                            <div>
+                              <Typography
+                                color={colors.greenAccent[100]}
+                                variant="h5"
+                                fontWeight="600"
+                              >
+                                <a
+                                  href={result.data.Story_URL}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{
+                                    color: colors.greenAccent[100],
+                                    textDecoration: "none",
+                                  }}
+                                >
+                                  {result.data.Headline}
+                                </a>
+                              </Typography>
+                              <Typography color={colors.grey[100]}>
+                                {result.data.Story_Date}
+                              </Typography>
+                              {/* <Typography color={colors.grey[100]}>
+                        {result.percentage}% match
+                      </Typography> */}
+                            </div>
+                            {errorMessage && (
+                              <Typography color="error" sx={{ p: 2 }}>
+                                {errorMessage}
+                              </Typography>
+                            )}
+                          </Box>
+                        ))
+                      ) : (
+                        <Typography color="error">
+                          Error: Results are not available.
+                        </Typography>
+                      )}
+                    </Box>
+                    <Box
+                      gridColumn="span 5"
+                      gridRow="span 2"
+                      backgroundColor={colors.primary[400]}
+                    >
+                      <Box
+                        mt="22px"
+                        p="0 30px"
+                        display="flex "
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
+                        <Box>
+                          <Typography
+                            variant="h5"
+                            fontWeight="600"
+                            color={colors.grey[100]}
+                          >
+                            Timeline
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <IconButton>
+                            <DownloadOutlinedIcon
+                              sx={{
+                                fontSize: "26px",
+                                color: colors.greenAccent[100],
+                              }}
+                            />
+                          </IconButton>
+                        </Box>
+                      </Box>
+                      <Box height="250px" m="-20px 0 0 0">
+                        <LineChart data={chartData} isDashboard={true} />
+                      </Box>
+                    </Box>
+                  </Box>
+                </>
+              )}
+            </>
+          )}
+        </>
+      )}
     </Box>
   );
 };
