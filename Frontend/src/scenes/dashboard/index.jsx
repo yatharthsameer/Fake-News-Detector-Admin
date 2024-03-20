@@ -111,7 +111,7 @@ const handlePrev = () => {
 
       // Make a POST request for text search
       // fetch("https://factcheckerbtp.vishvasnews.com/search", {
-      fetch("http://localhost:8080/search", {
+      fetch("https://factcheckerbtp.vishvasnews.com/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -342,7 +342,7 @@ Query: "{query}"\n\n
             # except :
             #     print("Parsing error" )
             #     return jsonify(response_data_TFIDF)
-            if (isinstance(gemini_response_data, dict) and attempt>1):
+            if isinstance(gemini_response_data, dict) :
                 gemini_response_valid = True
                 enhanced_response_data = []
                 for index, percentage in gemini_response_data.items():
