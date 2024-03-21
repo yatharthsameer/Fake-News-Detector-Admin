@@ -154,8 +154,6 @@ def fact_check(query, data, limit=None):
     return top_matches
 
 
-
-
 @app.route("/search", methods=["POST"])
 def search():
     query = request.json.get("query", "")
@@ -674,7 +672,6 @@ st = Search_Setup(
 st.run_index()
 
 
-
 @app.route("/upload", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
@@ -821,25 +818,22 @@ def upload_image_url():
             response_data = []
             for img_info in similar_images:  # Iterate through the list of dictionaries
                 # Extract the index from the image path
-                image_index = (
-                    int(img_info["path"].split("_")[-1].split(".")[0]) - 1
-                )  # Adjust index to 0-based
-                print(image_index)
-
-                # Fetch the corresponding object from the JSON data
-                corresponding_object = data[image_index]
-                print(corresponding_object)
-
-                # Append the object and its match percentage to the response data
-                response_data.append(
-                    {
+                image_index = img_info["path"].split('_')[-1].split('.')[0]
+            
+            # Use the extracted index to access the corresponding object in data
+                if image_index in data:
+                    corresponding_object = data[image_index]
+                    
+                    # Append the relevant details to response_data
+                    response_data.append({
                         "percentage": round(img_info["match_percentage"], 2),
-                        "data": corresponding_object,
-                    }
-                )
-                print("response_data", response_data)
+                        "data": corresponding_object
+                    })
 
             return jsonify(response_data)
+        
+
+
         else:
             return jsonify({"error": "Failed to fetch image from URL"}), 500
     except UnidentifiedImageError as e:
