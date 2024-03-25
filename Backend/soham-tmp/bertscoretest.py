@@ -25,6 +25,7 @@ class bm25:
         
 
     def clean(self, text:str):
+        # print (text)
         if text.startswith('fact check: '):
             text = text[12:]
 
@@ -100,9 +101,9 @@ class bertscore:
 
 if __name__ == '__main__':
     # QUERY = 'anushka sharma married kohli'
-    QUERY = 'priyanka gandhi posted'
+    QUERY = ['rahul gandhi', 'anushka sharma', 'priyanka chopra', 'priyanka gandhi', 'vir koli']
     
-    with open('allData.json') as fp:
+    with open('../csvProcessing/allData.json') as fp:
         data = json.load(fp)
         docs = [' | '.join([val[x] if val[x] != 'NA' else '' for x in ['Headline', 'What_(Claim)', 'About_Subject', 'About_Person']]) for key, val in data.items()]
         # docs = docs[:1000]
@@ -112,12 +113,15 @@ if __name__ == '__main__':
 
     print("\n")
     print("#"*100)
-    idx, res = model.bm25model.rank(QUERY)
-    for x in idx[:10]: 
-        print(docs[x])
+    for query in QUERY:
+        print(query)
+        idx, res = model.bm25model.rank(query)
+        for x in idx[:10]: 
+            print(docs[x])
 
-    print("\n")
-    print("#"*100)
-    idx, res = model.rank(QUERY)
-    for x in idx[:10]: 
-        print(docs[x])
+        print("\n")
+        print("#"*100)
+        idx, res = model.rank(query)
+        for x in idx[:10]: 
+            print(docs[x])
+
