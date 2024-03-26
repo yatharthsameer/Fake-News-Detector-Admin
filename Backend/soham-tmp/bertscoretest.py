@@ -4,6 +4,7 @@ from rank_bm25 import BM25Plus
 import json
 from time import time
 import os
+import re
 import spacy
 
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
@@ -99,28 +100,38 @@ class bertscore:
 
 
 
+def load_data(filepath='../csvProcessing/allData.json'):
+    docs = []
+    with open(filepath) as fp:
+        data = json.load(fp)
+        for key, val in data.items()
+            url = re.sub("\W+", " ", val['Story_URL'][val['Story_URL'].rfind('/') + 1:]).strip()
+            tmp = [url] + [val[x] if val[x] != 'NA' else '' for x in ['Headline', 'What_(Claim)', 'About_Subject', 'About_Person']]
+            docs.append(' | '.join(tmp))
+    return docs
+
+
 if __name__ == '__main__':
     # QUERY = 'anushka sharma married kohli'
     QUERY = ['rahul gandhi', 'anushka sharma', 'priyanka chopra', 'priyanka gandhi', 'vir koli']
     
-    with open('../csvProcessing/allData.json') as fp:
-        data = json.load(fp)
-        docs = [' | '.join([val[x] if val[x] != 'NA' else '' for x in ['Headline', 'What_(Claim)', 'About_Subject', 'About_Person']]) for key, val in data.items()]
-        # docs = docs[:1000]
-
-    # model = bm25(docs)
+    docs = load_data()
     model = bertscore(docs)
 
-    print("\n")
-    print("#"*100)
     for query in QUERY:
+        print("\n")
+        print("#"*100)
+        print("#"*100)
         print(query)
+
         idx, res = model.bm25model.rank(query)
         for x in idx[:10]: 
             print(docs[x])
 
         print("\n")
         print("#"*100)
+
+        # Main running method
         idx, res = model.rank(query)
         for x in idx[:10]: 
             print(docs[x])
