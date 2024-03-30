@@ -191,29 +191,28 @@ if __name__ == '__main__':
     model = bertscore(docs)
 
     for query in QUERY:
-        with open('results-tmp/%s.txt'%(query.replace(" ", "-")), 'w') as :
-            print("\n")
-            print("#"*100)
-            print("#"*40 + " BM25 " + "#"*40)
-            print("QUERY:", query)
-            
-            idx, res = model.bm25model.rank(query)
-            for i, v in zip(idx[:10], res[:10]): 
-                print(" --> ", v, i, docs[i])
+        print("\n")
+        print("#"*100)
+        print("#"*40 + " BM25 " + "#"*40)
+        print("QUERY:", query)
+        
+        idx, res = model.bm25model.rank(query)
+        for i, v in zip(idx[:10], res[:10]): 
+            print(" --> ", v, i, docs[i])
 
-            print("\n")
-            print("#"*40 + " FT-sent " + "#"*40)
-            print("QUERY:", query)
-            
-            idx, res = model.ftsentmodel.rank(query)
-            for i, v in zip(idx[:10], res[:10]): 
-                print(" --> ", v, i, docs[i])
+        print("\n")
+        print("#"*40 + " FT-sent " + "#"*40)
+        print("QUERY:", query)
+        
+        idx, res = model.ftsentmodel.rank(query)
+        for i, v in zip(idx[:10], res[:10]): 
+            print(" --> ", v, i, docs[i])
 
-            print("\n")
-            print("#"*40 + " BM25 + BERTSCORE " + "#"*40)
-            print("QUERY:", query)
+        print("\n")
+        print("#"*40 + " BM25 + BERTSCORE " + "#"*40)
+        print("QUERY:", query)
 
-            # Main running method
-            idx, res = model.rank(query)
-            for i, v in zip(idx[:10], res[:10]): 
-                print(" --> ", v, i, docs[i])
+        # Main running method
+        idx, res = model.rank(query)
+        for i, v in zip(idx[:10], res[:10]): 
+            print(" --> ", v, i, docs[i])
