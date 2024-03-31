@@ -10,7 +10,7 @@ Frontend/node_modules
 
 # production
 /build
-Frontend/build
+Frontend/build/*
 
 # misc
 .DS_Store
@@ -26,4 +26,6 @@ flask_app.log
 Backend/query_log.csv
 Backend/metadata-files/
 Backend/data/
-
+Backend/data/*
+Backend/DeepImageSearch/*
+Backend/metadata-files/*
