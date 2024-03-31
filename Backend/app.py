@@ -663,54 +663,54 @@ Query: "{query}"\n\n
 #     return jsonify(sorted_enhanced_response_data)
 
 
-image_list = Load_Data().from_folder(["./ImageMatching/data"])
-# Set up the search engine
-st = Search_Setup(
-    image_list=image_list, model_name="vgg19", pretrained=True, image_count=7775
-)
-# Index the images
-st.run_index()
+# image_list = Load_Data().from_folder(["./ImageMatching/data"])
+# # Set up the search engine
+# st = Search_Setup(
+#     image_list=image_list, model_name="vgg19", pretrained=True, image_count=7775
+# )
+# # Index the images
+# st.run_index()
 
 
-@app.route("/upload", methods=["POST"])
-def upload_file():
-    if "file" not in request.files:
-        return jsonify({"error": "No file part"}), 400
+# @app.route("/upload", methods=["POST"])
+# def upload_file():
+#     if "file" not in request.files:
+#         return jsonify({"error": "No file part"}), 400
 
-    file = request.files["file"]
-    if file.filename == "":
-        return jsonify({"error": "No selected file"}), 400
+#     file = request.files["file"]
+#     if file.filename == "":
+#         return jsonify({"error": "No selected file"}), 400
 
-    if file:
-        filename = secure_filename("test.jpg")
-        filepath = os.path.join("./", filename)
-        file.save(filepath)
-        
-            # Get similar images using the uploaded image
-        similar_images = st.get_similar_images(
-            image_path=filepath, number_of_images=10
-        )
-        print(f"Found similar images: {similar_images}")
+#     if file:
+#         filename = secure_filename("test.jpg")
+#         filepath = os.path.join("./", filename)
+#         file.save(filepath)
 
-        
-        response_data = []
-        for img_info in similar_images:
-            # Extract the numerical index from the image filename
-            image_index = img_info["path"].split('_')[-1].split('.')[0]
-            
-            # Use the extracted index to access the corresponding object in data
-            if image_index in data:
-                corresponding_object = data[image_index]
-                
-                # Append the relevant details to response_data
-                response_data.append({
-                    "percentage": round(img_info["match_percentage"], 2),
-                    "data": corresponding_object
-                })
+#             # Get similar images using the uploaded image
+#         similar_images = st.get_similar_images(
+#             image_path=filepath, number_of_images=10
+#         )
+#         print(f"Found similar images: {similar_images}")
 
-        return jsonify(response_data)
-    else:
-        return jsonify({"error": "File processing failed"}), 500
+
+#         response_data = []
+#         for img_info in similar_images:
+#             # Extract the numerical index from the image filename
+#             image_index = img_info["path"].split('_')[-1].split('.')[0]
+
+#             # Use the extracted index to access the corresponding object in data
+#             if image_index in data:
+#                 corresponding_object = data[image_index]
+
+#                 # Append the relevant details to response_data
+#                 response_data.append({
+#                     "percentage": round(img_info["match_percentage"], 2),
+#                     "data": corresponding_object
+#                 })
+
+#         return jsonify(response_data)
+#     else:
+#         return jsonify({"error": "File processing failed"}), 500
 
 
 # Load the pre-computed embeddings and associated texts from the CSV file
@@ -928,6 +928,58 @@ def append_story():
 
     # Send back a response to indicate success
     return jsonify({"message": "Data appended successfully"}), 200
+
+from bertscoretest import bm25, ftsent, bertscore, load_data
+
+# Load the documents at app start to avoid reloading them on each request
+docs = load_data("csvProcessing/allData.json")
+bm25_model = bm25(docs)
+ftsent_model = ftsent(
+    docs, model_path="fasttext-tmp/model.bin"
+)  # Adjust the path as necessary
+bert_model = bertscore(docs)
+
+print("Models loaded successfully.")
+
+
+@app.route("/rank/bm25", methods=["POST"])
+def rank_documents_bm25():
+    req = request.json
+    query = req.get("query", "")
+
+    # Using BM25 model to rank documents
+    idx, scores = bm25_model.rank(query)
+    results = []
+    for i, score in zip(idx[:10], scores[:10]):
+        doc_id = str(i+1)  # Convert index to integer
+        doc_obj = data[doc_id]  # Access the corresponding document object
+        results.append(
+            {
+                "percentage": int(score),
+                "data": data[doc_id ],  # Include the whole news object
+            }
+        )
+    return jsonify(results)
+
+
+@app.route("/rank/bm25_bert", methods=["POST"])
+def rank_documents_bm25_bert():
+    req = request.json
+    query = req.get("query", "")
+
+    # Using combined BM25 and BERTScore model to rank documents
+    idx, scores = bert_model.rank(query)
+    results = []
+    for i, score in zip(idx[:10], scores[:10]):
+        doc_id = str(i+1)
+        doc_obj = docs[doc_id]  # Access the corresponding document object
+        results.append(
+            {
+                "percentage": int(score),
+                "data": data[doc_id],  # Include the whole news object
+            }
+        )
+    return jsonify(results)
 
 
 if __name__ == "__main__":

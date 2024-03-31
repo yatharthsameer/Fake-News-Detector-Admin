@@ -31,3 +31,12 @@ Backend/DeepImageSearch/*
 Backend/metadata-files/*
 Frontend/build/asset-manifest.json
 Frontend/build/index.html
+Backend/fasttext-tmp/model.bin
+Backend/soham-tmp/__pycache__/bertscoretest.cpython-312.pyc
+Backend/soham-tmp/fasttext-tmp/data.txt
+Backend/soham-tmp/fasttext-tmp/model.bin
+Backend/fasttext-tmp/data.txt
+Backend/__pycache__/bertscoretest.cpython-312.pyc
+Backend/query_log.csv
+Backend/query_log.csv
+Frontend/build/asset-manifest.json
