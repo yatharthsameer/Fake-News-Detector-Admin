@@ -29,3 +29,5 @@ Backend/data/
 Backend/data/*
 Backend/DeepImageSearch/*
 Backend/metadata-files/*
+Frontend/build/asset-manifest.json
+Frontend/build/index.html
