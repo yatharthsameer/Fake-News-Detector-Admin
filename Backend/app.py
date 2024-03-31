@@ -373,344 +373,56 @@ Query: "{query}"\n\n
     # Prepare the final response data with enhanced match percentages
 
 
-# @app.route("/search", methods=["POST"])
-# def search():
-#     query = request.json.get("query", "")
-#     # Log the query
-#     log_query("text", query)
-#     results = fact_check(query, data)
-
-#     # Get the top 50 matches
-#     top_matches = results[:3]
-#     print("Top  matches", top_matches)
-
-#     # Prepare the JSON string
-#     top_matches_json = {str(i + 1): match[1] for i, match in enumerate(top_matches)}
-#     print("Top matches json", top_matches_json)
-#     top_matches_str = json.dumps(top_matches_json, ensure_ascii=False, indent=4)
-
-#     # Construct the prompt
-#     prompt = f"""For the following 5 json objects containing info about debunked fake news articles decide how similar are the query and the json objects, give me a percentage similarity, capture the nuanced meaning of the objects wrt to the query.
-#     This is the structure of the json objects you will receive:\n
-#      "2": {{
-#         "Story_Date": "19th Sep 2023",\n
-#         "Story_URL": "https://www.vishvasnews.com/ai-check/fact-check-pm-modi-and-usa-president-joe-biden-ai-image-viral-after-g20-summit-2023/",\n
-#         "Headline": "Fact Check: पीएम मोदी और अमेरिकी राष्ट्रपति जो बाइडेन की वायरल तस्वीरें AI निर्मित हैं",\n
-#         "Claim_URL": "https://www.facebook.com/groups/740544566322820/posts/2071667653210498",\n\n
-#         "What_(Claim)": "पीएम मोदी और अमेरिकी राष्ट्रपति कुर्ता-पायजामा पहनकर टहल रहे हैं।",\n
-#         "About_Subject": "PM ans USA President",\n
-#         "About_Person": "Narendra Modi, Joe Biden ",\n
-#         "img": "https://www.vishvasnews.com/wp-content/uploads/2023/09/Fake_News_22-1.jpg"\n
-#      }},
-#      in this example "2" is the index of the json object
-
-#     \n\nthis is the expected output format:\n{{\n "index" : "match percentage"}} and so on..., give me your response in the above format only, do not give any extra infor\nhere are the json objects:\n{top_matches_str}\n\nhere is the query\nquery : "{query}"""
-#     print(prompt)
-#     # Gemini API call would go here, assuming `gemini_api_response` is the response from the API
-#     # For demonstration, let's assume we receive a response like this:
-#     genai.configure(api_key="AIzaSyDd26SvuTQqx5kIW50llUWnWCMtP4bZpWg")
-
-#     model = genai.GenerativeModel("gemini-pro")
-#     messages = [{"role": "user", "parts": [prompt]}]
-#     safety_settings = [
-#         {"category": "HARM_CATEGORY_DANGEROUS", "threshold": "BLOCK_NONE"},
-#         {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-#         {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-#         {
-#             "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-#             "threshold": "BLOCK_NONE",
-#         },
-#         {
-#             "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-#             "threshold": "BLOCK_NONE",
-#         },
-#     ]
-#     gemini_api_response = model.generate_content(
-#         messages, safety_settings=safety_settings
-#     )
-#     response_text = gemini_api_response.text
-#     print(response_text)
-
-#     try:
-#         response_data = json.loads(response_text)
-#     except json.JSONDecodeError as e:
-#         return jsonify({"error": "Failed to parse response from Gemini API"}), 500
-
-#     # Convert percentage strings to integers for easier handling
-#     # You also need to remove the '%' character from the strings to convert them to integers
-#     response_data = {
-#         key: int(value.replace("%", "")) for key, value in response_data.items()
-#     }
-
-#     # Here you would have your logic to get top_matches. For demonstration, let's mock it:
 
 
-#     final_response = []
-#     for index, percentage in response_data.items():
-#         json_object = top_matches_json.get(index)  # Get the JSON object by index
-#         if json_object:
-#             # Include both the JSON object and its corresponding percentage
-#             final_response.append({"percentage": percentage, "data": json_object})
-
-#     return jsonify(final_response)
-
-# --------------------------------------------------------------------
-# TINYLLAMA Code here
-# MODEL_PATH = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-# tokenizerTinyLLama = AutoTokenizer.from_pretrained(
-#     MODEL_PATH,
-#     torch_dtype=torch.bfloat16,
-#     # low_cpu_mem_usage=True,
-# )
-# modelTinyLlama = AutoModelForCausalLM.from_pretrained(MODEL_PATH)
-# modelTinyLlama.bfloat16()
-# tokenizerTinyLLama.padding_side = "left"
-# # if not tokenizer.pad_token_id:
-# tokenizerTinyLLama.pad_token_id = tokenizerTinyLLama.eos_token_id
-# tokenizerTinyLLama.pad_token = tokenizerTinyLLama.eos_token
-# modelTinyLlama.config.pad_token_id = tokenizerTinyLLama.eos_token_id
+image_list = Load_Data().from_folder(["./ImageMatching/data"])
+# Set up the search engine
+st = Search_Setup(
+    image_list=image_list, model_name="vgg19", pretrained=True, image_count=7775
+)
+# Index the images
+st.run_index()
 
 
-# @app.route("/searchTinyLlama", methods=["POST"])
-# def searchtinyllama():
-#     query = request.json.get("query", "")
-#     # Log the query
-#     log_query("text", query)
-#     results = fact_check(query, data)
-#     # print(results)
+@app.route("/upload", methods=["POST"])
+def upload_file():
+    if "file" not in request.files:
+        return jsonify({"error": "No file part"}), 400
 
-#     seen_headlines = set()  # Set to keep track of seen headlines
-#     response_data_TFIDF = []
-#     for match in results:
-#         if match[0] > 0.01:  # Filter out the results where the match is 1% or less
-#             headline = match[1]["Headline"]
-#             # Check if headline has already been added
-#             if headline not in seen_headlines:
-#                 seen_headlines.add(headline)  # Mark headline as seen
-#                 response_data_TFIDF.append(
-#                     {"percentage": round(match[0] * 100, 2), "data": match[1]}
-#                 )
-#             # else:
-#             # print(f"Duplicate headline found and skipped: {headline}")
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
 
-#     # Format the top matches
-#     seen_headlines_top = (
-#         set()
-#     )  # Initialize an empty set to keep track of seen headlines
-#     top_matches = {}
+    if file:
+        filename = secure_filename("test.jpg")
+        filepath = os.path.join("./", filename)
+        file.save(filepath)
 
-#     for i, (_, match_data) in enumerate(results[:5], start=1):
-#         headline = match_data["Headline"]
-#         if (
-#             headline not in seen_headlines_top
-#         ):  # Check if the headline has not been seen before
-#             seen_headlines_top.add(
-#                 headline
-#             )  # Add the headline to the set of seen headlines
-#             top_matches[str(i)] = match_data  # Add the match data to top_matches
-#     print(top_matches)
-#     seen_headlines = set()  # Initialize a set to track seen headlines
-
-#     gemini_input_objects = {}
-#     for i, (_, match_data) in enumerate(results[:5], start=1):
-#         headline = match_data["Headline"]
-#         if headline not in seen_headlines:
-#             seen_headlines.add(
-#                 headline
-#             )  # Add the headline to the set of seen headlines
-#             gemini_input_objects[str(i)] = {
-#                 "Story_Date": match_data["Story_Date"],
-#                 "Headline": match_data["Headline"],
-#                 "What_(Claim)": match_data["What_(Claim)"],
-#                 "About_Subject": match_data["About_Subject"],
-#                 "About_Person": match_data["About_Person"],
-#                 "Story_URL": match_data["Story_URL"],
-#             }
-
-#         gemini_input_str = json.dumps(
-#             gemini_input_objects, indent=2, ensure_ascii=False
-#         )
-
-#     prompt = f"""
-# You are an advanced AI specializing in debunking fake news.
-
-# You will be given a text (claim) and a set of news articles. Each news article will be in the form of a JSON object having the fields "Headline", "What_(Claim)", "About_Subject", and "About_Person" .  \n\n
-# Your task is to compute the percentage similarity between the claim text and each news article.
-# \n\n
-
-# EXAMPLE_INPUT:\n
-#       [ \n
-#  "1": {{
-#         "Story_URL": "https://www.vishvasnews.com/ai-check/fact-check-pm-modi/",\n
-#         "Headline": "Fact Check: पीएम मोदी और अमेरिकी राष्ट्रपति जो बाइडेन की वायरल तस्वीरें AI निर्मित हैं",\n
-#         "What_(Claim)": "पीएम मोदी और अमेरिकी राष्ट्रपति कुर्ता-पायजामा पहनकर टहल रहे हैं।",\n
-#         "About_Subject": "PM ans USA President",\n
-#         "About_Person": "Narendra Modi, Joe Biden ",
-#         }},\n
-# "2": {{\n
-#         "Story_URL": "https://www.vishvas/act-check-artificially-generated-photo-of-elon-musk-in-moroccos-chefchaouen-goes-viral-as-real/",\n
-#         "Headline": "Fact Check: मोरक्को की ‘ब्लू सिटी’ में नजर आ रहे एलन मस्क की यह तस्वीर असल नहीं, AI जनरेटेड है",\n
-#         "What_(Claim)": "एलन मस्क मोरक्को में यात्रा कर रहे हैं",\n
-#         "About_Subject": "AI generated image",\n
-#         "About_Person": "Elon Musk"\n
-#     }}\n\n
-#     "3": {{
-#         "Story_URL": "https://www.vishfact-check-uppsc-pcs-j-2018-result-candidate-list-viral-with-misleading-claim/",\n
-#         "Headline": "Fact Check: UPPSC के पीसीएस-जे 2018 के सफल अभ्‍यर्थियों की अधूरी लिस्‍ट भ्रामक दावे से वायरल",\n
-#         "What_(Claim)": "यह UPPSC के पीसीएस-जे का रिजल्ट है, जिसमें जनरल वर्ग के परीक्षार्थियों के नाम हैं।",\n
-#         "About_Subject": "UPPCS PCS J Result",\n
-#         "About_Person": "Akanksha Tiwari",\n
-#     }}\n
-
-# QUERY_CLAIM: “did elon musk go to morocco and the city”\n
-
-#        Note: In this example "1", “2” & "3" are the indexes of the json objects in NEWS_OBJECTS.
-# \n
-# EXPECTED_OUTPUT_FORMAT:\n
-# {{\n
-# “1” : “0%”,\n
-# “2” : “70%”,\n
-# "3" : "6%"\n
-# }}
-
-#     \n\n
-#     --------------end of example ----------------------------------------\n
-# Here is the \n
-# Query: "{query}"\n
-# News Articles: {gemini_input_str}\n\n
-# Here is the query again:\n
-# Query: "{query}"\n\n
-#     Please provide the similarity scores in the following format, assigning higher percentages to articles that are more similar to the query:\n\n
-# {{\n
-#   "1": "XX%",\n
-#   "2": "XX%",\n
-#   "3": "XX%",\n
-#   "4": "XX%"\n
-# }}
-#  """
-
-#     # print(prompt)
-#     # Gemini API call would go here, assuming `gemini_api_response` is the response from the API
-#     # For demonstration, let's assume we receive a response like this:
-#     inputs = tokenizerTinyLLama(prompt, return_tensors="pt")
-#     input_ids = inputs["input_ids"]
-#     attention_mask = inputs["attention_mask"]
-#     # Generate a response from TinyLlama
-#     with torch.no_grad():  # To reduce memory usage
-#         generated_ids = modelTinyLlama.generate(
-#             input_ids=input_ids,
-#             attention_mask=attention_mask,
-#             max_new_tokens=250,  # Adjust `max_new_tokens` as needed
-#         )
-
-#     batchdata = tokenizerTinyLLama(
-#         prompt, return_tensors="pt", padding=True, truncation=True
-#     )
-#     inp = batchdata.input_ids
-#     attn = batchdata.attention_mask
-#     generated_ids = model.generate(
-#         inp,
-#         attention_mask=attn,
-#         max_new_tokens=50,
-#         pad_token_id=tokenizer.pad_token_id,
-#     )
-
-#     # Decode the generated ids to get the text
-#     response_text = tokenizerTinyLLama.batch_decode(
-#         generated_ids, skip_special_tokens=True
-#     )[0]
-
-#     try:
-#         response_data = json.loads(response_text)
-#     except:
-#         print("Parsing error")
-#         return jsonify(response_data_TFIDF)
-
-#         # Assume response_text is a JSON string that looks like: {"1": "75%", "2": "50%", "3": "25%"}
-#     gemini_response = json.loads(response_text)
-#     print(gemini_response)
-#     # print(top_matches)
-
-#     # Prepare the final response data with enhanced match percentages
-#     enhanced_response_data = []
-#     for index, percentage in gemini_response.items():
-#         if index in top_matches:
-#             # Append both the data from top_matches and the percentage from Gemini response
-#             # Ensure percentage is converted to an integer for sorting
-#             numeric_percentage = int(
-#                 percentage.rstrip("%")
-#             )  # Remove '%' and convert to int
-
-#             if numeric_percentage > 60:
-
-#                 enhanced_response_data.append(
-#                     {
-#                         "percentage": numeric_percentage,
-#                         "numeric_percentage": numeric_percentage,
-#                         "data": top_matches[index],
-#                     }
-#                 )
-
-#     # Sort the enhanced_response_data by 'numeric_percentage' in descending order
-#     sorted_enhanced_response_data = sorted(
-#         enhanced_response_data, key=lambda x: x["numeric_percentage"], reverse=True
-#     )
-
-#     # Remove the 'numeric_percentage' key from each item as it was only needed for sorting
-#     for item in sorted_enhanced_response_data:
-#         item.pop("numeric_percentage", None)
-#     print(sorted_enhanced_response_data)
-#     return jsonify(sorted_enhanced_response_data)
+            # Get similar images using the uploaded image
+        similar_images = st.get_similar_images(
+            image_path=filepath, number_of_images=10
+        )
+        print(f"Found similar images: {similar_images}")
 
 
-# image_list = Load_Data().from_folder(["./ImageMatching/data"])
-# # Set up the search engine
-# st = Search_Setup(
-#     image_list=image_list, model_name="vgg19", pretrained=True, image_count=7775
-# )
-# # Index the images
-# st.run_index()
+        response_data = []
+        for img_info in similar_images:
+            # Extract the numerical index from the image filename
+            image_index = img_info["path"].split('_')[-1].split('.')[0]
 
+            # Use the extracted index to access the corresponding object in data
+            if image_index in data:
+                corresponding_object = data[image_index]
 
-# @app.route("/upload", methods=["POST"])
-# def upload_file():
-#     if "file" not in request.files:
-#         return jsonify({"error": "No file part"}), 400
+                # Append the relevant details to response_data
+                response_data.append({
+                    "percentage": round(img_info["match_percentage"], 2),
+                    "data": corresponding_object
+                })
 
-#     file = request.files["file"]
-#     if file.filename == "":
-#         return jsonify({"error": "No selected file"}), 400
-
-#     if file:
-#         filename = secure_filename("test.jpg")
-#         filepath = os.path.join("./", filename)
-#         file.save(filepath)
-
-#             # Get similar images using the uploaded image
-#         similar_images = st.get_similar_images(
-#             image_path=filepath, number_of_images=10
-#         )
-#         print(f"Found similar images: {similar_images}")
-
-
-#         response_data = []
-#         for img_info in similar_images:
-#             # Extract the numerical index from the image filename
-#             image_index = img_info["path"].split('_')[-1].split('.')[0]
-
-#             # Use the extracted index to access the corresponding object in data
-#             if image_index in data:
-#                 corresponding_object = data[image_index]
-
-#                 # Append the relevant details to response_data
-#                 response_data.append({
-#                     "percentage": round(img_info["match_percentage"], 2),
-#                     "data": corresponding_object
-#                 })
-
-#         return jsonify(response_data)
-#     else:
-#         return jsonify({"error": "File processing failed"}), 500
+        return jsonify(response_data)
+    else:
+        return jsonify({"error": "File processing failed"}), 500
 
 
 # Load the pre-computed embeddings and associated texts from the CSV file
