@@ -10,21 +10,39 @@ headers = {
 }
 
 
+import csv
+import json
+
+
 def convert_csv_to_json(csv_filename, json_filename):
     json_data = {}
+    unique_check = set()  # To store combinations of Headline and Story_Date
+
     with open(csv_filename, mode="r", encoding="utf-8") as csvfile:
         csvreader = csv.DictReader(csvfile)
-        for i, row in enumerate(csvreader, start=1260):  # Start counting from 1
-            json_data[i] = {  # Use i as the ID
-                "Story_Date": row.get("Story Date"),
-                "Story_URL": row.get("Story URL"),
-                "Headline": row.get("Headline"),
-                "Claim_URL": row.get("Claim URL"),
-                "What_(Claim)": row.get("What (Claim)"),
-                "About_Subject": row.get("About Subject"),
-                "About_Person": row.get("About Person"),
-                "img": row.get("Image"),
-            }
+
+        # Adjust the enumeration if you need a specific starting index, otherwise, you can start from 1
+        for i, row in enumerate(csvreader, start=1):
+            # Generate a unique identifier by combining Headline and Story_Date
+            unique_id = f"{row.get('Headline')}_{row.get('Story_Date')}"
+
+            # Check if this unique combination is already in the set
+            if unique_id not in unique_check:
+                unique_check.add(unique_id)  # Add the unique combination to the set
+                json_data[i] = {
+                    "Story_Date": row.get("Story_Date"),
+                    "Story_URL": row.get("Story_URL"),
+                    "Headline": row.get("Headline"),
+                    "Claim_URL": row.get("Claim_URL"),
+                    "What_(Claim)": row.get("What_(Claim)"),
+                    "About_Subject": row.get("About_Subject"),
+                    "About_Person": row.get("About_Person"),
+                    "img": row.get("img"),
+                }
+            else:
+                print(
+                    f"Duplicate entry found and discarded based on Headline and Story_Date: {unique_id}"
+                )
 
     with open(json_filename, mode="w", encoding="utf-8") as jsonfile:
         json.dump(json_data, jsonfile, ensure_ascii=False, indent=4)
@@ -118,16 +136,16 @@ def download_images(urls_with_ids, folder):
 
 
 # Set your paths and folder name
-csv_filename = "rest6k.csv"
+csv_filename = "test.csv"
 
-json_file_path = "allData.json"
+json_file_path = "test.json"
 output_txt_file = "test.txt"
-updated_json_path = "allData.json"
+updated_json_path = "test.json"
 folder_name = "../data"  # Adjust path as needed
 
 # Process sequence
-# convert_csv_to_json(csv_filename, json_file_path)  # Convert CSV to JSON first
+convert_csv_to_json(csv_filename, json_file_path)  # Convert CSV to JSON first
 # fetch_and_log_image_urls(json_file_path, output_txt_file)
 # update_json_with_image_links(json_file_path, output_txt_file, updated_json_path)
-image_urls = extract_img_links(updated_json_path)
-download_images(image_urls, folder_name)
+# image_urls = extract_img_links(updated_json_path)
+# download_images(image_urls, folder_name)
