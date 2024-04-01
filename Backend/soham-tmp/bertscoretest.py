@@ -330,7 +330,7 @@ class ensemble:
 if __name__ == '__main__':
     ########################################
     # #### Minimal Example:
-    # docs, hs = load_data()
+    # docs, h = load_data()
     # model = ensemble(docs)
     
     # idx, res = model(query)
@@ -345,14 +345,15 @@ if __name__ == '__main__':
 
 
     docs, orig = load_data()
-    model = ensemble(docs,use_translation=True)
+    model = ensemble(docs)
 
     for num, query in enumerate(QUERY):
         print('\n' + "#"*100)
         # print("#"*40 + " BM25 " + "#"*40)
         print("QUERY", num, query)
         
-        idx, res = model(query)
+        idx, res = model.rank(query, cutoff=0.6)
+
         for i, v in zip(idx[:10], res[:10]): 
             print(" --> ", v, i, docs[i])
             print(" +-> ", orig[i]['Headline'])
