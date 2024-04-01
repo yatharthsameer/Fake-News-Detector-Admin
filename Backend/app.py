@@ -373,8 +373,6 @@ Query: "{query}"\n\n
     # Prepare the final response data with enhanced match percentages
 
 
-
-
 image_list = Load_Data().from_folder(["./ImageMatching/data"])
 # Set up the search engine
 st = Search_Setup(
@@ -645,11 +643,10 @@ from bertscoretest import bm25, ftsent, bertscore, load_data
 
 # Load the documents at app start to avoid reloading them on each request
 docs = load_data("csvProcessing/allData.json")
-bm25_model = bm25(docs)
 ftsent_model = ftsent(
     docs, model_path="fasttext-tmp/model.bin"
 )  # Adjust the path as necessary
-bert_model = bertscore(docs)
+model = bertscore(docs)
 
 print("Models loaded successfully.")
 
@@ -660,15 +657,16 @@ def rank_documents_bm25():
     query = req.get("query", "")
 
     # Using BM25 model to rank documents
-    idx, scores = bm25_model.rank(query)
+    idx, scores = model.bm25model.rank(query)
     results = []
     for i, score in zip(idx[:10], scores[:10]):
         doc_id = str(i+1)  # Convert index to integer
+        print(doc_id)
         doc_obj = data[doc_id]  # Access the corresponding document object
         results.append(
             {
                 "percentage": int(score),
-                "data": data[doc_id ],  # Include the whole news object
+                "data": data[doc_id],  # Include the whole news object
             }
         )
     return jsonify(results)
@@ -680,11 +678,13 @@ def rank_documents_bm25_bert():
     query = req.get("query", "")
 
     # Using combined BM25 and BERTScore model to rank documents
-    idx, scores = bert_model.rank(query)
+    idx, scores = model.rank(query)
     results = []
+    print(type(idx))
     for i, score in zip(idx[:10], scores[:10]):
-        doc_id = str(i+1)
-        doc_obj = docs[doc_id]  # Access the corresponding document object
+        doc_id = str(i + 1)  # Convert index to integer
+        print(doc_id)
+        doc_obj = data[doc_id]  # Access the corresponding document object
         results.append(
             {
                 "percentage": int(score),
