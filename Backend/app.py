@@ -659,10 +659,11 @@ def rank_documents_bm25_bert():
     results = []
     print(type(idx))
     percent = (
-        max(scores[0], model.match_percent(query, origdata[idx[0]]))
+        round(20 * max(scores[0], model.match_percent(query, origdata[idx[0]]))) * 5
         if len(idx) > 0
         else None
     )
+    
     for i, score in zip(idx[:10], scores[:10]):
         doc_id = str(i + 1)  # Convert index to integer
         print(doc_id)
@@ -670,7 +671,7 @@ def rank_documents_bm25_bert():
 
         results.append(
             {
-                "percentage": percent*100,
+                "percentage": percent,
                 "data": data[doc_id],  # Include the whole news object
             }
         )

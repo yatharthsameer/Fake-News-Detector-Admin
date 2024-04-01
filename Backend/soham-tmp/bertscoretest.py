@@ -339,9 +339,9 @@ if __name__ == '__main__':
     ########################################
     # QUERY = 'anushka sharma married kohli'
     # QUERY = ['rahul gandhi drinking', 'anushka sharma', 'priyanka chopra', 'priyanka gandhi', 'priyankaa chopra', 'priyankaa gandhi', 'priyankaa gandhi posted', 'virat koli']
-    # QUERY = ['rahul gandhi drinking']
-    with open('queries_test.txt') as fp:
-        QUERY = fp.read().splitlines()
+    QUERY = ['rahul gandhi', 'rahul gandhi drinking']
+    # with open('queries_test.txt') as fp:
+    #     QUERY = fp.read().splitlines()
 
 
     docs, orig = load_data()
@@ -352,7 +352,7 @@ if __name__ == '__main__':
         # print("#"*40 + " BM25 " + "#"*40)
         print("QUERY", num, query)
         
-        idx, res = model.rank(query, cutoff=0.6)
+        idx, res = model.rank(query, cutoff=0.5, thresh=0.85)
 
         for i, v in zip(idx[:10], res[:10]): 
             print(" --> ", v, i, docs[i])
