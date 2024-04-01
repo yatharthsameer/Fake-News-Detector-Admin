@@ -373,8 +373,6 @@ Query: "{query}"\n\n
     # Prepare the final response data with enhanced match percentages
 
 
-
-
 image_list = Load_Data().from_folder(["./ImageMatching/data"])
 # Set up the search engine
 st = Search_Setup(
@@ -684,8 +682,9 @@ def rank_documents_bm25_bert():
     idx, scores = bert_model.rank(query)
     results = []
     for i, score in zip(idx[:10], scores[:10]):
-        doc_id = str(i+1)
-        doc_obj = docs[doc_id]  # Access the corresponding document object
+        doc_id = str(i + 1)  # Convert index to integer
+        print(doc_id)
+        doc_obj = data[doc_id]  # Access the corresponding document object
         results.append(
             {
                 "percentage": int(score),

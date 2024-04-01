@@ -185,7 +185,7 @@ if __name__ == '__main__':
     ########################################
     # QUERY = 'anushka sharma married kohli'
     # QUERY = ['rahul gandhi drinking', 'anushka sharma', 'priyanka chopra', 'priyanka gandhi', 'priyankaa chopra', 'priyankaa gandhi', 'priyankaa gandhi posted', 'virat koli']
-    QUERY = ['rahul gandhi drinking']
+    QUERY = ['rahul gandhi ']
 
     docs = load_data()
     model = bertscore(docs)
@@ -198,7 +198,7 @@ if __name__ == '__main__':
         
         idx, res = model.bm25model.rank(query)
         for i, v in zip(idx[:10], res[:10]): 
-            print(" --> ", v, i, docs[i])
+            print(" --> ", v, i)
 
         print("\n")
         print("#"*40 + " FT-sent " + "#"*40)
@@ -206,7 +206,7 @@ if __name__ == '__main__':
         
         idx, res = model.ftsentmodel.rank(query)
         for i, v in zip(idx[:10], res[:10]): 
-            print(" --> ", v, i, docs[i])
+            print(" --> ", v, i)
 
         print("\n")
         print("#"*40 + " BM25 + BERTSCORE " + "#"*40)
@@ -215,4 +215,4 @@ if __name__ == '__main__':
         # Main running method
         idx, res = model.rank(query)
         for i, v in zip(idx[:10], res[:10]): 
-            print(" --> ", v, i, docs[i])
+            print(" --> ", v, i)
