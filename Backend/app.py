@@ -664,11 +664,12 @@ def rank_documents_bm25():
     results = []
     for i, score in zip(idx[:10], scores[:10]):
         doc_id = str(i+1)  # Convert index to integer
+        print(doc_id)
         doc_obj = data[doc_id]  # Access the corresponding document object
         results.append(
             {
                 "percentage": int(score),
-                "data": data[doc_id ],  # Include the whole news object
+                "data": data[doc_id],  # Include the whole news object
             }
         )
     return jsonify(results)
