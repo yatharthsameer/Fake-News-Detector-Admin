@@ -639,55 +639,38 @@ def append_story():
     # Send back a response to indicate success
     return jsonify({"message": "Data appended successfully"}), 200
 
-from bertscoretest import bm25, ftsent, bertscore, load_data
+from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 
 # Load the documents at app start to avoid reloading them on each request
-docs = load_data("csvProcessing/allData.json")
-ftsent_model = ftsent(
-    docs, model_path="fasttext-tmp/model.bin"
-)  # Adjust the path as necessary
-model = bertscore(docs)
+docs,origdata = load_data("csvProcessing/allData.json")
+
+model = ensemble(docs)
 
 print("Models loaded successfully.")
 
 
-@app.route("/rank/bm25", methods=["POST"])
-def rank_documents_bm25():
-    req = request.json
-    query = req.get("query", "")
-
-    # Using BM25 model to rank documents
-    idx, scores = model.bm25model.rank(query)
-    results = []
-    for i, score in zip(idx[:10], scores[:10]):
-        doc_id = str(i+1)  # Convert index to integer
-        print(doc_id)
-        doc_obj = data[doc_id]  # Access the corresponding document object
-        results.append(
-            {
-                "percentage": int(score),
-                "data": data[doc_id],  # Include the whole news object
-            }
-        )
-    return jsonify(results)
-
-
-@app.route("/rank/bm25_bert", methods=["POST"])
+@app.route("/ensemble", methods=["POST"])
 def rank_documents_bm25_bert():
     req = request.json
     query = req.get("query", "")
 
     # Using combined BM25 and BERTScore model to rank documents
-    idx, scores = model.rank(query)
+    idx, scores = model.rank(query, thresh=0.7)
     results = []
     print(type(idx))
+    percent = (
+        max(scores[0], model.match_percent(query, origdata[idx[0]]))
+        if len(idx) > 0
+        else None
+    )
     for i, score in zip(idx[:10], scores[:10]):
         doc_id = str(i + 1)  # Convert index to integer
         print(doc_id)
         doc_obj = data[doc_id]  # Access the corresponding document object
+
         results.append(
             {
-                "percentage": int(score),
+                "percentage": percent*100,
                 "data": data[doc_id],  # Include the whole news object
             }
         )

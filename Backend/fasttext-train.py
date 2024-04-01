@@ -1,5 +1,5 @@
 import fasttext
-from bertscoretest import load_data
+from Backend.BERTClasses import load_data
 import os
 
 if not os.path.exists('fasttext-tmp/'):
