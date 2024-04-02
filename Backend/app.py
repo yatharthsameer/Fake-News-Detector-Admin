@@ -655,7 +655,7 @@ def rank_documents_bm25_bert():
     query = req.get("query", "")
 
     # Using combined BM25 and BERTScore model to rank documents
-    idx, scores = model.rank(query, thresh=0.7)
+    idx, scores = model.rank(query, thresh=0.8)
     results = []
     print(type(idx))
     percent = (
