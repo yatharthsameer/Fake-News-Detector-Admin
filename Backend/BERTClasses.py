@@ -53,6 +53,7 @@ def load_data(filepath="csvProcessing/allData.json"):
                     "What_(Claim)",
                     "About_Subject",
                     "About_Person",
+                    "tags"
                 ]
             ]
             docs.append(" | ".join(tmp))

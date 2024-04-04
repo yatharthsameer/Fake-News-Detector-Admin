@@ -38,6 +38,7 @@ def convert_csv_to_json(csv_filename, json_filename):
                     "About_Subject": row.get("About_Subject"),
                     "About_Person": row.get("About_Person"),
                     "img": row.get("img"),
+                    "tags": row.get("tags"),
                 }
             else:
                 print(
@@ -136,9 +137,9 @@ def download_images(urls_with_ids, folder):
 
 
 # Set your paths and folder name
-csv_filename = "test.csv"
+csv_filename = "allData.csv"
 
-json_file_path = "test.json"
+json_file_path = "allData.json"
 output_txt_file = "test.txt"
 updated_json_path = "test.json"
 folder_name = "../data"  # Adjust path as needed

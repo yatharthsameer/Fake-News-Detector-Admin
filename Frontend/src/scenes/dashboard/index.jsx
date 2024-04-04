@@ -112,7 +112,7 @@ const handlePrev = () => {
       // Make a POST request for text search
       // fetch("https://factcheckerbtp.vishvasnews.com/search", {
       // fetch("https://factcheckerbtp.vishvasnews.com/search", {
-        fetch("https://factcheckerbtp.vishvasnews.com/rank/bm25", {
+        fetch("https://factcheckerbtp.vishvasnews.com/ensemble", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
