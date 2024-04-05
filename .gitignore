@@ -40,3 +40,7 @@ Backend/__pycache__/bertscoretest.cpython-312.pyc
 Backend/query_log.csv
 Backend/query_log.csv
 Frontend/build/asset-manifest.json
+
+# soham
+*.pyc
+*.vscode/
