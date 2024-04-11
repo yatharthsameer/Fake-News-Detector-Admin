@@ -398,7 +398,7 @@ def upload_file():
 
             # Get similar images using the uploaded image
         similar_images = st.get_similar_images(
-            image_path=filepath, number_of_images=10
+            image_path=filepath, number_of_images=20
         )
         print(f"Found similar images: {similar_images}")
 
@@ -411,12 +411,13 @@ def upload_file():
             # Use the extracted index to access the corresponding object in data
             if image_index in data:
                 corresponding_object = data[image_index]
+                if img_info["match_percentage"] > 60:
 
                 # Append the relevant details to response_data
-                response_data.append({
-                    "percentage": round(img_info["match_percentage"], 2),
-                    "data": corresponding_object
-                })
+                    response_data.append({
+                        "percentage": round(img_info["match_percentage"], 2),
+                        "data": corresponding_object
+                    })
 
         return jsonify(response_data)
     else:
