@@ -523,27 +523,28 @@ def upload_image_url():
 
             # Proceed with your existing logic for handling uploaded images
             similar_images = st.get_similar_images(
-                image_path=temp_image_path, number_of_images=10
+                image_path=temp_image_path, number_of_images=20
             )
 
             response_data = []
             for img_info in similar_images:  # Iterate through the list of dictionaries
                 # Extract the index from the image path
                 image_index = img_info["path"].split('_')[-1].split('.')[0]
-            
-            # Use the extracted index to access the corresponding object in data
+
+                # Use the extracted index to access the corresponding object in data
                 if image_index in data:
                     corresponding_object = data[image_index]
-                    
-                    # Append the relevant details to response_data
-                    response_data.append({
-                        "percentage": round(img_info["match_percentage"], 2),
-                        "data": corresponding_object
-                    })
+                    if img_info["match_percentage"] > 60:
+
+                        # Append the relevant details to response_data
+                        response_data.append(
+                            {
+                                "percentage": round(img_info["match_percentage"], 2),
+                                "data": corresponding_object,
+                            }
+                        )
 
             return jsonify(response_data)
-        
-
 
         else:
             return jsonify({"error": "Failed to fetch image from URL"}), 500
