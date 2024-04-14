@@ -376,7 +376,10 @@ Query: "{query}"\n\n
 image_list = Load_Data().from_folder(["./ImageMatching/data"])
 # Set up the search engine
 st = Search_Setup(
-    image_list=image_list, model_name="vgg19", pretrained=True, image_count=7775
+    image_list=image_list,
+    model_name="resnet50",
+    pretrained=True,
+    image_count=8707,
 )
 # Index the images
 st.run_index()
