@@ -1,36 +1,32 @@
-import csv
 import json
+import csv
 
-# Define the input CSV file and output JSON file names
-csv_filename = "hindi.csv"
-json_filename = "hindi.json"
 
-# Initialize an empty list to hold the processed records
-json_data = []
+def json_to_csv(json_filepath, csv_filepath):
+    # Load the JSON data from the file
+    with open(json_filepath, "r") as file:
+        data = json.load(file)
 
-# Open the CSV file for reading
-with open(csv_filename, mode="r", encoding="utf-8") as csvfile:
-    # Create a CSV reader object
-    csvreader = csv.DictReader(csvfile)
+    # Open the CSV file for writing
+    with open(csv_filepath, "w", newline="", encoding="utf-8") as csvfile:
+        # Determine the fieldnames from the first item keys if available
+        fieldnames = list(data[list(data.keys())[0]].keys()) if data else []
 
-    # Process each row in the CSV file
-    for row in csvreader:
-        # Convert the row to the desired JSON structure
-        processed_row = {
-            "Story_Date": row.get("Story Date"),
-            "Story_URL": row.get("Story URL"),
-            "Headline": row.get("Headline"),
-            "Claim_URL": row.get("Claim URL"),
-            "What_(Claim)": row.get("What (Claim)"),
-            "About_Subject": row.get("About Subject"),
-            "About_Person": row.get("About Person"),
-        }
-        # Add the processed row to the list
-        json_data.append(processed_row)
+        # Create a CSV DictWriter object using the fieldnames
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-# Open the JSON file for writing
-with open(json_filename, mode="w", encoding="utf-8") as jsonfile:
-    # Write the list of processed records to the JSON file
-    json.dump(json_data, jsonfile, ensure_ascii=False, indent=4)
+        # Write the header row
+        writer.writeheader()
 
-print(f"CSV data has been successfully converted to JSON and saved to {json_filename}")
+        # Write data rows
+        for item in data.values():
+            writer.writerow(item)
+
+    print(f"Data successfully written to {csv_filepath}")
+
+
+# Example usage:
+json_filepath = "processedData.json"  # Adjust to your JSON file's path
+csv_filepath = "output.csv"  # Desired output CSV file path
+
+json_to_csv(json_filepath, csv_filepath)

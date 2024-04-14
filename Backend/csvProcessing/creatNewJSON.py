@@ -1,14 +1,45 @@
 import json
 
-# Read the data from 'allData.json'
-with open("allData.json", "r", encoding="utf-8") as file:
-    data = json.load(file)
 
-# Reindex the objects with consecutive numbers
-reindexed_data = {str(i + 1): value for i, value in enumerate(data.values())}
+def load_json_data(filepath):
+    with open(filepath, "r") as file:
+        data = json.load(file)
+    return data
 
-# Write the reindexed data to a new file
-with open("reindexedData.json", "w", encoding="utf-8") as new_file:
-    json.dump(reindexed_data, new_file, ensure_ascii=False, indent=4)
 
-print("Data has been reindexed and saved to 'reindexedData.json'.")
+def merge_json_objects(data):
+    merged_data = {}
+    for key, value in data.items():
+        url = value["Story_URL"]
+        if url in merged_data:
+            # Merging process: prefer non-empty values from either of the entries
+            existing = merged_data[url]
+            for field in value:
+                if value[field]:  # Prefer non-empty or more complete info fields
+                    existing[field] = value[field]
+        else:
+            merged_data[url] = value
+            # Keep a reference to the original key to maintain the "smaller index"
+            merged_data[url]["original_key"] = key
+    # Return the dictionary, reindexed to use the smallest original key
+    reindexed_data = {
+        val["original_key"]: {k: v for k, v in val.items() if k != "original_key"}
+        for val in merged_data.values()
+    }
+    return reindexed_data
+
+
+def save_json_data(filepath, data):
+    with open(filepath, "w") as file:
+        json.dump(data, file, indent=4, ensure_ascii=False)
+
+
+# Path to your JSON file
+filepath = "sheetTotal.json"
+
+# Load, process, and save the JSON data
+original_data = load_json_data(filepath)
+merged_data = merge_json_objects(original_data)
+save_json_data("processedData.json", merged_data)
+
+print("Merging complete. Data saved to 'processedData.json'.")

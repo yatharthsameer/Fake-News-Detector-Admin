@@ -112,7 +112,8 @@ const handlePrev = () => {
       // Make a POST request for text search
       // fetch("https://factcheckerbtp.vishvasnews.com/search", {
       // fetch("https://factcheckerbtp.vishvasnews.com/search", {
-        fetch("https://factcheckerbtp.vishvasnews.com/ensemble", {
+        fetch("http://localhost:8080/ensemble", {
+        // fetch("https://factcheckerbtp.vishvasnews.com/ensemble", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -151,7 +152,7 @@ const handlePrev = () => {
       formData.append("file", selectedImageFile);
 
       // Make a POST request for image upload
-      fetch("https://factcheckerbtp.vishvasnews.com/upload", {
+              fetch("http://localhost:8080/upload", {
         method: "POST",
         body: formData, // Send the form data
       })
@@ -270,8 +271,8 @@ const handlePrev = () => {
             label="Search Type"
           >
             <MenuItem value="text">Text</MenuItem>
-            <MenuItem value="image">Image</MenuItem>
-            <MenuItem value="link">Link</MenuItem>
+            <MenuItem value="image">Image Upload</MenuItem>
+            <MenuItem value="link">Image URL</MenuItem>
           </Select>
         </FormControl>
 
