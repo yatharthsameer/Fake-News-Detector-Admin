@@ -11,5 +11,5 @@ with open('fasttext-tmp/data.txt', 'w') as fo:
     fo.write("\n".join(docs))
 
 
-model = fasttext.train_unsupervised('fasttext-tmp/data.txt', minCount=2, wordNgrams=2, epoch=10)
+model = fasttext.train_unsupervised('fasttext-tmp/data.txt', minCount=2, wordNgrams=3, epoch=50, dim=200, neg=10)
 model.save_model("fasttext-tmp/model.bin")
