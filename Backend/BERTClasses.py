@@ -19,7 +19,7 @@ from multiprocessing import Pool, Process
 ################################################################################
 ################################################################################
 # for SPACY; Use 1 if there are problems with the multiproccessing library
-NUM_PROCS = 16
+NUM_PROCS = 1
 
 
 def load_data(filepath="csvProcessing/allData.json"):
