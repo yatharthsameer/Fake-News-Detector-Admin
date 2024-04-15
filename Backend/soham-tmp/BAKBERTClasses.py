@@ -10,7 +10,6 @@ from deep_translator import GoogleTranslator
 import json
 from time import time
 import re
-from collections import defaultdict
 import spacy
 import numpy as np
 from multiprocessing import Pool, Process
@@ -18,8 +17,8 @@ from multiprocessing import Pool, Process
 
 ################################################################################
 ################################################################################
-# for SPACY; Use 1 if there are problems with the multiproccessing library
-NUM_PROCS = 1
+# for SPACY
+NUM_PROCS = 8
 
 
 def load_data(filepath="csvProcessing/allData.json"):
@@ -36,7 +35,7 @@ def load_data(filepath="csvProcessing/allData.json"):
             ).strip()
             for x in val:
                 val[x] = (
-                    re.sub("\s+", " ", val[x].lower()).strip() if val[x] and val[x].lower() not in ["na", "n/a"]   else ""
+                    re.sub("\s+", " ", val[x].lower()).strip() if val[x] != "NA" else ""
                 )
                 val[x] = (
                     re.sub("(quick.)?fact.check\s?\:?\s*", "", val[x])
@@ -72,12 +71,9 @@ class bm25:
         ts = time()
         self.nlp = spacy.load("en_core_web_sm")
         self.docs = [self.clean(x) for x in docs]
-
-        if NUM_PROCS > 1:
-            with Pool(NUM_PROCS) as p:
-                tokenized_corpus = p.map(self.tokenize, docs)
-        else:
-            tokenized_corpus = map(self.tokenize, docs)
+        # tokenized_corpus = [self.tokenize(x) for x in docs]
+        # with Pool(NUM_PROCS) as p:
+        tokenized_corpus = map(self.tokenize, docs)
 
         self.scorer = BM25Plus(tokenized_corpus)
         te = time()
@@ -93,11 +89,11 @@ class bm25:
 
     def tokenize(self, text: str):
         if self.use_lemma:
-            return [x.lemma_.lower() for x in self.nlp(text)]
+            return [x.lemma_ for x in self.nlp(text)]
 
         return text.split()
 
-    def rank(self, query: str, thresh=0.6, max_out=25):
+    def rank(self, query: str, thresh=0, max_out=50):
         ts = time()
 
         tokenized_query = self.tokenize(self.clean(query))
@@ -134,7 +130,7 @@ class ftsent:
     def __call__(self, query, **kwargs):
         return self.rank(query, **kwargs)
 
-    def rank(self, query: str, thresh=0.75, cutoff=0.5, max_out=25):
+    def rank(self, query: str, thresh=0, cutoff=0, max_out=50):
         ts = time()
         query_vec = self.model.get_sentence_vector(self.clean(query))
         cos_sim = cosine_similarity([query_vec], self.doc_vecs)
@@ -176,7 +172,7 @@ class bertscore:
     def __call__(self, query, docs=None, **kwargs):
         return self.rank(query, docs, **kwargs)
 
-    def rank(self, query: str, docs=None, thresh=0.75, cutoff=0.5, max_out=25):
+    def rank(self, query: str, docs=None, thresh=0, max_out=50, cutoff=0):
         ts = time()
 
         refs = self.docs if docs is None else docs
@@ -229,12 +225,8 @@ class ensemble:
             # (docs -> sort) - > threshold
 
         if use_translation:
-            try:
-                self.trans = GoogleTranslator()
-                self.transen = GoogleTranslator(source="en", target="hi")
-            except Exception as args:
-                print("ERROR TRANS INIT:", args)
-                self.use_translation = False
+            self.trans = GoogleTranslator()
+            self.transen = GoogleTranslator(source="en", target="hi")
 
     def __call__(self, query, **kwargs):
         return self.rank(query, **kwargs)
@@ -252,28 +244,8 @@ class ensemble:
         print("Auto -> En")
         return self.trans.translate(text)
 
-    @staticmethod
-    def mergeranks(idx1, score1, idx2, score2, w1=10, w2=1):
-        temp = defaultdict(float)
-        for i, s in zip(idx1, score1):
-            temp[i] += s * w1
-
-        for i, s in zip(idx2, score2):
-            temp[i] += s * w2
-        
-        idxf = sorted(temp, key=lambda x: temp[x])
-
-        return idxf #, [temp[i] / (w1 + w2) for i in idxf]        
-        
-
-    def rank(self, query, thresh=0.6, cutoff=0.35, max_out=20, k=2):
+    def rank(self, query, thresh=0.9, cutoff=0.6, max_out=50, k=10):
         ts = time()
-
-        assert k >= 1, "Select k >= 1"
-
-        if len(re.sub("\W+", "", query)) < 3:
-            return [], []
-
 
         results = []
         indices = set()
@@ -288,28 +260,23 @@ class ensemble:
 
         if self.use_bm25:
             bm25idx, bm25res = self.BM25model.rank(query)
-
-            if transquery:
-                bm25idx2, bm25res2 = self.BM25model.rank(transquery, thresh=0.8)
-                bm25idx = self.mergeranks(bm25idx, bm25res, bm25idx2, bm25res2, w1=20)
-                # indices |= set(bm25idx2)
-                # results.append(bm25idx2)
-
             indices |= set(bm25idx)
             results.append(bm25idx)
 
+            if not transquery is None:
+                bm25idx2, bm25res2 = self.BM25model.rank(transquery, thresh=0.9)
+                indices |= set(bm25idx2)
+                # results.append(bm25idx2)
+
         if self.use_ft:
             ftidx, ftres = self.FTmodel.rank(query)
-
-            if transquery:
-                ftidx2, ftres2 = self.FTmodel.rank(transquery)
-                # ftidx = self.mergeranks(ftidx, ftres, ftidx2, ftres2, w1=10)
-                indices |= set(ftidx2)
-                # results.append(ftidx2)
-
             indices |= set(ftidx)
             results.append(ftidx)
 
+            if not transquery is None:
+                ftidx2, ftres2 = self.FTmodel.rank(transquery, cutoff=0.9)
+                indices |= set(ftidx2)
+                # results.append(ftidx2)
 
         if self.use_bs:
             indices = np.array(list(indices))
@@ -317,25 +284,19 @@ class ensemble:
             print("Total #docs for running bertscore:", len(indices))
 
             tmpidx, bsres = self.BSmodel.rank(query, tmpdocs)
-            # if transquery:
-                # tmpidx2, bsres2 = self.BSmodel.rank(transquery, tmpdocs, cutoff=0.6, thresh=0.9)
-                # tmpidx = self.mergeranks(tmpidx, bsres, tmpidx2, bsres2, w1=10)
-
             bsidx = indices[tmpidx]
             results.append(bsidx)
-
-
 
         # Reciprocal Rank Fusion
         docrrf = [0] * len(self.docs)
         for num, idx in enumerate(results):
             print("len%d" % num, len(idx), end="\t")
             for rank, i in enumerate(idx):
-                docrrf[i] += 1 / (k + rank)
+                docrrf[i] += 1 / (k + rank + 1)
 
         metric = np.array(docrrf) * k / len(results)
         idx = metric.argsort()[-max_out:][::-1]
-        res = metric[idx].round(3)
+        res = metric[idx].round(4)
 
         idx = idx[(res >= cutoff) & (res >= res[0] * thresh)]
         res = res[(res >= cutoff) & (res >= res[0] * thresh)]
@@ -355,7 +316,7 @@ class ensemble:
             except Exception as args:
                 print("TRANSLATE ERROR:", args)
 
-        return round(per, 3)
+        return round(per, 4)
 
         # return self.BSmodel.match_percent(query, ddict)
 
@@ -373,68 +334,58 @@ if __name__ == "__main__":
     ########################################
     # QUERY = 'anushka sharma married kohli'
     # QUERY = ['rahul gandhi drinking', 'anushka sharma', 'priyanka chopra', 'priyanka gandhi', 'priyankaa chopra', 'priyankaa gandhi', 'priyankaa gandhi posted', 'virat koli']
-    QUERY = ['rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Sri lanka economy', 'Rolls Royce Saudi Arabia.', 'Ramu Elephant', 'ms dhoni', 'काल्‍पनिक तस्‍वीर']
-    # with open("queries_test.txt") as fp:
-    #     QUERY = fp.read().splitlines()
+    # QUERY = ['rahul gandhi drinking']
+    with open("queries_test.txt") as fp:
+        QUERY = fp.read().splitlines()
 
-    docs, orig = load_data("../csvProcessing/allData.json")
-    model = ensemble(docs, use_translation=False)
+    docs, orig = load_data()
+    model = ensemble(docs)
 
+    for num, query in enumerate(QUERY):
+        print("\n" + "#" * 100)
+        # print("#"*40 + " BM25 " + "#"*40)
+        print("QUERY", num, query)
 
-    for query in QUERY:
-        print("\n\n")
-        print("#"*100)
-        print("#"*100)
-        print("#"*40 + " BM25 " + "#"*40)
-        print("QUERY:", query)
+        idx, res = model.rank(query, cutoff=0.6)
 
-        indices = set()
-        
-        idx, res = model.BM25model.rank(query)
-        indices |= set(idx)
-        for i, v in zip(idx[:10], res[:10]): 
-            print(" --> ", v, i, docs[i])
-
-
-        print("\n")
-        print("#"*40 + " FT-sent " + "#"*40)
-        print("QUERY:", query)
-        
-        idx, res = model.FTmodel(query)
-        indices |= set(idx)
-        for i, v in zip(idx[:10], res[:10]): 
-            print(" --> ", v, i, docs[i])
-
-
-        print("\n")
-        print("#"*40 + " BERTSCORE " + "#"*40)
-        print("QUERY:", query)
-
-        indices = np.array(list(indices))
-        print(len(indices))
-        tmpdocs = [model.docs[i] for i in indices]    
-        idx, res = model.BSmodel(query, tmpdocs)
-        idx = indices[idx]
-        for i, v in zip(idx[:10], res[:10]): 
-            print(" --> ", v, i, docs[i])
-
-
-        # Main running method
-        print("\n")
-        print("#"*40 + " Ensemble " + "#"*40)
-        print("QUERY:", query)
-        idx, scores = model.rank(query, cutoff=0.35, thresh=0.6)
-
-        for i, v in zip(idx[:10], scores[:10]):
+        for i, v in zip(idx[:10], res[:10]):
             print(" --> ", v, i, docs[i])
             print(" +-> ", orig[i]["Headline"])
             print()
 
         percent = (
-                max(scores[0], model.match_percent(query, orig[idx[0]]))
-                if len(idx) > 0
-                else None
-            )
+            max(res[0], model.match_percent(query, orig[idx[0]]))
+            if len(idx) > 0
+            else None
+        )
         print("Percent Match", percent)
 
+    """
+    for query in QUERY:
+        print("\n")
+        print("#"*100)
+        print("#"*40 + " BM25 " + "#"*40)
+        print("QUERY:", query)
+        
+        idx, res = model.bm25model.rank(query)
+        for i, v in zip(idx[:10], res[:10]): 
+            print(" --> ", v, i, docs[i])
 
+        print("\n")
+        print("#"*40 + " FT-sent " + "#"*40)
+        print("QUERY:", query)
+        
+        idx, res = model.ftsentmodel(query)
+        for i, v in zip(idx[:10], res[:10]): 
+            print(" --> ", v, i, docs[i])
+
+        print("\n")
+        print("#"*40 + " BM25 + BERTSCORE " + "#"*40)
+        print("QUERY:", query)
+
+        # Main running method
+        idx, res = model(query, max_out=5)
+        for i, v in zip(idx[:10], res[:10]): 
+            print(" --> ", v, i, docs[i])
+
+    """

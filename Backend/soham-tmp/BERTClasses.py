@@ -19,7 +19,7 @@ from multiprocessing import Pool, Process
 ################################################################################
 ################################################################################
 # for SPACY; Use 1 if there are problems with the multiproccessing library
-NUM_PROCS = 1
+NUM_PROCS = 16
 
 
 def load_data(filepath="csvProcessing/allData.json"):
@@ -373,7 +373,8 @@ if __name__ == "__main__":
     ########################################
     # QUERY = 'anushka sharma married kohli'
     # QUERY = ['rahul gandhi drinking', 'anushka sharma', 'priyanka chopra', 'priyanka gandhi', 'priyankaa chopra', 'priyankaa gandhi', 'priyankaa gandhi posted', 'virat koli']
-    QUERY = ['rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Sri lanka economy', 'Rolls Royce Saudi Arabia.', 'Ramu Elephant', 'ms dhoni', 'काल्‍पनिक तस्‍वीर']
+    # QUERY = ['virat kohli', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Sri lanka economy', 'Rolls Royce Saudi Arabia.', 'Ramu Elephant', 'ms dhoni', 'काल्‍पनिक तस्‍वीर']
+    QUERY = ['Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'Fact Check : रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'Fact Check : केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
     # with open("queries_test.txt") as fp:
     #     QUERY = fp.read().splitlines()
 
@@ -382,12 +383,14 @@ if __name__ == "__main__":
 
 
     for query in QUERY:
+        '''
         print("\n\n")
         print("#"*100)
         print("#"*100)
         print("#"*40 + " BM25 " + "#"*40)
         print("QUERY:", query)
 
+        
         indices = set()
         
         idx, res = model.BM25model.rank(query)
@@ -417,24 +420,29 @@ if __name__ == "__main__":
         idx = indices[idx]
         for i, v in zip(idx[:10], res[:10]): 
             print(" --> ", v, i, docs[i])
-
+        
+        
+        '''
 
         # Main running method
         print("\n")
         print("#"*40 + " Ensemble " + "#"*40)
         print("QUERY:", query)
-        idx, scores = model.rank(query, cutoff=0.35, thresh=0.6)
+        
 
-        for i, v in zip(idx[:10], scores[:10]):
-            print(" --> ", v, i, docs[i])
-            print(" +-> ", orig[i]["Headline"])
-            print()
-
+        idx, scores = model.rank(query, cutoff=0.4, thresh=0.45, k = 10, max_out=20)
         percent = (
                 max(scores[0], model.match_percent(query, orig[idx[0]]))
                 if len(idx) > 0
                 else None
             )
+        print("Num res:", len(idx))
         print("Percent Match", percent)
+
+        for i, v in zip(idx[:], scores[:]):
+            print(" --> ", v, i, docs[i])
+            print(" +-> ", orig[i]["Headline"])
+            print()
+
 
 

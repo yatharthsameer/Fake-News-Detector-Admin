@@ -6,7 +6,7 @@ if not os.path.exists('fasttext-tmp/'):
     os.makedirs('fasttext-tmp/')
 
 
-docs, orig = load_data()
+docs, orig = load_data("../csvProcessing/allData.json")
 with open('fasttext-tmp/data.txt', 'w') as fo:
     fo.write("\n".join(docs))
 
