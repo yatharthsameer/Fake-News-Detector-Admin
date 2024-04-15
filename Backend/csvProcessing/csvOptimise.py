@@ -224,21 +224,21 @@ def fetch_missing_image_urls(json_file_path, output_txt_file):
 
 
 # Set your paths and folder name
-csv_filename = "mdpFinal.csv"
+csv_filename = "allData.csv"
 
-json_file_path = "mdpFinal.json"
-output_txt_file = "mdpFinal.txt"
-updated_json_path = "mdpFinal.json"
+json_file_path = "allData.json"
+output_txt_file = "allData.txt"
+updated_json_path = "allData.json"
 folder_name = "../data"  # Adjust path as needed
 
 # Process sequence
-convert_csv_to_json(csv_filename, json_file_path)  # Convert CSV to JSON first
+# convert_csv_to_json(csv_filename, json_file_path)  # Convert CSV to JSON first
 # fetch_and_log_image_urls(json_file_path, output_txt_file)
 # update_json_with_image_links(json_file_path, output_txt_file, updated_json_path)
-# image_urls = extract_img_links(updated_json_path)
-# download_images(image_urls, folder_name)
-json_file_path = "mdpFinal.json"
-output_txt_file = "mdpFinal.txt"
+image_urls = extract_img_links(updated_json_path)
+download_images(image_urls, folder_name)
+# json_file_path = "mdpFinal.json"
+# output_txt_file = "mdpFinal.txt"
 # reindex_json_file(json_file_path)
 
 # fetch_missing_image_urls(json_file_path, output_txt_file)
