@@ -1,6 +1,6 @@
 import os
 
-# os.environ['CUDA_VISIBLE_DEVICES'] = ""
+os.environ['CUDA_VISIBLE_DEVICES'] = "1"
 
 from bert_score import BERTScorer
 from rank_bm25 import BM25Plus
@@ -134,7 +134,7 @@ class ftsent:
     def __call__(self, query, **kwargs):
         return self.rank(query, **kwargs)
 
-    def rank(self, query: str, thresh=0.75, cutoff=0.5, max_out=25):
+    def rank(self, query: str, thresh=0.8, cutoff=0.6, max_out=25):
         ts = time()
         query_vec = self.model.get_sentence_vector(self.clean(query))
         cos_sim = cosine_similarity([query_vec], self.doc_vecs)
@@ -176,7 +176,7 @@ class bertscore:
     def __call__(self, query, docs=None, **kwargs):
         return self.rank(query, docs, **kwargs)
 
-    def rank(self, query: str, docs=None, thresh=0.75, cutoff=0.5, max_out=25):
+    def rank(self, query: str, docs=None, thresh=0.8, cutoff=0.6, max_out=25):
         ts = time()
 
         refs = self.docs if docs is None else docs
@@ -383,7 +383,7 @@ if __name__ == "__main__":
 
 
     for query in QUERY:
-        '''
+        
         print("\n\n")
         print("#"*100)
         print("#"*100)
@@ -422,7 +422,7 @@ if __name__ == "__main__":
             print(" --> ", v, i, docs[i])
         
         
-        '''
+        
 
         # Main running method
         print("\n")
@@ -430,7 +430,7 @@ if __name__ == "__main__":
         print("QUERY:", query)
         
 
-        idx, scores = model.rank(query, cutoff=0.4, thresh=0.45, k = 10, max_out=20)
+        idx, scores = model.rank(query, cutoff=0.3, thresh=0.3, k = 5, max_out=20)
         percent = (
                 max(scores[0], model.match_percent(query, orig[idx[0]]))
                 if len(idx) > 0
