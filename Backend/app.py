@@ -599,50 +599,106 @@ def search_embed():
 
 @app.route("/appendData", methods=["POST"])
 def append_story():
+
     # Extract data from the request
     request_data = request.get_json()
-    print(request_data)
 
     # Define the path for the JSON file where data will be appended
     file_path = "csvProcessing/allData.json"
 
-    # Check if the file exists. If not, create an empty list to start with
-    if not os.path.exists(file_path):
-        with open(file_path, "w", encoding="utf-8") as file:
-            json.dump([], file, ensure_ascii=False)
+    # Load the current data from the JSON file or initialize as an empty dict if the file does not exist
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as file:
+            file_data = json.load(file)
+    else:
+        file_data = {}
 
-    # Open the file to read the current data
-    with open(file_path, "r+", encoding="utf-8") as file:
-        # Read the current data in the file
-        file_data = json.load(file)
+    # Check if any existing entry in file_data has the same Story_URL as the new story
+    if any(
+        story["Story_URL"] == request_data["Story_URL"] for story in file_data.values()
+    ):
+        return jsonify({"message": "Story URL already exists. No data appended."}), 400
 
-        # Check if Story_URL is already present
-        existing_story = next(
-            (
-                item
-                for item in file_data
-                if item["Story_URL"] == request_data["Story_URL"]
-            ),
-            None,
-        )
-        if existing_story is not None:
-            # If present, do not append and return a message indicating so
-            return (
-                jsonify({"message": "Story URL already exists. No data appended."}),
-                400,
-            )
+    # Generate a new index for the story to be appended
+    new_index = str(max(map(int, file_data.keys()), default=0) + 1)
+    file_data[new_index] = request_data
 
-        # If Story_URL is not present, append the new data (request_data) to the file's data
-        file_data.append(request_data)
-        # Set file's current position at offset.
-        file.seek(0)
-        # Clear the file content
-        file.truncate()
-        # Convert back to json and write in the file
+    # Download the image from the URL provided in request_data["img"]
+    image_url = request_data["img"]
+    image_response = requests.get(image_url)
+    if image_response.status_code == 200:
+        # Create the filename using new_index
+        image_filename = f"image_{new_index}.jpg"
+        image_path = os.path.join("./data", image_filename)
+
+        # Save the image to the "./data" directory
+        with open(image_path, "wb") as f:
+            f.write(image_response.content)
+
+        # Add image to index
+        try:
+            st.add_images_to_index([image_path])
+        except Exception as e:
+            return jsonify({"message": f"Failed to index image: {str(e)}"}), 500
+
+    else:
+        return jsonify({"message": "Failed to download image."}), 500
+
+    # Write the updated data back to the file
+    with open(file_path, "w", encoding="utf-8") as file:
         json.dump(file_data, file, ensure_ascii=False, indent=4)
 
     # Send back a response to indicate success
-    return jsonify({"message": "Data appended successfully"}), 200
+    return jsonify({"message": "Data appended and image indexed successfully"}), 200
+
+
+# @app.route("/appendData", methods=["POST"])
+# def append_story():
+#     # Extract data from the request
+#     request_data = request.get_json()
+#     print(request_data)
+
+#     # Define the path for the JSON file where data will be appended
+#     file_path = "csvProcessing/allData.json"
+
+#     # Check if the file exists. If not, create an empty list to start with
+#     if not os.path.exists(file_path):
+#         with open(file_path, "w", encoding="utf-8") as file:
+#             json.dump([], file, ensure_ascii=False)
+
+#     # Open the file to read the current data
+#     with open(file_path, "r+", encoding="utf-8") as file:
+#         # Read the current data in the file
+#         file_data = json.load(file)
+
+#         # Check if Story_URL is already present
+#         existing_story = next(
+#             (
+#                 item
+#                 for item in file_data
+#                 if item["Story_URL"] == request_data["Story_URL"]
+#             ),
+#             None,
+#         )
+#         if existing_story is not None:
+#             # If present, do not append and return a message indicating so
+#             return (
+#                 jsonify({"message": "Story URL already exists. No data appended."}),
+#                 400,
+#             )
+
+#         # If Story_URL is not present, append the new data (request_data) to the file's data
+#         file_data.append(request_data)
+#         # Set file's current position at offset.
+#         file.seek(0)
+#         # Clear the file content
+#         file.truncate()
+#         # Convert back to json and write in the file
+#         json.dump(file_data, file, ensure_ascii=False, indent=4)
+
+#     # Send back a response to indicate success
+#     return jsonify({"message": "Data appended successfully"}), 200
+
 
 from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 

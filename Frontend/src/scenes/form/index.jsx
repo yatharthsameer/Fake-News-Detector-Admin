@@ -2,12 +2,16 @@ import React from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-
+import { useState } from "react";
 const Form = () => {
+    const [message, setMessage] = useState("");
+    const [isError, setIsError] = useState(false);
+
   const handleFormSubmit = async (values) => {
     try {
       const response = await fetch(
         "https://factcheckerbtp.vishvasnews.com/appendData",
+        // "http://localhost:8080/appendData",
         {
           method: "POST",
           headers: {
@@ -21,17 +25,20 @@ const Form = () => {
       if (response.ok) {
         const result = await response.json();
         console.log(result.message); // Or set some state to show a success message
+             setMessage(result.message);
+             setIsError(false);
       } else {
         console.error("Submission failed", await response.text());
-        // Handle server errors or invalid responses here
-        // For example, set an error state to display an error message
+         setMessage(
+           response.message || "Submission failed, please check your input."
+         );
+         setIsError(true);
       }
     } catch (error) {
       console.error("An error occurred during submission:", error);
-      // Handle the error state here
-    }
+ setMessage(`An error occurred during submission: ${error.message}`);
+ setIsError(true);    }
   };
-
 
   return (
     <Box m="20px">
@@ -108,10 +115,10 @@ const Form = () => {
                 label="What (Claim)"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.What_Claim}
-                name="What_Claim"
-                error={!!touched.What_Claim && !!errors.What_Claim}
-                helperText={touched.What_Claim && errors.What_Claim}
+                value={values["What_(Claim)"]}
+                name="What_(Claim)"
+                error={!!touched["What_(Claim)"] && !!errors["What_(Claim)"]}
+                helperText={touched["What_(Claim)"] && errors["What_(Claim)"]}
               />
               <TextField
                 fullWidth
@@ -158,6 +165,17 @@ const Form = () => {
             >
               Submit
             </Button>
+            <Typography
+              variant="h6"
+              sx={{
+                mt: 2,
+                color: isError ? "red" : "green",
+                fontWeight: "bold",
+                fontSize: "1.2rem",
+              }}
+            >
+              {message}
+            </Typography>
           </form>
         )}
       </Formik>
@@ -172,11 +190,7 @@ const validationSchema = yup.object().shape({
     .url("Enter a valid URL")
     .required("Story URL is required"),
   Headline: yup.string().required("Headline is required"),
-  Claim_URL: yup
-    .string()
-    .url("Enter a valid URL")
-    .required("Claim URL is required"),
-  What_Claim: yup.string().required("Claim is required"),
+  "What_(Claim)": yup.string().required("Claim is required"), // Use the key as a string literal
   img: yup
     .string()
     .url("Enter a valid image URL")
@@ -185,12 +199,13 @@ const validationSchema = yup.object().shape({
   About_Subject: yup.string().required("Subject is required"),
 });
 
+
 const initialValues = {
   Story_Date: "",
   Story_URL: "",
   Headline: "",
   Claim_URL: "",
-  What_Claim: "",
+  "What_(Claim)": "",
   img: "",
   About_Person: "",
   About_Subject: "",
