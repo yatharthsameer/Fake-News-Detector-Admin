@@ -710,6 +710,14 @@ model = ensemble(docs)
 print("Models loaded successfully.")
 
 
+def add_docs(filename):
+    newdocs, neworig = load_data(filename)
+    docs.extend(newdocs)
+    origdata.extend(neworig)
+    model.add_docs(newdocs)
+
+
+
 @app.route("/ensemble", methods=["POST"])
 def rank_documents_bm25_bert():
     req = request.json

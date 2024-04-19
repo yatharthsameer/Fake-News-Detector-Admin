@@ -86,6 +86,13 @@ class bm25:
 
     def __call__(self, query, **kwargs):
         return self.rank(query, **kwargs)
+    
+    def add_docs(self, docs):
+        tmp = [self.clean(x) for x in docs]
+        self.docs.extend(tmp)
+        tokenized_corpus = map(self.tokenize, tmp)
+        self.scorer = BM25Plus(tokenized_corpus)
+
 
     def clean(self, text: str):
         # print (text)
@@ -133,6 +140,10 @@ class ftsent:
 
     def __call__(self, query, **kwargs):
         return self.rank(query, **kwargs)
+    
+    def add_docs(self, docs):
+        self.doc_vecs.extend([self.model.get_sentence_vector(x) for x in docs])
+
 
     def rank(self, query: str, thresh=0.8, cutoff=0.6, max_out=25):
         ts = time()
@@ -175,6 +186,10 @@ class bertscore:
 
     def __call__(self, query, docs=None, **kwargs):
         return self.rank(query, docs, **kwargs)
+    
+    def add_docs(self, docs):
+        self.docs.extend([self.clean(x) for x in docs])
+
 
     def rank(self, query: str, docs=None, thresh=0.8, cutoff=0.6, max_out=25):
         ts = time()
@@ -238,6 +253,16 @@ class ensemble:
 
     def __call__(self, query, **kwargs):
         return self.rank(query, **kwargs)
+    
+    def add_docs(self, docs):
+        self.docs.extend(docs)
+
+        if self.use_bm25:
+            self.BM25model.add_docs(docs)
+            
+        if self.use_ft:
+            self.FTmodel.add_docs(docs)
+
 
     def translate(self, text):
         assert self.use_translation, "Translator not initialized"
@@ -378,7 +403,7 @@ if __name__ == "__main__":
     # with open("queries_test.txt") as fp:
     #     QUERY = fp.read().splitlines()
 
-    docs, orig = load_data("../csvProcessing/allData.json")
+    docs, orig = load_data("csvProcessing/allData.json")
     model = ensemble(docs, use_translation=False)
 
 
