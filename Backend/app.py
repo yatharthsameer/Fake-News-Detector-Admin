@@ -596,6 +596,26 @@ def search_embed():
 
     return jsonify(response_data)
 
+from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
+
+# Load the documents at app start to avoid reloading them on each request
+docs, origdata = load_data("csvProcessing/allData.json")
+
+model = ensemble(docs)
+
+
+print("Models loaded successfully.")
+def restart_server():
+    os.execv(sys.executable, ["python3"] + sys.argv)
+
+
+# add the new documents to a temp file and feed it to this function
+def add_docs(filename):
+    newdocs, neworig = load_data(filename)
+    docs.extend(newdocs)
+    origdata.extend(neworig)
+    model.add_docs(newdocs)
+import sys
 
 @app.route("/appendData", methods=["POST"])
 def append_story():
@@ -622,6 +642,16 @@ def append_story():
     # Generate a new index for the story to be appended
     new_index = str(max(map(int, file_data.keys()), default=0) + 1)
     file_data[new_index] = request_data
+    temp_file_path = f"csvProcessing/temp_new_data_{new_index}.json"
+    with open(temp_file_path, 'w', encoding="utf-8") as temp_file:
+        json.dump({new_index: request_data}, temp_file, ensure_ascii=False, indent=4)
+    print(f"Data appended successfully with index: {new_index}")
+    # Add new docs to the model
+    add_docs(temp_file_path)
+    print("New docs added to the model.")
+
+    # # Remove temp file after updating model
+    os.remove(temp_file_path)
 
     # Download the image from the URL provided in request_data["img"]
     image_url = request_data["img"]
@@ -647,75 +677,11 @@ def append_story():
     # Write the updated data back to the file
     with open(file_path, "w", encoding="utf-8") as file:
         json.dump(file_data, file, ensure_ascii=False, indent=4)
+    restart_server()
 
     # Send back a response to indicate success
+
     return jsonify({"message": "Data appended and image indexed successfully"}), 200
-
-
-# @app.route("/appendData", methods=["POST"])
-# def append_story():
-#     # Extract data from the request
-#     request_data = request.get_json()
-#     print(request_data)
-
-#     # Define the path for the JSON file where data will be appended
-#     file_path = "csvProcessing/allData.json"
-
-#     # Check if the file exists. If not, create an empty list to start with
-#     if not os.path.exists(file_path):
-#         with open(file_path, "w", encoding="utf-8") as file:
-#             json.dump([], file, ensure_ascii=False)
-
-#     # Open the file to read the current data
-#     with open(file_path, "r+", encoding="utf-8") as file:
-#         # Read the current data in the file
-#         file_data = json.load(file)
-
-#         # Check if Story_URL is already present
-#         existing_story = next(
-#             (
-#                 item
-#                 for item in file_data
-#                 if item["Story_URL"] == request_data["Story_URL"]
-#             ),
-#             None,
-#         )
-#         if existing_story is not None:
-#             # If present, do not append and return a message indicating so
-#             return (
-#                 jsonify({"message": "Story URL already exists. No data appended."}),
-#                 400,
-#             )
-
-#         # If Story_URL is not present, append the new data (request_data) to the file's data
-#         file_data.append(request_data)
-#         # Set file's current position at offset.
-#         file.seek(0)
-#         # Clear the file content
-#         file.truncate()
-#         # Convert back to json and write in the file
-#         json.dump(file_data, file, ensure_ascii=False, indent=4)
-
-#     # Send back a response to indicate success
-#     return jsonify({"message": "Data appended successfully"}), 200
-
-
-from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
-
-# Load the documents at app start to avoid reloading them on each request
-docs,origdata = load_data("csvProcessing/allData.json")
-
-model = ensemble(docs)
-
-print("Models loaded successfully.")
-
-
-def add_docs(filename):
-    newdocs, neworig = load_data(filename)
-    docs.extend(newdocs)
-    origdata.extend(neworig)
-    model.add_docs(newdocs)
-
 
 
 @app.route("/ensemble", methods=["POST"])
@@ -748,9 +714,7 @@ def rank_documents_bm25_bert():
 
 
 if __name__ == "__main__":
-    # This is used when running locally only. When deploying to Google App
-    # Engine, a webserver process such as Gunicorn will serve the app. You
-    # can configure startup instructions by adding `entrypoint` to app.yaml.
+
     app.run(host="127.0.0.1", port=8080, debug=True)
 # [END gae_python3_app]
 # [END gae_python38_app]
