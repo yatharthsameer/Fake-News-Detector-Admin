@@ -677,7 +677,7 @@ def append_story():
     # Write the updated data back to the file
     with open(file_path, "w", encoding="utf-8") as file:
         json.dump(file_data, file, ensure_ascii=False, indent=4)
-    restart_server()
+    # restart_server()
 
     # Send back a response to indicate success
 
@@ -688,6 +688,10 @@ def append_story():
 def rank_documents_bm25_bert():
     req = request.json
     query = req.get("query", "")
+    data=[]
+    with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
+        data = json.load(file)
+    print("Data loaded successfully.")
 
     # Using combined BM25 and BERTScore model to rank documents
     idx, scores = model.rank(query, cutoff=0.3, thresh=0.3, k = 5, max_out=20)
@@ -700,7 +704,7 @@ def rank_documents_bm25_bert():
     )
     
     for i, score in zip(idx[:10], scores[:10]):
-        doc_id = str(i + 1)  # Convert index to integer
+        doc_id = str(i+1)  # Convert index to integer
         print(doc_id)
         doc_obj = data[doc_id]  # Access the corresponding document object
 
@@ -715,6 +719,6 @@ def rank_documents_bm25_bert():
 
 if __name__ == "__main__":
 
-    app.run(host="127.0.0.1", port=8080, debug=True)
+    app.run(host="127.0.0.1", port=8080, debug=True, use_reloader=False)
 # [END gae_python3_app]
 # [END gae_python38_app]

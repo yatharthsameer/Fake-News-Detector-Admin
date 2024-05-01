@@ -262,6 +262,8 @@ class ensemble:
             
         if self.use_ft:
             self.FTmodel.add_docs(docs)
+        if self.use_bs:
+            self.BSmodel.add_docs(docs)
 
 
     def translate(self, text):
