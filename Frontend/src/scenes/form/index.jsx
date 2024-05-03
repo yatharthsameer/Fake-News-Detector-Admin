@@ -1,8 +1,10 @@
 import React from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography, useTheme } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useState } from "react";
+import { tokens } from "../../theme";
+
 const Form = () => {
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
@@ -10,8 +12,8 @@ const Form = () => {
   const handleFormSubmit = async (values) => {
     try {
       const response = await fetch(
-        "https://factcheckerbtp.vishvasnews.com/appendData",
-        // "http://localhost:8080/appendData",
+        // "https://factcheckerbtp.vishvasnews.com/appendData",
+        "http://localhost:8080/appendData",
         {
           method: "POST",
           headers: {
@@ -39,11 +41,15 @@ const Form = () => {
  setMessage(`An error occurred during submission: ${error.message}`);
  setIsError(true);    }
   };
+    const theme = useTheme();
+
+    const colors = tokens(theme.palette.mode);
+
 
   return (
     <Box m="20px">
       <Typography variant="h2" component="h1" align="center" gutterBottom>
-        Claim
+        Add your claim 
       </Typography>
       <Formik
         onSubmit={handleFormSubmit}
@@ -96,7 +102,7 @@ const Form = () => {
                 error={!!touched.Headline && !!errors.Headline}
                 helperText={touched.Headline && errors.Headline}
               />
-              <TextField
+              {/* <TextField
                 fullWidth
                 variant="filled"
                 type="text"
@@ -107,6 +113,18 @@ const Form = () => {
                 name="Claim_URL"
                 error={!!touched.Claim_URL && !!errors.Claim_URL}
                 helperText={touched.Claim_URL && errors.Claim_URL}
+              /> */}
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="Tags"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.tags}
+                name="tags"
+                error={!!touched.tags && !!errors.tags}
+                helperText={touched.tags && errors.tags}
               />
               <TextField
                 fullWidth
@@ -161,7 +179,13 @@ const Form = () => {
               type="submit"
               color="primary"
               variant="contained"
-              sx={{ mt: 2 }}
+              sx={{
+                backgroundColor: colors.blueAccent[600],
+                color: colors.grey[100],
+                fontSize: "14px",
+                fontWeight: "bold",
+                padding: "10px 20px",
+              }}
             >
               Submit
             </Button>
@@ -204,8 +228,8 @@ const initialValues = {
   Story_Date: "",
   Story_URL: "",
   Headline: "",
-  Claim_URL: "",
   "What_(Claim)": "",
+  tags: "",
   img: "",
   About_Person: "",
   About_Subject: "",

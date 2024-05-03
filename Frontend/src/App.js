@@ -15,12 +15,17 @@ import Geography from "./scenes/geography";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
+import Login from './scenes/login';
+import { AuthProvider } from './context/AuthContext';  // Import AuthProvider
 
+import ProtectedForm from './scenes/protectedForm'; 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar] = useState(true);
 
   return (
+    <AuthProvider> 
+
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
@@ -33,7 +38,8 @@ function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/invoices" element={<Invoices />} />
-              <Route path="/form" element={<Form />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/form" element={<ProtectedForm />} />   
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />
               <Route path="/line" element={<Line />} />
@@ -45,6 +51,8 @@ function App() {
         </div>
       </ThemeProvider>
     </ColorModeContext.Provider>
+    </AuthProvider>
+
   );
 }
 

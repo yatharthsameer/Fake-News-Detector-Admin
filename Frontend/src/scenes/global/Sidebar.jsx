@@ -1,10 +1,9 @@
 
-        import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme,Switch } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
-import { useContext } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 // import { tokens } from "../../theme";
@@ -24,37 +23,87 @@ import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutl
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+ import Login from "../login";
+import { AuthContext } from '../../context/AuthContext';  // Import AuthContext
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-    
+  const navigate = useNavigate();
+const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
+
+  const handleClick = () => {
+        setSelected(title);
+        selected=title;
+
+    if (!isAuthenticated && title === "Add fact check") {
+
+      console.log("Unauthorized access attempt to Add fact check");
+      return navigate("/login");
+    }
+
+    setSelected(title);
+    navigate(to);
+  };
 
   return (
     <MenuItem
       active={selected === title}
-      style={{
-        color: colors.grey[100],
-      }}
-      onClick={() => setSelected(title)}
+      style={{ color: colors.grey[100] }}
+      onClick={handleClick}
       icon={icon}
     >
       <Typography>{title}</Typography>
-      <Link to={to} />
     </MenuItem>
   );
 };
 
 const Sidebar = () => {
+  const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
+
   const colorMode = useContext(ColorModeContext);
   const theme = useTheme();
     const handleColorModeToggle = () => {
     colorMode.toggleColorMode(); // Toggle light/dark mode
-  };
+  }; 
+   const navigate = useNavigate();
+
 
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+
+const handleLogout = async () => {
+  console.log("Logging out");
+
+  try {
+    const response = await fetch(
+      "https://factcheckerbtp.vishvasnews.com/logout",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Ensure cookies are sent with the request
+      }
+    );
+    
+    if (response.ok) {
+      setIsAuthenticated(false); // Make sure to set authentication to false
+      navigate("/login");
+    }
+    else {
+      throw new Error("Failed to logout");
+    }
+   
+  }
+  catch (error) {
+   
+      alert("Failed to logout");
+    
+      navigate("/login");
+  }
+};
 
   return (
     <Box
@@ -134,41 +183,6 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            {/* <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Data
-            </Typography> */}
-            {/* <Item
-              title="Manage Team"
-              to="/team"
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Contacts Information"
-              to="/contacts"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
-            {/* <Item
-              title="Invoices Balances"
-              to="/invoices"
-              icon={<ReceiptOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
-            {/* <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Pages
-            </Typography> */}
             <Item
               title="Add fact check"
               to="/form"
@@ -176,13 +190,6 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            {/* <Item
-              title="Calendar"
-              to="/calendar"
-              icon={<CalendarTodayOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
             <Item
               title="Settings"
               to="/faq"
@@ -190,55 +197,13 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />{" "}
-            <Item
-              title="Log out"
-              to="/faq"
+            <MenuItem
               icon={<PersonOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            {/* <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
+              style={{ color: colors.grey[100] }}
+              onClick={handleLogout} // Directly attach logout functionality here
             >
-              Charts
-            </Typography> */}
-            {/* <Item
-              title="Bar Chart"
-              to="/bar"
-              icon={<BarChartOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
-            {/* <Item
-              title="Pie Chart"
-              to="/pie"
-              icon={<PieChartOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
-            {/* <Item
-              title="Line Chart"
-              to="/line"
-              icon={<TimelineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
-            {/* <Item
-              title="Geography Chart"
-              to="/geography"
-              icon={<MapOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
-            {/* <IconButton onClick={colorMode.toggleColorMode}>
-          {theme.palette.mode === "dark" ? (
-            <DarkModeOutlinedIcon />
-          ) : (
-            <LightModeOutlinedIcon />
-          )}
-        </IconButton> */}
+              <Typography>Log out</Typography>
+            </MenuItem>
           </Box>
         </Menu>
         <Box

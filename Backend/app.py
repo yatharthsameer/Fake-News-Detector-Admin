@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 import json
 import google.generativeai as genai
@@ -19,10 +19,13 @@ from PIL import Image, UnidentifiedImageError  # Import PIL to handle image oper
 from io import BytesIO  # Import BytesIO to convert response content to image
 import os
 import shutil  # Import shutil for file operations
-
+from flask_bcrypt import Bcrypt
+from flask_session import Session
+from config import ApplicationConfig
+from models import db, User
 
 app = Flask(__name__)
-CORS(app)  # Enabling CORS
+CORS(app, supports_credentials=True)
 # Configure Logging
 formatter = logging.Formatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s")
 handler = RotatingFileHandler("flask_app.log", maxBytes=10000, backupCount=3)
@@ -33,6 +36,84 @@ import csv
 from datetime import datetime
 
 import base64
+app.config.from_object(ApplicationConfig)
+
+bcrypt = Bcrypt(app)
+CORS(app, supports_credentials=True)
+server_session = Session(app)
+db.init_app(app)
+
+with app.app_context():
+    db.create_all()
+
+
+@app.route("/@me")
+def get_current_user():
+    user_id = session.get("user_id")
+    print(user_id)
+    print(session)
+
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    user = User.query.filter_by(id=user_id).first()
+    return jsonify({"id": user.id, "email": user.email})
+
+
+@app.route("/register", methods=["POST"])
+def register_user():
+    email = request.json["email"]
+    password = request.json["password"]
+
+    user_exists = User.query.filter_by(email=email).first() is not None
+
+    if user_exists:
+        return jsonify({"error": "User already exists"}), 409
+
+    hashed_password = bcrypt.generate_password_hash(password)
+    new_user = User(email=email, password=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    session["user_id"] = new_user.id
+
+    return jsonify({"id": new_user.id, "email": new_user.email})
+
+
+@app.route("/login", methods=["POST"])
+def login_user():
+    email = request.json["email"]
+    password = request.json["password"]
+
+    user = User.query.filter_by(email=email).first()
+
+    if user is None:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not bcrypt.check_password_hash(user.password, password):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    session["user_id"] = user.id
+
+    return jsonify({"id": user.id, "email": user.email})
+
+
+@app.route("/logout", methods=["POST"])
+def logout_user():
+    print("Attempting to logout:", session)
+
+    # Check if 'user_id' is in the session
+    if "user_id" not in session:
+        print("No user_id found in session, cannot logout")
+        return (
+            jsonify({"error": "Unauthorized"}),
+            401,
+        )  # Return a 401 Unauthorized response
+
+    # If 'user_id' is found, remove it from the session
+    session.pop("user_id")
+    print("Logout successful")
+    return jsonify({"message": "Logout successful"}), 200
 
 
 def log_query(query_type, query_content):
@@ -45,7 +126,7 @@ def log_query(query_type, query_content):
         # Write the time stamp, type of query, and the query/image/file sent
         writer.writerow([datetime.now(), query_type, query_content])
 
-
+# ---------------------------------------------
 # Log to console in DEBUG mode
 if app.debug:
     console = logging.StreamHandler()
@@ -372,7 +453,7 @@ Query: "{query}"\n\n
 
     # Prepare the final response data with enhanced match percentages
 
-
+# ###################################################################################
 image_list = Load_Data().from_folder(["./ImageMatching/data"])
 # Set up the search engine
 st = Search_Setup(
@@ -399,78 +480,41 @@ def upload_file():
         filepath = os.path.join("./", filename)
         file.save(filepath)
 
-            # Get similar images using the uploaded image
-        similar_images = st.get_similar_images(
-            image_path=filepath, number_of_images=20
-        )
+        # Get similar images using the uploaded image
+        # This function should be properly defined or imported above
+        similar_images = st.get_similar_images(image_path=filepath, number_of_images=20)
         print(f"Found similar images: {similar_images}")
-
-
+        data = {}
+        with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
         response_data = []
-        for img_info in similar_images:
-            # Extract the numerical index from the image filename
-            image_index = img_info["path"].split('_')[-1].split('.')[0]
+        seen_urls = set()  # Set to keep track of URLs we've already added
 
-            # Use the extracted index to access the corresponding object in data
+        for img_info in similar_images:
+            image_index = img_info["path"].split("_")[-1].split(".")[0]
+
             if image_index in data:
                 corresponding_object = data[image_index]
-                if img_info["match_percentage"] > 60:
+                story_url = corresponding_object.get("Story_URL")
 
-                # Append the relevant details to response_data
-                    response_data.append({
-                        "percentage": round(img_info["match_percentage"], 2),
-                        "data": corresponding_object
-                    })
+                # Check if we've already added this story URL
+                if story_url not in seen_urls:
+                    if img_info["match_percentage"] > 60:
+                        response_data.append(
+                            {
+                                "percentage": round(img_info["match_percentage"], 2),
+                                "data": corresponding_object,
+                            }
+                        )
+                        seen_urls.add(story_url)  # Mark this URL as seen
 
         return jsonify(response_data)
     else:
         return jsonify({"error": "File processing failed"}), 500
 
 
-# Load the pre-computed embeddings and associated texts from the CSV file
-# embeddings_df = pd.read_csv("text_embeddings.csv")
-# # Extract embeddings and convert them to float32
-# embeddings = embeddings_df.drop(columns=["Text"]).values.astype(np.float32)
-# # Extract the original texts for reference
-# texts = embeddings_df["Text"].tolist()
+# ###################################################################################
 
-# # Initialize the Sentence Transformer model
-# model = SentenceTransformer("all-MiniLM-L6-v2")
-
-
-# @app.route("/searchEmbed", methods=["POST"])
-# def search_embed():
-#     # Get the query from the POST request
-#     print("request.json", request.json)
-#     query = request.json.get("query", "")
-#     print("query", query)
-#     # Encode the query to get its embedding
-#     query_embedding = model.encode(query).astype(np.float32)
-
-#     # Compute cosine similarity between the query embedding and pre-computed embeddings
-#     cosine_similarities = util.pytorch_cos_sim(query_embedding, embeddings)[0].numpy()
-
-#     # Get the top 10 most similar indices and their scores
-#     top_10_indices = np.argsort(cosine_similarities)[::-1][:10]
-#     top_10_scores = cosine_similarities[top_10_indices]
-
-#     # Prepare the response data
-#     response_data = []
-#     for index, score in zip(top_10_indices, top_10_scores):
-#         # Directly use the corresponding item from `data`
-#         matched_item = data[index]
-#         response_data.append(
-#             {
-#                 "percentage": round(score * 100, 2),
-#                 "data": matched_item,  # Use the item from `data.json` directly
-#             }
-#         )
-#         print("response_data", response_data)
-
-#     # Return the top 10 most similar texts along with their similarity scores
-
-#     print("response_data", jsonify(response_data))
-#     return jsonify(response_data)
 
 # Load IndicBERT model and tokenizer
 tokenizer = AutoTokenizer.from_pretrained("ai4bharat/indic-bert")
@@ -504,6 +548,7 @@ def get_embedding(text):
 
 @app.route("/uploadImageURL", methods=["POST"])
 def upload_image_url():
+
     json_data = request.get_json()
     image_url = json_data.get("image_url")
 
@@ -529,24 +574,29 @@ def upload_image_url():
                 image_path=temp_image_path, number_of_images=20
             )
 
+            data = {}
+            with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
+                data = json.load(file)
             response_data = []
-            for img_info in similar_images:  # Iterate through the list of dictionaries
-                # Extract the index from the image path
-                image_index = img_info["path"].split('_')[-1].split('.')[0]
+            seen_urls = set()  # Set to keep track of URLs we've already added
 
-                # Use the extracted index to access the corresponding object in data
+            for img_info in similar_images:
+                image_index = img_info["path"].split("_")[-1].split(".")[0]
+
                 if image_index in data:
                     corresponding_object = data[image_index]
-                    if img_info["match_percentage"] > 60:
+                    story_url = corresponding_object.get("Story_URL")
 
-                        # Append the relevant details to response_data
-                        response_data.append(
-                            {
-                                "percentage": round(img_info["match_percentage"], 2),
-                                "data": corresponding_object,
-                            }
-                        )
-
+                    # Check if we've already added this story URL
+                    if story_url not in seen_urls:
+                        if img_info["match_percentage"] > 60:
+                            response_data.append(
+                                {
+                                    "percentage": round(img_info["match_percentage"], 2),
+                                    "data": corresponding_object,
+                                }
+                            )
+                            seen_urls.add(story_url)  # Mark this URL as seen
             return jsonify(response_data)
 
         else:

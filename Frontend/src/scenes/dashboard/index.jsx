@@ -112,8 +112,8 @@ const handlePrev = () => {
       // Make a POST request for text search
       // fetch("https://factcheckerbtp.vishvasnews.com/search", {
       // fetch("https://factcheckerbtp.vishvasnews.com/search", {
-        fetch("http://localhost:8080/ensemble", {
-        // fetch("https://factcheckerbtp.vishvasnews.com/ensemble", {
+        // fetch("http://localhost:8080/ensemble", {
+        fetch("https://factcheckerbtp.vishvasnews.com/ensemble", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -153,27 +153,27 @@ const handlePrev = () => {
 
       // Make a POST request for image upload
               fetch("http://localhost:8080/upload", {
-        method: "POST",
-        body: formData, // Send the form data
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setIsLoading(false); // Stop loading if there's an error
+                method: "POST",
+                body: formData, // Send the form data
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  setIsLoading(false); // Stop loading if there's an error
 
-          console.log(data); // Log the top matches returned by the server
-          setResults(data);
-          setChartData(processChartData(data));
-          setApiCallCompleted(true); // Indicate that the API call has completed
-        })
-        .catch((error) => {
-          setIsLoading(false); // Stop loading if there's an error
+                  console.log(data); // Log the top matches returned by the server
+                  setResults(data);
+                  setChartData(processChartData(data));
+                  setApiCallCompleted(true); // Indicate that the API call has completed
+                })
+                .catch((error) => {
+                  setIsLoading(false); // Stop loading if there's an error
 
-          console.error("Error uploading image:", error);
-          setErrorMessage(
-            "The server encountered some issue, please click search again."
-          );
-          setApiCallCompleted(true); // Indicate that the API call has completed
-        });
+                  console.error("Error uploading image:", error);
+                  setErrorMessage(
+                    "The server encountered some issue, please click search again."
+                  );
+                  setApiCallCompleted(true); // Indicate that the API call has completed
+                });
     } else if (searchType === "link" && imageUrl.trim()) {
       const imgURLQ = imageUrl.trim();
       fetch("https://factcheckerbtp.vishvasnews.com/uploadImageURL", {
