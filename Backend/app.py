@@ -25,7 +25,11 @@ from config import ApplicationConfig
 from models import db, User
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True,resources={r"/*": {"origins": "*"}})
+CORS(
+    app,
+    supports_credentials=True,
+    origins= ["http://localhost:5001/"],
+)
 # Configure Logging
 formatter = logging.Formatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s")
 handler = RotatingFileHandler("flask_app.log", maxBytes=10000, backupCount=3)
