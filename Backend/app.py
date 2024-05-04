@@ -28,7 +28,7 @@ app = Flask(__name__)
 CORS(
     app,
     supports_credentials=True,
-    origins= ["http://localhost:5001/"],
+    origins= ["http://localhost:5001"],
 )
 # Configure Logging
 formatter = logging.Formatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s")
