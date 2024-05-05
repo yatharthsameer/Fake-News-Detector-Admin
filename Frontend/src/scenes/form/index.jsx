@@ -12,8 +12,8 @@ const Form = () => {
   const handleFormSubmit = async (values) => {
     try {
       const response = await fetch(
-        // "https://factcheckerbtp.vishvasnews.com/appendData",
-        "http://localhost:8080/appendData",
+        // "/api/appendData",
+        "/api/appendData",
         {
           method: "POST",
           headers: {

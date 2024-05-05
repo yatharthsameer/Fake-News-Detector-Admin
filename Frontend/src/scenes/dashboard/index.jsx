@@ -110,49 +110,49 @@ const handlePrev = () => {
       console.log(searchQuery);
 
       // Make a POST request for text search
-      // fetch("https://factcheckerbtp.vishvasnews.com/search", {
-      // fetch("https://factcheckerbtp.vishvasnews.com/search", {
-        // fetch("http://localhost:8080/ensemble", {
-        fetch("https://factcheckerbtp.vishvasnews.com/ensemble", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            charset: "utf-8",
-          },
-          body: JSON.stringify({ query: searchQuery }),
+      // fetch("/api/search", {
+      // fetch("/api/search", {
+      // fetch("http://localhost:8080/ensemble", {
+      fetch("/api/ensemble", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          charset: "utf-8",
+        },
+        body: JSON.stringify({ query: searchQuery }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setIsLoading(false); // Stop loading after the data is fetched
+
+          if (data.error) {
+            // Handling specific error message from server
+            setErrorMessage(data.error);
+            setApiCallCompleted(true); // Update based on your logic to show the error message
+          } else {
+            console.log(data); // Log the top matches returned by the server
+            setResults(data);
+            setChartData(processChartData(data));
+            setApiCallCompleted(true); // Indicate successful data fetch
+            setErrorMessage(false);
+          }
         })
-          .then((response) => response.json())
-          .then((data) => {
-            setIsLoading(false); // Stop loading after the data is fetched
+        .catch((error) => {
+          setIsLoading(false); // Stop loading if there's an error
 
-            if (data.error) {
-              // Handling specific error message from server
-              setErrorMessage(data.error);
-              setApiCallCompleted(true); // Update based on your logic to show the error message
-            } else {
-              console.log(data); // Log the top matches returned by the server
-              setResults(data);
-              setChartData(processChartData(data));
-              setApiCallCompleted(true); // Indicate successful data fetch
-              setErrorMessage(false);
-            }
-          })
-          .catch((error) => {
-            setIsLoading(false); // Stop loading if there's an error
-
-            console.error("Error fetching data:", error);
-            setErrorMessage(
-              "The server encountered some issue, please click search again."
-            );
-            setApiCallCompleted(true);
-          });
+          console.error("Error fetching data:", error);
+          setErrorMessage(
+            "The server encountered some issue, please click search again."
+          );
+          setApiCallCompleted(true);
+        });
     } else if (searchType === "image" && selectedImageFile) {
       // Create a FormData instance to send the file
       const formData = new FormData();
       formData.append("file", selectedImageFile);
 
       // Make a POST request for image upload
-              fetch("http://localhost:8080/upload", {
+              fetch("/api/upload", {
                 method: "POST",
                 body: formData, // Send the form data
               })
@@ -176,7 +176,7 @@ const handlePrev = () => {
                 });
     } else if (searchType === "link" && imageUrl.trim()) {
       const imgURLQ = imageUrl.trim();
-      fetch("https://factcheckerbtp.vishvasnews.com/uploadImageURL", {
+      fetch("/api/uploadImageURL", {
         // Use the correct endpoint
         method: "POST",
         headers: {

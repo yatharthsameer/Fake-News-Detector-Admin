@@ -78,7 +78,7 @@ const handleLogout = async () => {
 
   try {
     const response = await fetch(
-      "https://factcheckerbtp.vishvasnews.com/logout",
+      "/api/logout",
       {
         method: "POST",
         headers: {
