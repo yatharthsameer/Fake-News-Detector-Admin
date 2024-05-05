@@ -8,16 +8,13 @@ const useAuth = () => {
   const navigate = useNavigate();
   useEffect(() => {
     const checkAuth = async () => {
-      const response = await fetch(
-        "https://factcheckerbtp.vishvasnews.com/@me",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // Ensure cookies are sent with the request
-        }
-      );
+      const response = await fetch("/api/@me", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Ensure cookies are sent with the request
+      });
       
       
       
