@@ -463,16 +463,16 @@ Query: "{query}"\n\n
     # Prepare the final response data with enhanced match percentages
 
 # ###################################################################################
-# image_list = Load_Data().from_folder(["./ImageMatching/data"])
-# # Set up the search engine
-# st = Search_Setup(
-#     image_list=image_list,
-#     model_name="resnet50",
-#     pretrained=True,
-#     image_count=8707,
-# )
-# # Index the images
-# st.run_index()
+image_list = Load_Data().from_folder(["./ImageMatching/data"])
+# Set up the search engine
+st = Search_Setup(
+    image_list=image_list,
+    model_name="resnet50",
+    pretrained=True,
+    image_count=8707,
+)
+# Index the images
+st.run_index()
 
 
 @app.route("/api/upload", methods=["POST"])
@@ -657,10 +657,10 @@ def search_embed():
 
 from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 
-# # Load the documents at app start to avoid reloading them on each request
-# docs, origdata = load_data("csvProcessing/allData.json")
+# Load the documents at app start to avoid reloading them on each request
+docs, origdata = load_data("csvProcessing/allData.json")
 
-# model = ensemble(docs)
+model = ensemble(docs)
 
 
 print("Models loaded successfully.")
