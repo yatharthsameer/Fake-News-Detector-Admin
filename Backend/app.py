@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, render_template
 from flask_cors import CORS
 import json
 import google.generativeai as genai
@@ -28,7 +28,6 @@ app = Flask(__name__)
 CORS(
     app,
     supports_credentials=True,
-    origins=["https://genuine-stroopwafel-0acb34.netlify.app"],
 )
 # Configure Logging
 formatter = logging.Formatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s")
@@ -51,7 +50,13 @@ with app.app_context():
     db.create_all()
 
 
-@app.route("/@me")
+@app.route("/")
+def index():
+    # Render the React app built files
+    return render_template("index.html")
+
+
+@app.route("/api/@me")
 def get_current_user():
     user_id = session.get("user_id")
     print(user_id)
@@ -64,7 +69,7 @@ def get_current_user():
     return jsonify({"id": user.id, "email": user.email})
 
 
-@app.route("/register", methods=["POST"])
+@app.route("/api/register", methods=["POST"])
 def register_user():
     email = request.json["email"]
     password = request.json["password"]
@@ -84,7 +89,7 @@ def register_user():
     return jsonify({"id": new_user.id, "email": new_user.email})
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/api/login", methods=["POST"])
 def login_user():
     email = request.json["email"]
     password = request.json["password"]
@@ -102,7 +107,7 @@ def login_user():
     return jsonify({"id": user.id, "email": user.email})
 
 
-@app.route("/logout", methods=["POST"])
+@app.route("/api/logout", methods=["POST"])
 def logout_user():
     print("Attempting to logout:", session)
 
@@ -239,7 +244,7 @@ def fact_check(query, data, limit=None):
     return top_matches
 
 
-@app.route("/search", methods=["POST"])
+@app.route("/api/search", methods=["POST"])
 def search():
     query = request.json.get("query", "")
     # Log the query
@@ -470,7 +475,7 @@ Query: "{query}"\n\n
 # st.run_index()
 
 
-@app.route("/upload", methods=["POST"])
+@app.route("/api/upload", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
         return jsonify({"error": "No file part"}), 400
@@ -550,7 +555,7 @@ def get_embedding(text):
     return embedding
 
 
-@app.route("/uploadImageURL", methods=["POST"])
+@app.route("/api/uploadImageURL", methods=["POST"])
 def upload_image_url():
 
     json_data = request.get_json()
@@ -621,7 +626,7 @@ def upload_image_url():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/searchEmbed", methods=["POST"])
+@app.route("/api/searchEmbed", methods=["POST"])
 def search_embed():
     query = request.json.get("query", "")
     query_embedding = get_embedding(
@@ -671,7 +676,8 @@ def add_docs(filename):
     model.add_docs(newdocs)
 import sys
 
-@app.route("/appendData", methods=["POST"])
+
+@app.route("/api/appendData", methods=["POST"])
 def append_story():
 
     # Extract data from the request
@@ -738,7 +744,7 @@ def append_story():
     return jsonify({"message": "Data appended and image indexed successfully"}), 200
 
 
-@app.route("/ensemble", methods=["POST"])
+@app.route("/api/ensemble", methods=["POST"])
 def rank_documents_bm25_bert():
     req = request.json
     query = req.get("query", "")
