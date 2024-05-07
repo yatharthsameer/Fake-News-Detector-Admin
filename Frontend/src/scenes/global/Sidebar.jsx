@@ -23,7 +23,7 @@ import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutl
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
- import Login from "../login";
+import Login from "../login";
 import { AuthContext } from '../../context/AuthContext';  // Import AuthContext
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -45,6 +45,30 @@ const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
     setSelected(title);
     navigate(to);
   };
+      const handleLogout = async () => {
+        try {
+          const response = await fetch(
+            "/logout",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+            }
+          );
+
+          if (response.ok) {
+            // Update the logout logic as necessary
+            navigate("/login");
+          } else {
+            throw new Error("Failed to logout");
+          }
+        } catch (error) {
+          console.error("Logout failed: ", error);
+          alert("Logout failed.");
+        }
+      };
 
   return (
     <MenuItem
@@ -190,20 +214,20 @@ const handleLogout = async () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
+            {/* <Item
               title="Settings"
               to="/faq"
               icon={<SettingsIcon />}
               selected={selected}
               setSelected={setSelected}
-            />{" "}
-            <MenuItem
+            />{" "} */}
+            {/* <MenuItem
               icon={<PersonOutlinedIcon />}
               style={{ color: colors.grey[100] }}
               onClick={handleLogout} // Directly attach logout functionality here
             >
               <Typography>Log out</Typography>
-            </MenuItem>
+            </MenuItem> */}
           </Box>
         </Menu>
         <Box

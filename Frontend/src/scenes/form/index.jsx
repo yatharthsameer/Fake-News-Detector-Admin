@@ -1,13 +1,18 @@
-import React from "react";
+import { React, useContext } from "react";
 import { Box, Button, TextField, Typography, useTheme } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useState } from "react";
 import { tokens } from "../../theme";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from '../../context/AuthContext';  // Import AuthContext
 
 const Form = () => {
+  const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
+
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
+  const navigate = useNavigate();
 
   const handleFormSubmit = async (values) => {
     try {
@@ -45,11 +50,35 @@ const Form = () => {
 
     const colors = tokens(theme.palette.mode);
 
+const handleLogout = async () => {
+  console.log("Logging out");
+
+  try {
+    const response = await fetch("/api/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // Ensure cookies are sent with the request
+    });
+
+    if (response.ok) {
+      setIsAuthenticated(false); // Make sure to set authentication to false
+      navigate("/login");
+    } else {
+      throw new Error("Failed to logout");
+    }
+  } catch (error) {
+    alert("Failed to logout");
+
+    navigate("/login");
+  }
+};
 
   return (
     <Box m="20px">
       <Typography variant="h2" component="h1" align="center" gutterBottom>
-        Add your claim 
+        Add your claim
       </Typography>
       <Formik
         onSubmit={handleFormSubmit}
@@ -175,20 +204,36 @@ const Form = () => {
                 helperText={touched.About_Subject && errors.About_Subject}
               />
             </Box>
-            <Button
-              type="submit"
-              color="primary"
-              variant="contained"
-              sx={{
-                backgroundColor: colors.blueAccent[600],
-                color: colors.grey[100],
-                fontSize: "14px",
-                fontWeight: "bold",
-                padding: "10px 20px",
-              }}
-            >
-              Submit
-            </Button>
+            <Box display="flex" justifyContent="space-between" mt={4}>
+              <Button
+                type="submit"
+                color="primary"
+                variant="contained"
+                sx={{
+                  backgroundColor: colors.blueAccent[600],
+                  color: colors.grey[100],
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  padding: "10px 20px",
+                }}
+              >
+                Submit
+              </Button>
+              <Button
+                onClick={handleLogout}
+                color="secondary"
+                variant="contained"
+                sx={{
+                  backgroundColor: colors.redAccent[400],
+                  color: colors.grey[100],
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  padding: "10px 20px",
+                }}
+              >
+                Log Out
+              </Button>
+            </Box>
             <Typography
               variant="h6"
               sx={{
