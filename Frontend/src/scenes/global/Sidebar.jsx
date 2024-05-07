@@ -201,7 +201,7 @@ const handleLogout = async () => {
           )}
           <Box paddingLeft={isCollapsed ? undefined : "10%"} mt="70px">
             <Item
-              title="Dashboard"
+              title="Search fact-checks"
               to="/"
               icon={<HomeOutlinedIcon />}
               selected={selected}
@@ -242,25 +242,6 @@ const handleLogout = async () => {
             transition: "padding-top 0.3s", // Add smooth transition for padding change
           }}
         >
-          <img
-            alt="profile-user"
-            width="30px"
-            height="30px"
-            src="../../logo.jpeg"
-            style={{
-              cursor: "pointer",
-              borderRadius: "100%",
-              marginBottom: "10px",
-            }}
-          />
-          <Typography
-            variant="h6"
-            color={colors.grey[100]}
-            fontWeight="bold"
-            sx={{ m: "0" }}
-          >
-            Ben Stokes
-          </Typography>
           <Switch
             checked={theme.palette.mode === "dark"}
             onChange={handleColorModeToggle}

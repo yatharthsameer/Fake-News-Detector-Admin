@@ -237,22 +237,12 @@ const handlePrev = () => {
       {/* HEADER */}
 
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+        <Header
+          title="Search fact-checks"
+          subtitle="Welcome! Search here for fact-checks using text or image queries"
+        />
 
-        <Box>
-          <Button
-            sx={{
-              backgroundColor: colors.blueAccent[600],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-            }}
-          >
-            <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            Download Reports
-          </Button>
-        </Box>
+    
       </Box>
       <Box display="flex" justifyContent="center" alignItems="center" mb="20px">
         <FormControl
