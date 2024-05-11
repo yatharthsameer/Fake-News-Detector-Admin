@@ -1,24 +1,76 @@
 import { React, useContext } from "react";
-import { Box, Button, TextField, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  IconButton,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useState } from "react";
 import { tokens } from "../../theme";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from '../../context/AuthContext';  // Import AuthContext
+import { useDropzone } from "react-dropzone";
+import CloseIcon from '@mui/icons-material/Close'; // Import Close icon for file removal
+
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 
 const Form = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
-
-    const [message, setMessage] = useState("");
-    const [isError, setIsError] = useState(false);
+  const [file, setFile] = useState(null);
+  const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
+  const [view, setView] = useState("csv"); // Default to CSV upload
+
+  const onDrop = (acceptedFiles) => {
+    setFile(acceptedFiles[0]); // Set the first file (assuming single file upload)
+  };
+  const removeFile = () => {
+    setFile(null); // Function to remove the selected file
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: "text/csv",
+    noClick: file != null, // Prevent opening the file dialog if a file is already selected
+    noKeyboard: file != null,
+  });
+
+
+
+  const handleCSVSubmit = async () => {
+    if (!file) {
+      setMessage("No file selected");
+      setIsError(true);
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const response = await fetch("/api/appendDataCSV", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) throw new Error("Failed to upload CSV");
+      const result = await response.json();
+      setMessage(result.message || "CSV uploaded successfully");
+      setIsError(false);
+      setFile(null);
+    } catch (error) {
+      console.error("An error occurred during CSV submission:", error);
+      setMessage(`CSV submission error: ${error.message}`);
+      setIsError(true);
+    }
+  };
 
   const handleFormSubmit = async (values) => {
     try {
       const response = await fetch(
-        // "/api/appendData",
-        "/api/appendData",
+        "/api/appendDataIndividual",
         {
           method: "POST",
           headers: {
@@ -28,58 +80,155 @@ const Form = () => {
           body: JSON.stringify(values),
         }
       );
+      if (!response.ok) throw new Error("Failed to submit data");
+      const result = await response.json();
+      setMessage(result.message || "Data submitted successfully");
+      setIsError(false);
+    } catch (error) {
+      console.error("An error occurred during form submission:", error);
+      setMessage(`Form submission error: ${error.message}`);
+      setIsError(true);
+    }
+  };
+
+
+  const theme = useTheme();
+
+  const colors = tokens(theme.palette.mode);
+
+  const handleLogout = async () => {
+    console.log("Logging out");
+
+    try {
+      const response = await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Ensure cookies are sent with the request
+      });
 
       if (response.ok) {
-        const result = await response.json();
-        console.log(result.message); // Or set some state to show a success message
-             setMessage(result.message);
-             setIsError(false);
+        setIsAuthenticated(false); // Make sure to set authentication to false
+        navigate("/login");
       } else {
-        console.error("Submission failed", await response.text());
-         setMessage(
-           response.message || "Submission failed, please check your input."
-         );
-         setIsError(true);
+        throw new Error("Failed to logout");
       }
     } catch (error) {
-      console.error("An error occurred during submission:", error);
- setMessage(`An error occurred during submission: ${error.message}`);
- setIsError(true);    }
-  };
-    const theme = useTheme();
+      alert("Failed to logout");
 
-    const colors = tokens(theme.palette.mode);
-
-const handleLogout = async () => {
-  console.log("Logging out");
-
-  try {
-    const response = await fetch("/api/logout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", // Ensure cookies are sent with the request
-    });
-
-    if (response.ok) {
-      setIsAuthenticated(false); // Make sure to set authentication to false
       navigate("/login");
-    } else {
-      throw new Error("Failed to logout");
     }
-  } catch (error) {
-    alert("Failed to logout");
+  };
 
-    navigate("/login");
-  }
-};
 
-  return (
-    <Box m="20px">
-      <Typography variant="h2" component="h1" align="center" gutterBottom>
-        Add your claim
-      </Typography>
+return (
+  <Box m="20px">
+    <Typography variant="h4" component="h2" align="center" gutterBottom>
+      Add Your Claim
+    </Typography>
+
+    {/* Toggle Buttons */}
+    <ToggleButtonGroup
+      color="primary"
+      value={view}
+      exclusive
+      onChange={(event, newView) => {
+        if (newView !== null) {
+          // Prevent unselecting both options
+          setView(newView);
+        }
+      }}
+      aria-label="View"
+      style={{ marginBottom: 20, backgroundColor: "#282c34", borderRadius: 5 }}
+      fullWidth
+    >
+      <ToggleButton
+        value="csv"
+        aria-label="CSV Upload"
+        style={{
+          width: "50%",
+          borderRadius: 5,
+          borderRight: "1px solid white",
+          backgroundColor: view === "csv" ? "#4caf50" : undefined,
+          color: view === "csv" ? "white" : "rgba(255, 255, 255, 0.7)",
+        }}
+      >
+        CSV Upload
+      </ToggleButton>
+      <ToggleButton
+        value="form"
+        aria-label="Form Input"
+        style={{
+          width: "50%",
+          borderRadius: 5,
+          backgroundColor: view === "form" ? "#4caf50" : undefined,
+          color: view === "form" ? "white" : "rgba(255, 255, 255, 0.7)",
+        }}
+      >
+        Form Input
+      </ToggleButton>
+    </ToggleButtonGroup>
+
+    {view === "csv" ? (
+      // CSV Upload View
+      <div
+        {...getRootProps()}
+        style={{
+          position: "relative",
+          width: "100%",
+          height: "50px",
+          border: "2px dashed gray",
+        }}
+      >
+        {" "}
+        <input {...getInputProps()} />
+        {!file && (
+          <Typography sx={{ p: 2, textAlign: "center" }}>
+            {isDragActive
+              ? "Drop the file here..."
+              : "Drag 'n' drop your CSV file here, or click to select files"}
+          </Typography>
+        )}
+        {file && (
+          <Box
+            sx={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              p: 1,
+              bgcolor: "background.paper",
+              border: "1px solid black",
+              borderRadius: "4px",
+            }}
+          >
+            <Typography noWrap sx={{ mr: 1 }}>
+              {file.name}
+            </Typography>
+            <IconButton onClick={removeFile} size="small">
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        )}
+        {/* <Box display="flex" justifyContent="space-between" mt={4}>
+          <Button
+            type="submit"
+            color="primary"
+            variant="contained"
+            sx={{
+              backgroundColor: colors.blueAccent[600],
+              color: colors.grey[100],
+              fontSize: "14px",
+              fontWeight: "bold",
+              padding: "10px 20px",
+            }}
+          >
+            Submit
+          </Button>
+        </Box> */}
+      </div>
+    ) : (
+      // Form Input View
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
@@ -93,7 +242,7 @@ const handleLogout = async () => {
           handleChange,
           handleSubmit,
         }) => (
-          <form onSubmit={handleSubmit}>
+          <form id="form-id" onSubmit={handleSubmit}>
             <Box display="flex" flexDirection="column" gap="20px">
               <TextField
                 fullWidth
@@ -204,54 +353,77 @@ const handleLogout = async () => {
                 helperText={touched.About_Subject && errors.About_Subject}
               />
             </Box>
-            <Box display="flex" justifyContent="space-between" mt={4}>
-              <Button
-                type="submit"
-                color="primary"
-                variant="contained"
-                sx={{
-                  backgroundColor: colors.blueAccent[600],
-                  color: colors.grey[100],
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  padding: "10px 20px",
-                }}
-              >
-                Submit
-              </Button>
-              <Button
-                onClick={handleLogout}
-                color="secondary"
-                variant="contained"
-                sx={{
-                  backgroundColor: colors.redAccent[400],
-                  color: colors.grey[100],
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  padding: "10px 20px",
-                }}
-              >
-                Log Out
-              </Button>
-            </Box>
-            <Typography
-              variant="h6"
-              sx={{
-                mt: 2,
-                color: isError ? "red" : "green",
-                fontWeight: "bold",
-                fontSize: "1.2rem",
-              }}
-            >
-              {message}
-            </Typography>
           </form>
         )}
       </Formik>
-    </Box>
-  );
-};
+    )}
+    <Box display="flex" justifyContent="space-between" mt={4}>
+      {view === "form" ? (
+        <Button
+          type="submit"
+          form="form-id" // Ensure the button submits Formik form
+          color="primary"
+          variant="contained"
+          sx={{
+            backgroundColor: colors.blueAccent[600],
+            color: colors.grey[100],
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "10px 20px",
+          }}
+        >
+          Submit Form
+        </Button>
+      ) : (
+        <Button
+          onClick={handleCSVSubmit}
+          color="primary"
+          variant="contained"
+          sx={{
+            backgroundColor: colors.blueAccent[600],
+            color: colors.grey[100],
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "10px 20px",
+          }}
+        >
+          Submit CSV
+        </Button>
+      )}
 
+      <Button
+        onClick={handleLogout}
+        color="secondary"
+        variant="contained"
+        sx={{
+          backgroundColor: colors.redAccent[400],
+          color: colors.grey[100],
+          fontSize: "14px",
+          fontWeight: "bold",
+          padding: "10px 20px",
+        }}
+      >
+        Log Out
+      </Button>
+    </Box>
+
+    <Typography
+      variant="h6"
+      sx={{
+        mt: 2,
+        color: isError ? "red" : "green",
+        fontWeight: "bold",
+        fontSize: "1.2rem",
+      }}
+    >
+      {message}
+    </Typography>
+  </Box>
+);
+
+
+
+}
 const validationSchema = yup.object().shape({
   Story_Date: yup.string().required("Story date is required"),
   Story_URL: yup

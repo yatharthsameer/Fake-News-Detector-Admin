@@ -132,8 +132,9 @@ const handleLogout = async () => {
   return (
     <Box
       sx={{
-        height: "115vh", // Full viewport height
+        height: "120vh", // Full viewport height
         display: "flex",
+        
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
         },

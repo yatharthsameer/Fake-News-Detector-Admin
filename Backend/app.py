@@ -28,7 +28,9 @@ app = Flask(__name__)
 CORS(
     app,
     supports_credentials=True,
+    resources={r"/api/*": {"origins": "http://localhost:5001"}},
 )
+
 # Configure Logging
 formatter = logging.Formatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s")
 handler = RotatingFileHandler("flask_app.log", maxBytes=10000, backupCount=3)
@@ -663,9 +665,9 @@ docs, origdata = load_data("csvProcessing/allData.json")
 model = ensemble(docs)
 
 
-print("Models loaded successfully.")
-def restart_server():
-    os.execv(sys.executable, ["python3"] + sys.argv)
+# print("Models loaded successfully.")
+# def restart_server():
+#     os.execv(sys.executable, ["python3"] + sys.argv)
 
 
 # add the new documents to a temp file and feed it to this function
@@ -674,74 +676,108 @@ def add_docs(filename):
     docs.extend(newdocs)
     origdata.extend(neworig)
     model.add_docs(newdocs)
-import sys
 
-
-@app.route("/api/appendData", methods=["POST"])
-def append_story():
-
-    # Extract data from the request
+@app.route("/api/appendDataIndividual", methods=["POST"])
+def append_data_individual():
     request_data = request.get_json()
+    result, status_code = append_story(request_data)
+    print(result)
+    return jsonify(result), status_code
 
-    # Define the path for the JSON file where data will be appended
-    file_path = "csvProcessing/allData.json"
 
-    # Load the current data from the JSON file or initialize as an empty dict if the file does not exist
+@app.route("/api/appendDataCSV", methods=["POST"])
+def append_data_csv():
+    print(request.files)
+    if "file" not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
+
+    # Assuming file is saved temporarily for processing
+    filename = secure_filename(file.filename)
+    filepath = os.path.join("/tmp", filename)
+    file.save(filepath)
+
+    results = []
+    with open(filepath, mode="r", encoding="utf-8") as file:
+        csv_reader = csv.DictReader(file)
+        for row in csv_reader:
+            json_data = {
+                "Story_Date": row.get("Story Date"),
+                "Story_URL": row.get("Story URL"),
+                "Headline": row.get("Headline"),
+                "What_(Claim)": row.get("What (Claim)"),
+                "About_Subject": row.get("About Subject"),
+                "About_Person": row.get("About Person"),
+                "img": row.get("Featured Image"),
+                "tags": row.get("Tags"),
+            }
+            print(json_data)
+            result, status_code = append_story(json_data)
+            results.append(result)
+    os.remove(filepath)  # Clean up the temporary file
+
+    return jsonify({"results": results}), 200
+
+
+def append_story(request_data):
+    file_path = "csvProcessing/allData.json"  # Ensure this path is correct
+
+    # Load the current data from the JSON file or initialize as an empty dictionary if the file does not exist
     if os.path.exists(file_path):
         with open(file_path, "r", encoding="utf-8") as file:
             file_data = json.load(file)
     else:
         file_data = {}
 
-    # Check if any existing entry in file_data has the same Story_URL as the new story
+    print(file_data)    
+
+    # Check for duplicate entries based on Story_URL
     if any(
         story["Story_URL"] == request_data["Story_URL"] for story in file_data.values()
     ):
-        return jsonify({"message": "Story URL already exists. No data appended."}), 400
+        return {"message": "Story URL already exists. No data appended."}, 400
 
-    # Generate a new index for the story to be appended
+    # Generate a new index for the new story
     new_index = str(max(map(int, file_data.keys()), default=0) + 1)
     file_data[new_index] = request_data
+
+    # Save new data temporarily for model processing
     temp_file_path = f"csvProcessing/temp_new_data_{new_index}.json"
-    with open(temp_file_path, 'w', encoding="utf-8") as temp_file:
+    with open(temp_file_path, "w", encoding="utf-8") as temp_file:
         json.dump({new_index: request_data}, temp_file, ensure_ascii=False, indent=4)
-    print(f"Data appended successfully with index: {new_index}")
-    # Add new docs to the model
+
+    # Add new documents to the model
     add_docs(temp_file_path)
-    print("New docs added to the model.")
+    os.remove(temp_file_path)  # Clean up the temporary file
 
-    # # Remove temp file after updating model
-    os.remove(temp_file_path)
+    # Handle image downloading and indexing
+    if "img" in request_data and request_data["img"]:
+        image_url = request_data["img"]
+        image_response = requests.get(image_url)
+        if image_response.status_code == 200:
+            image_filename = f"image_{new_index}.jpg"
+            image_path = os.path.join("./data", image_filename)
+            with open(image_path, "wb") as f:
+                f.write(image_response.content)
 
-    # Download the image from the URL provided in request_data["img"]
-    image_url = request_data["img"]
-    image_response = requests.get(image_url)
-    if image_response.status_code == 200:
-        # Create the filename using new_index
-        image_filename = f"image_{new_index}.jpg"
-        image_path = os.path.join("./data", image_filename)
+            # Add the image to the index
+            try:
+                st.add_images_to_index([image_path])
+            except Exception as e:
+                return {"message": f"Failed to index image: {str(e)}"}, 500
+        else:
+            return {"message": "Failed to download image."}, 500
 
-        # Save the image to the "./data" directory
-        with open(image_path, "wb") as f:
-            f.write(image_response.content)
-
-        # Add image to index
-        try:
-            st.add_images_to_index([image_path])
-        except Exception as e:
-            return jsonify({"message": f"Failed to index image: {str(e)}"}), 500
-
-    else:
-        return jsonify({"message": "Failed to download image."}), 500
-
-    # Write the updated data back to the file
+    # Write the updated data back to the JSON file
     with open(file_path, "w", encoding="utf-8") as file:
         json.dump(file_data, file, ensure_ascii=False, indent=4)
+
+    # Optionally restart the server if necessary
     # restart_server()
 
-    # Send back a response to indicate success
-
-    return jsonify({"message": "Data appended and image indexed successfully"}), 200
+    return {"message": "Data appended and image indexed successfully"}, 200
 
 
 @app.route("/api/ensemble", methods=["POST"])
