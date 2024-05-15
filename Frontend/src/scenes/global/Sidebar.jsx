@@ -134,7 +134,7 @@ const handleLogout = async () => {
       sx={{
         height: "120vh", // Full viewport height
         display: "flex",
-        
+
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
         },
@@ -209,7 +209,7 @@ const handleLogout = async () => {
               setSelected={setSelected}
             />
             <Item
-              title="Add fact check"
+              title="Add fact-check(s)"
               to="/form"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}

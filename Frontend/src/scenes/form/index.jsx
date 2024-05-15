@@ -39,33 +39,51 @@ const Form = () => {
     noClick: file != null, // Prevent opening the file dialog if a file is already selected
     noKeyboard: file != null,
   });
+  const csvInstructions =
+    "Ensure your CSV file has the columns in this order: Story Date, Story URL, Headline, What (Claim), About Subject, About Person, Featured Image, Tags.";
 
+const handleCSVSubmit = async () => {
+  if (!file) {
+    setMessage("No file selected");
+    setIsError(true);
+    return;
+  }
+  const formData = new FormData();
+  formData.append("file", file);
+  try {
+    const response = await fetch("/api/appendDataCSV", {
+      method: "POST",
+      body: formData,
+    });
 
+    const result = await response.json(); // Parse the JSON result first
 
-  const handleCSVSubmit = async () => {
-    if (!file) {
-      setMessage("No file selected");
+    if (!response.ok) {
+      if (result.error) {
+        setMessage(
+          `${result.error} ${
+            result.missing_columns
+              ? "Missing columns: " + result.missing_columns.join(", ")
+              : ""
+          }`
+        );
+      } else {
+        setMessage("Failed to upload CSV");
+      }
       setIsError(true);
-      return;
-    }
-    const formData = new FormData();
-    formData.append("file", file);
-    try {
-      const response = await fetch("/api/appendDataCSV", {
-        method: "POST",
-        body: formData,
-      });
-      if (!response.ok) throw new Error("Failed to upload CSV");
-      const result = await response.json();
-      setMessage(result.message || "CSV uploaded successfully");
+    } else {
+      setMessage(result.message);
       setIsError(false);
       setFile(null);
-    } catch (error) {
-      console.error("An error occurred during CSV submission:", error);
-      setMessage(`CSV submission error: ${error.message}`);
-      setIsError(true);
     }
-  };
+  } catch (error) {
+    console.error("An error occurred during CSV submission:", error);
+    setMessage(`CSV submission error: ${error.message}`);
+    setIsError(true);
+  }
+};
+
+
 
   const handleFormSubmit = async (values) => {
     try {
@@ -172,6 +190,7 @@ return (
 
     {view === "csv" ? (
       // CSV Upload View
+
       <div
         {...getRootProps()}
         style={{
@@ -226,6 +245,9 @@ return (
             Submit
           </Button>
         </Box> */}
+        <Typography variant="body1" sx={{ mb: 2 }}>
+          {csvInstructions}
+        </Typography>
       </div>
     ) : (
       // Form Input View

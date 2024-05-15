@@ -1,5 +1,0 @@
-1,https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News08_27dec-1.jpg
-2,https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News06_26dec-1.jpg
-3,https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News01_27dec-1.jpg
-4,https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News03_19dec.jpg
-5,https://www.vishvasnews.com/wp-content/uploads/2019/12/Fake_News04_23dec.jpg

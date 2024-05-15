@@ -27,8 +27,7 @@ from models import db, User
 app = Flask(__name__)
 CORS(
     app,
-    supports_credentials=True,
-    resources={r"/api/*": {"origins": "http://localhost:5001"}},
+    supports_credentials=True
 )
 
 # Configure Logging
@@ -687,21 +686,51 @@ def append_data_individual():
 
 @app.route("/api/appendDataCSV", methods=["POST"])
 def append_data_csv():
-    print(request.files)
     if "file" not in request.files:
         return jsonify({"error": "No file part"}), 400
     file = request.files["file"]
     if file.filename == "":
         return jsonify({"error": "No selected file"}), 400
 
-    # Assuming file is saved temporarily for processing
+    # Save the file temporarily for processing
     filename = secure_filename(file.filename)
     filepath = os.path.join("/tmp", filename)
     file.save(filepath)
 
+    expected_columns = {
+        "Story Date",
+        "Story URL",
+        "Headline",
+        "What (Claim)",
+        "About Subject",
+        "About Person",
+        "Featured Image",
+        "Tags",
+    }
+    successful_entries = 0
+    duplicate_entries = 0
     results = []
+
     with open(filepath, mode="r", encoding="utf-8") as file:
         csv_reader = csv.DictReader(file)
+        headers = set(csv_reader.fieldnames)
+
+        # Check if all expected columns are present
+        missing_columns = expected_columns - headers
+        if missing_columns:
+            os.remove(filepath)  # Clean up the temporary file
+            return (
+                jsonify(
+                    {
+                        "error": "The CSV file is missing the following required columns:",
+                        "missing_columns": sorted(
+                            list(missing_columns)
+                        ),  # Sort the list to display missing columns in alphabetical order
+                    }
+                ),
+                400,
+            )
+
         for row in csv_reader:
             json_data = {
                 "Story_Date": row.get("Story Date"),
@@ -713,12 +742,24 @@ def append_data_csv():
                 "img": row.get("Featured Image"),
                 "tags": row.get("Tags"),
             }
-            print(json_data)
             result, status_code = append_story(json_data)
             results.append(result)
-    os.remove(filepath)  # Clean up the temporary file
+            if status_code == 200:
+                successful_entries += 1
+            elif status_code == 400:
+                duplicate_entries += 1
 
-    return jsonify({"results": results}), 200
+    os.remove(filepath)  # Clean up the temporary file after processing
+
+    return (
+        jsonify(
+            {
+                "message": f"Added {successful_entries} successful entries to the dataset and discarded {duplicate_entries} duplicates.",
+                "results": results,
+            }
+        ),
+        200,
+    )
 
 
 def append_story(request_data):
