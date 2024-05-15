@@ -692,7 +692,6 @@ def append_data_csv():
     if file.filename == "":
         return jsonify({"error": "No selected file"}), 400
 
-    # Save the file temporarily for processing
     filename = secure_filename(file.filename)
     filepath = os.path.join("/tmp", filename)
     file.save(filepath)
@@ -709,29 +708,27 @@ def append_data_csv():
     }
     successful_entries = 0
     duplicate_entries = 0
+    failed_entries = 0
+    error_details = []
     results = []
 
     with open(filepath, mode="r", encoding="utf-8") as file:
         csv_reader = csv.DictReader(file)
         headers = set(csv_reader.fieldnames)
-
-        # Check if all expected columns are present
         missing_columns = expected_columns - headers
         if missing_columns:
-            os.remove(filepath)  # Clean up the temporary file
+            os.remove(filepath)
             return (
                 jsonify(
                     {
                         "error": "The CSV file is missing the following required columns:",
-                        "missing_columns": sorted(
-                            list(missing_columns)
-                        ),  # Sort the list to display missing columns in alphabetical order
+                        "missing_columns": sorted(list(missing_columns)),
                     }
                 ),
                 400,
             )
 
-        for row in csv_reader:
+        for row_number, row in enumerate(csv_reader, start=1):
             json_data = {
                 "Story_Date": row.get("Story Date"),
                 "Story_URL": row.get("Story URL"),
@@ -748,18 +745,19 @@ def append_data_csv():
                 successful_entries += 1
             elif status_code == 400:
                 duplicate_entries += 1
+            elif status_code == 500:
+                failed_entries += 1
+                error_details.append({"row": row_number, "error": result["message"]})
 
-    os.remove(filepath)  # Clean up the temporary file after processing
+    os.remove(filepath)
 
-    return (
-        jsonify(
-            {
-                "message": f"Added {successful_entries} successful entries to the dataset and discarded {duplicate_entries} duplicates.",
-                "results": results,
-            }
-        ),
-        200,
-    )
+    return jsonify(
+        {
+            "message": f"Added {successful_entries} successful entries and discarded {duplicate_entries} duplicates. Failed to append {failed_entries} entries.",
+            "results": results,
+            "error_details": error_details,
+        }
+    ), (200 if failed_entries == 0 else 400)
 
 
 def append_story(request_data):

@@ -24,13 +24,13 @@ const Login = () => {
 const handleSubmit = async (event) => {
   event.preventDefault();
   // const response = await fetch("/api/login", {
+      // const response = await fetch("http://localhost:8080/api/login", {
       const response = await fetch("/api/login", {
-
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-    credentials: "include", // Make sure credentials include is set
-  });
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+        credentials: "include", // Make sure credentials include is set
+      });
   if (response.ok) {
     setIsAuthenticated(true); // Set authentication to true upon successful login
     setTimeout(() => navigate("/form"), 1000); // Delay navigation to allow cookie handling

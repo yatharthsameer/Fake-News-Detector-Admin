@@ -51,6 +51,7 @@ const handleCSVSubmit = async () => {
   const formData = new FormData();
   formData.append("file", file);
   try {
+    // const response = await fetch("http://localhost:8080/api/appendDataCSV", {
     const response = await fetch("/api/appendDataCSV", {
       method: "POST",
       body: formData,
@@ -59,17 +60,21 @@ const handleCSVSubmit = async () => {
     const result = await response.json(); // Parse the JSON result first
 
     if (!response.ok) {
+      let errorMessage = "Failed to upload CSV.";
       if (result.error) {
-        setMessage(
-          `${result.error} ${
-            result.missing_columns
-              ? "Missing columns: " + result.missing_columns.join(", ")
-              : ""
-          }`
-        );
-      } else {
-        setMessage("Failed to upload CSV");
+        errorMessage =
+          result.error +
+          (result.missing_columns
+            ? " Missing columns: " + result.missing_columns.join(", ") + "."
+            : "");
       }
+      if (result.error_details && result.error_details.length > 0) {
+        const detailedErrors = result.error_details
+          .map((detail) => `Row ${detail.row}: ${detail.error}`)
+          .join("; ");
+        errorMessage += " Details: " + detailedErrors;
+      }
+      setMessage(errorMessage);
       setIsError(true);
     } else {
       setMessage(result.message);
