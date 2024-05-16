@@ -15,6 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from '../../context/AuthContext';  // Import AuthContext
 import { useDropzone } from "react-dropzone";
 import CloseIcon from '@mui/icons-material/Close'; // Import Close icon for file removal
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 
@@ -25,6 +26,7 @@ const Form = () => {
   const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
   const [view, setView] = useState("csv"); // Default to CSV upload
+const [isLoading, setIsLoading] = useState(false);
 
   const onDrop = (acceptedFiles) => {
     setFile(acceptedFiles[0]); // Set the first file (assuming single file upload)
@@ -43,6 +45,8 @@ const Form = () => {
     "Ensure your CSV file has the columns in this order: Story Date, Story URL, Headline, What (Claim), About Subject, About Person, Featured Image, Tags.";
 
 const handleCSVSubmit = async () => {
+  setIsLoading(true); // Set loading state to true
+  setMessage(""); // Clear any previous messages
   if (!file) {
     setMessage("No file selected");
     setIsError(true);
@@ -52,7 +56,7 @@ const handleCSVSubmit = async () => {
   formData.append("file", file);
   try {
     // const response = await fetch("http://localhost:8080/api/appendDataCSV", {
-    const response = await fetch("/api/appendDataCSV", {
+      const response = await fetch("/api/appendDataCSV", {
       method: "POST",
       body: formData,
     });
@@ -81,28 +85,32 @@ const handleCSVSubmit = async () => {
       setIsError(false);
       setFile(null);
     }
+        setIsLoading(false);
+
   } catch (error) {
+    setIsLoading(false);
     console.error("An error occurred during CSV submission:", error);
     setMessage(`CSV submission error: ${error.message}`);
     setIsError(true);
+
   }
+
 };
 
 
 
   const handleFormSubmit = async (values) => {
+    setIsLoading(true); // Set loading state to true
+    setMessage(""); // Clear any previous messages
     try {
-      const response = await fetch(
-        "/api/appendDataIndividual",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            charset: "utf-8",
-          },
-          body: JSON.stringify(values),
-        }
-      );
+      const response = await fetch("/api/appendDataIndividual", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          charset: "utf-8",
+        },
+        body: JSON.stringify(values),
+      });
       if (!response.ok) throw new Error("Failed to submit data");
       const result = await response.json();
       setMessage(result.message || "Data submitted successfully");
@@ -112,6 +120,7 @@ const handleCSVSubmit = async () => {
       setMessage(`Form submission error: ${error.message}`);
       setIsError(true);
     }
+    setIsLoading(false); // Set loading state to true
   };
 
 
@@ -253,6 +262,22 @@ return (
         <Typography variant="body1" sx={{ mb: 2 }}>
           {csvInstructions}
         </Typography>
+        {isLoading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="50vh"
+            flexDirection="column"
+          >
+            <CircularProgress sx={{ color: colors.blueAccent[600] }} />
+            <Typography variant="h6" sx={{ mt: 2 }}>
+              Adding entries to the dataset, please wait...
+            </Typography>
+          </Box>
+        ) : (
+          false
+        )}
       </div>
     ) : (
       // Form Input View
@@ -416,6 +441,22 @@ return (
         >
           Submit CSV
         </Button>
+      )}
+      {isLoading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="50vh"
+          flexDirection="column"
+        >
+          <CircularProgress sx={{ color: colors.blueAccent[600] }} />
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Adding entries to the dataset, please wait...
+          </Typography>
+        </Box>
+      ) : (
+        false
       )}
 
       <Button
