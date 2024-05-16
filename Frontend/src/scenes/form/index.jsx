@@ -157,7 +157,7 @@ const handleCSVSubmit = async () => {
 return (
   <Box m="20px">
     <Typography variant="h4" component="h2" align="center" gutterBottom>
-      Add Your Claim
+      Add Fact Check(s)
     </Typography>
 
     {/* Toggle Buttons */}
@@ -262,23 +262,21 @@ return (
         <Typography variant="body1" sx={{ mb: 2 }}>
           {csvInstructions}
         </Typography>
-        {isLoading ? (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="50vh"
-            flexDirection="column"
-          >
-            <CircularProgress sx={{ color: colors.blueAccent[600] }} />
-            <Typography variant="h6" sx={{ mt: 2 }}>
-              Adding entries to the dataset, please wait...
-            </Typography>
-          </Box>
-        ) : (
-          false
-        )}
-      </div>
+ {isLoading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="50vh"
+          flexDirection="column"
+        >
+          <CircularProgress sx={{ color: colors.blueAccent[600] }} />
+          <Typography variant="h6" sx={{ mt: 2 }}>
+Adding entries to the database, please wait...          
+</Typography>
+        </Box>
+      ) : null}
+              </div>
     ) : (
       // Form Input View
       <Formik
@@ -441,22 +439,6 @@ return (
         >
           Submit CSV
         </Button>
-      )}
-      {isLoading ? (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="50vh"
-          flexDirection="column"
-        >
-          <CircularProgress sx={{ color: colors.blueAccent[600] }} />
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Adding entries to the dataset, please wait...
-          </Typography>
-        </Box>
-      ) : (
-        false
       )}
 
       <Button
