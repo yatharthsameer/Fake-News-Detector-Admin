@@ -6,7 +6,7 @@ from bert_score import BERTScorer
 from rank_bm25 import BM25Plus
 import fasttext
 from sklearn.metrics.pairwise import cosine_similarity
-from deep_translator import GoogleTranslator
+# from deep_translator import GoogleTranslator
 import json
 from time import time
 import re
@@ -14,6 +14,9 @@ from collections import defaultdict
 import spacy
 import numpy as np
 from multiprocessing import Pool, Process
+
+from IndicTrans2.inference.engine import Model as IT2Model
+
 
 
 ################################################################################
@@ -245,8 +248,10 @@ class ensemble:
 
         if use_translation:
             try:
-                self.trans = GoogleTranslator()
-                self.transen = GoogleTranslator(source="en", target="hi")
+                self.trans = IT2Model("IndicTrans2/indic-en", model_type="fairseq")
+                # self.trans = GoogleTranslator()
+                # self.transen = GoogleTranslator(source="en", target="hi")
+
             except Exception as args:
                 print("ERROR TRANS INIT:", args)
                 self.use_translation = False
@@ -273,11 +278,14 @@ class ensemble:
         enchars = re.sub("[^A-Za-z0-9]", "", text)
         # print(enchars)
         if len(enchars) >= 0.6 * len(text):
-            print("En -> Hi")
-            return self.transen.translate(text)
+            # print("En -> Hi")
+            # return self.transen.translate(text)
+            return text
 
-        print("Auto -> En")
-        return self.trans.translate(text)
+        print("Hi -> En")
+        # return self.trans.translate(text)
+        return self.trans.translate_paragraph(text, "hin_Deva", "eng_Latn")
+
 
     @staticmethod
     def mergeranks(idx1, score1, idx2, score2, w1=10, w2=1):
@@ -309,18 +317,21 @@ class ensemble:
         if self.use_translation:
             try:
                 transquery = self.translate(query)
-                print(transquery)
+                if query != transquery:
+                    query = query + " | " + transquery
+
+                print(query)
             except Exception as args:
                 print("TRANSLATE ERROR:", args)
 
         if self.use_bm25:
             bm25idx, bm25res = self.BM25model.rank(query)
 
-            if transquery:
-                bm25idx2, bm25res2 = self.BM25model.rank(transquery, thresh=0.8)
-                bm25idx = self.mergeranks(bm25idx, bm25res, bm25idx2, bm25res2, w1=20)
-                # indices |= set(bm25idx2)
-                # results.append(bm25idx2)
+            # if transquery:
+            #     bm25idx2, bm25res2 = self.BM25model.rank(transquery, thresh=0.8)
+            #     bm25idx = self.mergeranks(bm25idx, bm25res, bm25idx2, bm25res2, w1=20)
+            #     # indices |= set(bm25idx2)
+            #     # results.append(bm25idx2)
 
             indices |= set(bm25idx)
             results.append(bm25idx)
@@ -328,11 +339,11 @@ class ensemble:
         if self.use_ft:
             ftidx, ftres = self.FTmodel.rank(query)
 
-            if transquery:
-                ftidx2, ftres2 = self.FTmodel.rank(transquery)
-                # ftidx = self.mergeranks(ftidx, ftres, ftidx2, ftres2, w1=10)
-                indices |= set(ftidx2)
-                # results.append(ftidx2)
+            # if transquery:
+            #     ftidx2, ftres2 = self.FTmodel.rank(transquery)
+            #     # ftidx = self.mergeranks(ftidx, ftres, ftidx2, ftres2, w1=10)
+            #     indices |= set(ftidx2)
+            #     # results.append(ftidx2)
 
             indices |= set(ftidx)
             results.append(ftidx)
