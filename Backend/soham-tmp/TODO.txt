@@ -1,4 +1,5 @@
 1. In Bertscore class: check time for xlm-robert-large, if too much, then fall back to mdeberta-base
-2. set up the IndicTrans2 library, 
-2.5 download the distilled indic->en model, use the fairseq version. check line 254. https://github.com/AI4Bharat/IndicTrans2
+2. set up the IndicTrans2 library, install.sh, https://github.com/AI4Bharat/IndicTrans2
+2.6 wget https://indictrans2-public.objectstore.e2enetworks.net/it2_distilled_ckpts/indic-en.zip
+2.7 use the fairseq version. check line 254. 
 3. use_translation=True while defining model
