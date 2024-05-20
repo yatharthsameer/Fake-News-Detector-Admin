@@ -1,12 +1,12 @@
 import os
 
-os.environ['CUDA_VISIBLE_DEVICES'] = "1"
+os.environ['CUDA_VISIBLE_DEVICES'] = ""
 
 from bert_score import BERTScorer
 from rank_bm25 import BM25Plus
 import fasttext
 from sklearn.metrics.pairwise import cosine_similarity
-from deep_translator import GoogleTranslator
+# from deep_translator import GoogleTranslator
 import json
 from time import time
 import re
@@ -14,6 +14,9 @@ from collections import defaultdict
 import spacy
 import numpy as np
 from multiprocessing import Pool, Process
+
+from IndicTrans2.inference.engine import Model
+
 
 
 ################################################################################
@@ -176,7 +179,9 @@ class bertscore:
     def __init__(self, docs=[]):
         # print("Loading bertscore model...")
         ts = time()
-        self.scorer = BERTScorer(model_type="distilbert-base-multilingual-cased")
+        # self.scorer = BERTScorer(model_type="distilbert-base-multilingual-cased")
+        self.scorer = BERTScorer(model_type="xlm-roberta-large")
+        # self.scorer = BERTScorer(model_type="microsoft/mdeberta-v3-base")
         self.docs = [self.clean(x) for x in docs]
         te = time()
 
@@ -246,8 +251,11 @@ class ensemble:
 
         if use_translation:
             try:
-                self.trans = GoogleTranslator()
-                self.transen = GoogleTranslator(source="en", target="hi")
+                self.trans = Model("IndicTrans2/fairseq_model", model_type="fairseq")
+                # QUERY = model.batch_translate(QUERY, "hin_Deva", "eng_Latn") 
+                # self.trans = GoogleTranslator()
+                # self.transen = GoogleTranslator(source="en", target="hi")
+
             except Exception as args:
                 print("ERROR TRANS INIT:", args)
                 self.use_translation = False
@@ -272,14 +280,14 @@ class ensemble:
         enchars = re.sub("[^A-Za-z0-9]", "", text)
         # print(enchars)
         if len(enchars) >= 0.6 * len(text):
-            print("En -> Hi")
-            return self.transen.translate(text)
+            # print("En -> Hi")
+            return text
 
-        print("Auto -> En")
-        return self.trans.translate(text)
+        print("Hi -> En")
+        return self.trans.translate_paragraph(text, "hin_Deva", "eng_Latn")
 
     @staticmethod
-    def mergeranks(idx1, score1, idx2, score2, w1=10, w2=1):
+    def mergeranks(idx1, score1, idx2, score2, w1=1, w2=5):
         temp = defaultdict(float)
         for i, s in zip(idx1, score1):
             temp[i] += s * w1
@@ -316,10 +324,10 @@ class ensemble:
             bm25idx, bm25res = self.BM25model.rank(query)
 
             if transquery:
-                bm25idx2, bm25res2 = self.BM25model.rank(transquery, thresh=0.8)
-                bm25idx = self.mergeranks(bm25idx, bm25res, bm25idx2, bm25res2, w1=20)
-                # indices |= set(bm25idx2)
-                # results.append(bm25idx2)
+                bm25idx2, bm25res2 = self.BM25model.rank(transquery)
+                # bm25idx = self.mergeranks(bm25idx, bm25res, bm25idx2, bm25res2)
+                indices |= set(bm25idx2)
+                results.append(bm25idx2)
 
             indices |= set(bm25idx)
             results.append(bm25idx)
@@ -329,9 +337,9 @@ class ensemble:
 
             if transquery:
                 ftidx2, ftres2 = self.FTmodel.rank(transquery)
-                # ftidx = self.mergeranks(ftidx, ftres, ftidx2, ftres2, w1=10)
+                # ftidx = self.mergeranks(ftidx, ftres, ftidx2, ftres2)
                 indices |= set(ftidx2)
-                # results.append(ftidx2)
+                results.append(ftidx2)
 
             indices |= set(ftidx)
             results.append(ftidx)
@@ -343,9 +351,11 @@ class ensemble:
             print("Total #docs for running bertscore:", len(indices))
 
             tmpidx, bsres = self.BSmodel.rank(query, tmpdocs)
-            # if transquery:
-                # tmpidx2, bsres2 = self.BSmodel.rank(transquery, tmpdocs, cutoff=0.6, thresh=0.9)
-                # tmpidx = self.mergeranks(tmpidx, bsres, tmpidx2, bsres2, w1=10)
+            if transquery:
+                tmpidx2, bsres2 = self.BSmodel.rank(transquery, tmpdocs)
+                # tmpidx = self.mergeranks(tmpidx, bsres, tmpidx2, bsres2)
+                bsidx2 = indices[tmpidx2]
+                results.append(bsidx2)
 
             bsidx = indices[tmpidx]
             results.append(bsidx)
@@ -400,13 +410,21 @@ if __name__ == "__main__":
     # QUERY = 'anushka sharma married kohli'
     # QUERY = ['rahul gandhi drinking', 'anushka sharma', 'priyanka chopra', 'priyanka gandhi', 'priyankaa chopra', 'priyankaa gandhi', 'priyankaa gandhi posted', 'virat koli']
     # QUERY = ['virat kohli', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Sri lanka economy', 'Rolls Royce Saudi Arabia.', 'Ramu Elephant', 'ms dhoni', 'काल्‍पनिक तस्‍वीर']
-    QUERY = ['Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'Fact Check : रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'Fact Check : केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
+    QUERY = ['Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
+    # QUERY = ['अंबानी की नई बहू ने अपनी शादी में किया  शास्त्रीय नृत्य', 'आज अखिलेश यादव जी की रथ यात्रा मध्य प्रदेश के निवाडी मे', 'सलमान खान ने पार्कों की साफ़ सफाई के जागरुकता के लिए पार्क में झाड़ू लगाया।', 'केरल बेस्ड मालाबार गोल्ड कंपनी की 99.9% ज्वेलरी हिंदू खरीदते हैं, लेकिन यह कंपनी इस फोटो के अनुसार अपना स्कॉलरशिप 100% सिर्फ मुस्लिम बच्चों को देती है।', 'गोकर्ण (कर्नाटक) के पास एक फ्रांसीसी पर्यटक द्वारा खींची गई एक तस्वीर', 'कंगना ने मानी हार']
+    # 7689
     # with open("queries_test.txt") as fp:
     #     QUERY = fp.read().splitlines()
 
+   
     docs, orig = load_data("../csvProcessing/allData.json")
     model = ensemble(docs, use_translation=False)
 
+
+    # trans = Model("IndicTrans2/en-indic", model_type="fairseq")
+    # transquery = trans.batch_translate(QUERY, "eng_Latn", "hin_Deva") 
+
+    # QUERY = [x + " | " + y for x, y in zip(QUERY, transquery)]
 
     for query in QUERY:
         
