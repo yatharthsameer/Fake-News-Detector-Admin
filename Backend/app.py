@@ -661,8 +661,8 @@ from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 # Load the documents at app start to avoid reloading them on each request
 docs, origdata = load_data("csvProcessing/allData.json")
 
-model = ensemble(docs)
-# model = ensemble(docs, use_translation=True)
+# model = ensemble(docs)
+model = ensemble(docs, use_translation=True)
 
 
 # print("Models loaded successfully.")
