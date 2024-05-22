@@ -852,7 +852,7 @@ def rank_documents_bm25_bert():
         )
     return jsonify(results)
 # Load the data from the JSON file
-with open("csvProcessing/allDatatest.json", "r", encoding="utf-8") as file:
+with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
     data = json.load(file)
     print("Data loaded successfully.")
 from datetime import datetime, timedelta
