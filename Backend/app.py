@@ -838,7 +838,7 @@ def rank_documents_bm25_bert():
         if len(idx) > 0
         else None
     )
-    
+
     for i, score in zip(idx[:10], scores[:10]):
         doc_id = str(i+1)  # Convert index to integer
         print(doc_id)
@@ -851,6 +851,62 @@ def rank_documents_bm25_bert():
             }
         )
     return jsonify(results)
+# Load the data from the JSON file
+with open("csvProcessing/allDatatest.json", "r", encoding="utf-8") as file:
+    data = json.load(file)
+    print("Data loaded successfully.")
+from datetime import datetime, timedelta
+import re
+
+
+def remove_ordinal_suffix(date_str):
+    # Remove ordinal suffixes: 1st, 2nd, 3rd, 4th, etc.
+    return re.sub(r"(\d+)(st|nd|rd|th)", r"\1", date_str)
+
+
+def parse_story_date(story_date):
+    story_date = remove_ordinal_suffix(story_date)
+    try:
+        return datetime.strptime(story_date, "%d %b %Y")
+    except ValueError:
+        return None
+
+
+@app.route("/api/stories-by-date", methods=["POST"])
+def stories_by_date():
+    client_data = request.json
+    specified_date_str = client_data.get("date", "")
+    if not specified_date_str:
+        return jsonify({"error": "No date provided"}), 400
+
+    try:
+        specified_date = datetime.strptime(specified_date_str, "%d %b %Y")
+        print(specified_date)
+    except ValueError:
+        print(f"Invalid date format {specified_date_str}")
+        return (
+            jsonify({"error": f"Invalid date format {specified_date_str}"}),
+            400,
+        )
+
+    start_date = specified_date - timedelta(days=7)
+    end_date = specified_date + timedelta(days=7)
+
+    matching_stories = []
+
+    for story_id, story in data.items():
+        story_date_str = story.get("Story_Date", "")
+        story_date = parse_story_date(story_date_str)
+
+        if story_date:
+            # Compare only month and day for previous years
+            story_date_this_year = story_date.replace(year=specified_date.year)
+            if start_date <= story_date_this_year <= end_date:
+                matching_stories.append(
+                    {"percentage": 100, "data": story}  # Placeholder percentage
+                )
+
+    return jsonify(matching_stories)
 
 
 if __name__ == "__main__":

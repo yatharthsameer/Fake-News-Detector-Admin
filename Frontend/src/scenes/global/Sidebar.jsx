@@ -25,7 +25,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import Login from "../login";
 import { AuthContext } from '../../context/AuthContext';  // Import AuthContext
-
+import Trendspage from "../trendspage";
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -209,12 +209,20 @@ const handleLogout = async () => {
               setSelected={setSelected}
             />
             <Item
+              title="Trends"
+              to="/trendspage"
+              icon={<CalendarTodayOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
               title="Add fact-check(s)"
               to="/form"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+
             {/* <Item
               title="Settings"
               to="/faq"

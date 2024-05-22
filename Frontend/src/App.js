@@ -17,7 +17,7 @@ import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
 import Login from './scenes/login';
 import { AuthProvider } from './context/AuthContext';  // Import AuthProvider
-
+import Trendspage from "./scenes/trendspage";
 import ProtectedForm from './scenes/protectedForm'; 
 function App() {
   const [theme, colorMode] = useMode();
@@ -39,7 +39,8 @@ function App() {
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/form" element={<ProtectedForm />} />   
+              <Route path="/form" element={<ProtectedForm />} />
+              <Route path="/trendspage" element={<Trendspage />} />
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />
               <Route path="/line" element={<Line />} />
