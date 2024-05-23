@@ -855,9 +855,8 @@ def rank_documents_bm25_bert():
 with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
     data = json.load(file)
     print("Data loaded successfully.")
-from datetime import datetime, timedelta
 import re
-
+from datetime import datetime, timedelta
 
 def remove_ordinal_suffix(date_str):
     # Remove ordinal suffixes: 1st, 2nd, 3rd, 4th, etc.
@@ -869,6 +868,14 @@ def parse_story_date(story_date):
     try:
         return datetime.strptime(story_date, "%d %b %Y")
     except ValueError:
+        return None
+
+
+def replace_year_safe(date, year):
+    try:
+        return date.replace(year=year)
+    except ValueError:
+        # Handle invalid dates, like 29th Feb on non-leap years
         return None
 
 
@@ -899,15 +906,13 @@ def stories_by_date():
         story_date = parse_story_date(story_date_str)
 
         if story_date:
-            # Compare only month and day for previous years
-            story_date_this_year = story_date.replace(year=specified_date.year)
-            if start_date <= story_date_this_year <= end_date:
+            story_date_this_year = replace_year_safe(story_date, specified_date.year)
+            if story_date_this_year and start_date <= story_date_this_year <= end_date:
                 matching_stories.append(
                     {"percentage": 100, "data": story}  # Placeholder percentage
                 )
 
     return jsonify(matching_stories)
-
 
 if __name__ == "__main__":
 
