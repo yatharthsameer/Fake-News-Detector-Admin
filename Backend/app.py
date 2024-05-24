@@ -25,10 +25,7 @@ from config import ApplicationConfig
 from models import db, User
 
 app = Flask(__name__)
-CORS(
-    app,
-    supports_credentials=True
-)
+CORS(app, supports_credentials=True)
 
 # Configure Logging
 formatter = logging.Formatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s")
@@ -40,6 +37,7 @@ import csv
 from datetime import datetime
 
 import base64
+
 app.config.from_object(ApplicationConfig)
 
 bcrypt = Bcrypt(app)
@@ -135,6 +133,7 @@ def log_query(query_type, query_content):
         writer = csv.writer(file)
         # Write the time stamp, type of query, and the query/image/file sent
         writer.writerow([datetime.now(), query_type, query_content])
+
 
 # ---------------------------------------------
 # Log to console in DEBUG mode
@@ -252,7 +251,14 @@ def search():
     log_query("text", query)
     results = fact_check(query, data)
     if len(results) == 0:
-        return jsonify({"error": "Your search yielded 0 matches in our database, Please check your query"}), 404
+        return (
+            jsonify(
+                {
+                    "error": "Your search yielded 0 matches in our database, Please check your query"
+                }
+            ),
+            404,
+        )
 
     # print(results)
 
@@ -271,7 +277,9 @@ def search():
             # print(f"Duplicate headline found and skipped: {headline}")
 
     # Format the top matches
-    seen_headlines_top = set()  # Initialize an empty set to keep track of seen headlines
+    seen_headlines_top = (
+        set()
+    )  # Initialize an empty set to keep track of seen headlines
     top_matches = {}
 
     for i, (_, match_data) in enumerate(results[:40], start=1):
@@ -290,7 +298,9 @@ def search():
     for i, (_, match_data) in enumerate(results[:40], start=1):
         headline = match_data["Headline"]
         if headline not in seen_headlines:
-            seen_headlines.add(headline)  # Add the headline to the set of seen headlines
+            seen_headlines.add(
+                headline
+            )  # Add the headline to the set of seen headlines
             gemini_input_objects[str(i)] = {
                 "Story_Date": match_data["Story_Date"],
                 "Headline": match_data["Headline"],
@@ -300,7 +310,9 @@ def search():
                 "Story_URL": match_data["Story_URL"],
             }
 
-        gemini_input_str = json.dumps(gemini_input_objects, indent=2, ensure_ascii=False)
+        gemini_input_str = json.dumps(
+            gemini_input_objects, indent=2, ensure_ascii=False
+        )
 
     prompt = f"""
 You are an advanced AI specializing in debunking fake news.
@@ -400,14 +412,16 @@ Query: "{query}"\n\n
             )
             response_text = gemini_api_response.text
             print(response_text)
-            gemini_response_data = json.loads(response_text)  # Attempt to parse the response
+            gemini_response_data = json.loads(
+                response_text
+            )  # Attempt to parse the response
 
             # try:
             #     response_data = json.loads(response_text)
             # except :
             #     print("Parsing error" )
             #     return jsonify(response_data_TFIDF)
-            if isinstance(gemini_response_data, dict) :
+            if isinstance(gemini_response_data, dict):
                 gemini_response_valid = True
                 enhanced_response_data = []
                 for index, percentage in gemini_response_data.items():
@@ -421,7 +435,6 @@ Query: "{query}"\n\n
                         if numeric_percentage > 60:
 
                             enhanced_response_data.append(
-
                                 {
                                     "percentage": numeric_percentage,
                                     "numeric_percentage": numeric_percentage,
@@ -431,7 +444,9 @@ Query: "{query}"\n\n
 
                 # Sort the enhanced_response_data by 'numeric_percentage' in descending order
                 sorted_enhanced_response_data = sorted(
-                    enhanced_response_data, key=lambda x: x["numeric_percentage"], reverse=True
+                    enhanced_response_data,
+                    key=lambda x: x["numeric_percentage"],
+                    reverse=True,
                 )
 
                 # Remove the 'numeric_percentage' key from each item as it was only needed for sorting
@@ -462,6 +477,7 @@ Query: "{query}"\n\n
         )
 
     # Prepare the final response data with enhanced match percentages
+
 
 # ###################################################################################
 image_list = Load_Data().from_folder(["./ImageMatching/data"])
@@ -602,7 +618,9 @@ def upload_image_url():
                         if img_info["match_percentage"] > 60:
                             response_data.append(
                                 {
-                                    "percentage": round(img_info["match_percentage"], 2),
+                                    "percentage": round(
+                                        img_info["match_percentage"], 2
+                                    ),
                                     "data": corresponding_object,
                                 }
                             )
@@ -656,13 +674,13 @@ def search_embed():
 
     return jsonify(response_data)
 
+
 from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 
 # Load the documents at app start to avoid reloading them on each request
 docs, origdata = load_data("csvProcessing/allData.json")
 
-# model = ensemble(docs)
-model = ensemble(docs, use_translation=True)
+model = ensemble(docs)
 
 
 # print("Models loaded successfully.")
@@ -676,6 +694,7 @@ def add_docs(filename):
     docs.extend(newdocs)
     origdata.extend(neworig)
     model.add_docs(newdocs)
+
 
 @app.route("/api/appendDataIndividual", methods=["POST"])
 def append_data_individual():
@@ -771,7 +790,7 @@ def append_story(request_data):
     else:
         file_data = {}
 
-    # print(file_data)    
+    # print(file_data)
 
     # Check for duplicate entries based on Story_URL
     if any(
@@ -824,13 +843,13 @@ def append_story(request_data):
 def rank_documents_bm25_bert():
     req = request.json
     query = req.get("query", "")
-    data=[]
+    data = []
     with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
         data = json.load(file)
     print("Data loaded successfully.")
 
     # Using combined BM25 and BERTScore model to rank documents
-    idx, scores = model.rank(query, cutoff=0.3, thresh=0.3, k = 5, max_out=20)
+    idx, scores = model.rank(query, cutoff=0.3, thresh=0.3, k=5, max_out=20)
     results = []
     print(type(idx))
     percent = (
@@ -840,7 +859,7 @@ def rank_documents_bm25_bert():
     )
 
     for i, score in zip(idx[:10], scores[:10]):
-        doc_id = str(i+1)  # Convert index to integer
+        doc_id = str(i + 1)  # Convert index to integer
         print(doc_id)
         doc_obj = data[doc_id]  # Access the corresponding document object
 
@@ -851,6 +870,39 @@ def rank_documents_bm25_bert():
             }
         )
     return jsonify(results)
+
+from google_trends import daily_trends, realtime_trends
+
+@app.route("/api/top-trends", methods=["GET"])
+def top_trends():
+    try:
+        # Fetch daily trends for today and yesterday
+        today_trends = daily_trends(country="IN")
+        yesterday = datetime.today() - timedelta(days=1)
+        yesterday_str = yesterday.strftime("%Y%m%d")
+        yesterday_trends = daily_trends(date=yesterday_str, country="IN")
+
+        # Combine today's and yesterday's trends and take the union
+        combined_trends = set(today_trends + yesterday_trends)
+
+        # Get the top 4 trends
+        top_4_trends = list(combined_trends)[:4]
+
+        combined_results = []
+        for query in top_4_trends:
+            # Call the rank_documents_bm25_bert function for each query
+            req = {"query": query}
+            with app.test_request_context(json=req):
+                response = rank_documents_bm25_bert()
+                combined_results.append({query: response.json})
+
+        return jsonify(combined_results)
+
+    except Exception as e:
+        print(f"Error fetching trends: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+
 # Load the data from the JSON file
 with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
     data = json.load(file)
@@ -913,6 +965,7 @@ def stories_by_date():
                 )
 
     return jsonify(matching_stories)
+
 
 if __name__ == "__main__":
 
