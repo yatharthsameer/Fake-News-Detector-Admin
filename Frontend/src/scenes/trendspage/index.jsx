@@ -360,13 +360,13 @@ return (
                         {result[Object.keys(result)[0]][0].data.Story_Date}
                       </Typography>
                     </div>
-                    <Button
+{/*                     <Button
                       onClick={() => handleExpandQuery(Object.keys(result)[0])}
                       variant="contained"
                       sx={{ ml: 2 }}
                     >
                       Expand
-                    </Button>
+                    </Button> */}
                   </Box>
                 </Box>
               ))
