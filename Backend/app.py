@@ -680,7 +680,7 @@ from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 # Load the documents at app start to avoid reloading them on each request
 docs, origdata = load_data("csvProcessing/allData.json")
 
-model = ensemble(docs)
+model = ensemble(docs, use_translation=True)
 
 
 # print("Models loaded successfully.")
@@ -871,8 +871,6 @@ def rank_documents_bm25_bert():
         )
     return jsonify(results)
 
-from google_trends import daily_trends, realtime_trends
-
 @app.route("/api/top-trends", methods=["GET"])
 def top_trends():
     try:
@@ -885,30 +883,56 @@ def top_trends():
         # Combine today's and yesterday's trends and take the union
         combined_trends = set(today_trends + yesterday_trends)
 
-        # Get the top 4 trends
-        top_4_trends = list(combined_trends)[:4]
+        # Get the top 10 trends
+        top_10_trends = list(combined_trends)[:10]
 
         combined_results = []
-        for query in top_4_trends:
+        for query in top_10_trends:
             # Call the rank_documents_bm25_bert function for each query
             req = {"query": query}
             with app.test_request_context(json=req):
                 response = rank_documents_bm25_bert()
-                combined_results.append({query: response.json})
+                if response.status_code == 200:
+                    result_data = response.json
+                    if result_data:
+                        top_story_percentage = (
+                            result_data[0]["percentage"] if result_data else 0
+                        )
+                        combined_results.append(
+                            {
+                                "query": query,
+                                "top_story_percentage": top_story_percentage,
+                                "result_data": result_data,
+                            }
+                        )
 
-        return jsonify(combined_results)
+        # Sort combined results based on top story percentage
+        sorted_results = sorted(
+            combined_results, key=lambda x: x["top_story_percentage"], reverse=True
+        )
+
+        # Get the top 5 queries with the highest match percentages
+        top_5_results = sorted_results[:5]
+
+        # Prepare the response in the required format
+        response_data = [
+            {result["query"]: result["result_data"][:1]} for result in top_5_results
+        ]
+
+        return jsonify(response_data)
 
     except Exception as e:
         print(f"Error fetching trends: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
-
+import re
+from datetime import datetime, timedelta
+# Load the data from the JSON file
 # Load the data from the JSON file
 with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
     data = json.load(file)
     print("Data loaded successfully.")
-import re
-from datetime import datetime, timedelta
+
 
 def remove_ordinal_suffix(date_str):
     # Remove ordinal suffixes: 1st, 2nd, 3rd, 4th, etc.
@@ -943,10 +967,7 @@ def stories_by_date():
         print(specified_date)
     except ValueError:
         print(f"Invalid date format {specified_date_str}")
-        return (
-            jsonify({"error": f"Invalid date format {specified_date_str}"}),
-            400,
-        )
+        return jsonify({"error": f"Invalid date format {specified_date_str}"}), 400
 
     start_date = specified_date - timedelta(days=7)
     end_date = specified_date + timedelta(days=7)
@@ -961,8 +982,19 @@ def stories_by_date():
             story_date_this_year = replace_year_safe(story_date, specified_date.year)
             if story_date_this_year and start_date <= story_date_this_year <= end_date:
                 matching_stories.append(
-                    {"percentage": 100, "data": story}  # Placeholder percentage
+                    {
+                        "percentage": 100,
+                        "data": story,
+                        "original_date": story_date,
+                    }  # Store original date for sorting
                 )
+
+    # Sort the matching stories by 'original_date' in descending order
+    matching_stories.sort(key=lambda x: x["original_date"], reverse=True)
+
+    # Remove the 'original_date' key before sending the response
+    for story in matching_stories:
+        del story["original_date"]
 
     return jsonify(matching_stories)
 
