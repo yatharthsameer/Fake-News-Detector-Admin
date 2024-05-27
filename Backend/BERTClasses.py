@@ -178,8 +178,8 @@ class bertscore:
     def __init__(self, docs=[]):
         # print("Loading bertscore model...")
         ts = time()
-        # self.scorer = BERTScorer(model_type="distilbert-base-multilingual-cased")
-        self.scorer = BERTScorer(model_type="xlm-roberta-large")
+        self.scorer = BERTScorer(model_type="distilbert-base-multilingual-cased")
+        # self.scorer = BERTScorer(model_type="xlm-roberta-large")
         # self.scorer = BERTScorer(model_type="microsoft/mdeberta-v3-base")
         
         self.docs = [self.clean(x) for x in docs]
