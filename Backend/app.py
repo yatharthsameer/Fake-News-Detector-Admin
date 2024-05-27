@@ -971,8 +971,8 @@ def stories_by_date():
         print(f"Invalid date format {specified_date_str}")
         return jsonify({"error": f"Invalid date format {specified_date_str}"}), 400
 
-    start_date = specified_date - timedelta(days=7)
-    end_date = specified_date + timedelta(days=7)
+    start_date = specified_date - timedelta(days=3)
+    end_date = specified_date + timedelta(days=3)
 
     matching_stories = []
 
