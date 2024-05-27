@@ -64,12 +64,15 @@ const Trendspage = () => {
   const fetchTopTrends = () => {
     setIsLoadingColumn1(true);
     // fetch("http://localhost:8080/api/top-trends")
-    fetch("/api/top-trends")
+      fetch("/api/top-trends")
       .then((response) => response.json())
       .then((data) => {
-        const flattenedData = data.flatMap((trend) =>
-          Object.entries(trend).map(([query, results]) => ({ query, results }))
-        );
+        const flattenedData = [];
+        data.forEach((trend) => {
+          Object.entries(trend).forEach(([query, results]) => {
+            flattenedData.push({ query, results });
+          });
+        });
         setResultsColumn1(flattenedData);
         setIsLoadingColumn1(false);
       })
@@ -91,13 +94,13 @@ const Trendspage = () => {
     )} ${currentDate.getFullYear()}`;
 
     // fetch("http://localhost:8080/api/stories-by-date", {
-    fetch("/api/stories-by-date", {
+      fetch("/api/stories-by-date", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         charset: "utf-8",
       },
-      body: JSON.stringify({ date: formattedDate }),
+      body: JSON.stringify({ date: "28 Dec 2019" }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -112,13 +115,12 @@ const Trendspage = () => {
       });
   };
 
-  const renderResults = (
+  const renderResultsColumn1 = (
     results,
     currentPage,
     handlePrev,
     handleNext,
-    itemsPerPage,
-    isColumn1 = false
+    itemsPerPage
   ) => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -128,11 +130,9 @@ const Trendspage = () => {
       <>
         {currentItems.map((result, index) => (
           <Box key={index} mb="20px">
-            {isColumn1 && (
-              <Typography variant="h6" color={colors.blueAccent[500]} mb="10px">
-                {result.query}
-              </Typography>
-            )}
+            <Typography variant="h6" color={colors.blueAccent[500]} mb="10px">
+              {result.query}
+            </Typography>
             {result.results.map((item, subIndex) => (
               <Box
                 key={subIndex}
@@ -206,6 +206,90 @@ const Trendspage = () => {
     );
   };
 
+  const renderResultsColumn2 = (
+    results,
+    currentPage,
+    handlePrev,
+    handleNext,
+    itemsPerPage
+  ) => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = results.slice(indexOfFirstItem, indexOfLastItem);
+
+    return (
+      <>
+        {currentItems.map((result, index) => (
+          <Box
+            key={index}
+            display="flex"
+            flexDirection="row"
+            alignItems="flex-start"
+            borderBottom={`1px solid ${colors.primary[400]}`}
+            p="10px 0"
+          >
+            <ButtonBase
+              onClick={() => window.open(result.data.Story_URL, "_blank")}
+              sx={{
+                marginRight: "20px",
+                borderRadius: "4px",
+                overflow: "hidden",
+              }}
+            >
+              <img
+                src={result.data.img}
+                alt="News"
+                width="110px"
+                height="95px"
+                style={{ marginRight: "20px" }}
+              />
+            </ButtonBase>
+            <div>
+              <Typography
+                color={colors.greenAccent[100]}
+                variant="h5"
+                fontWeight="600"
+              >
+                <a
+                  href={result.data.Story_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: colors.greenAccent[100],
+                    textDecoration: "none",
+                  }}
+                >
+                  {result.data.Headline}
+                </a>
+              </Typography>
+              <Typography color={colors.grey[100]}>
+                {result.data.Story_Date}
+              </Typography>
+            </div>
+          </Box>
+        ))}
+        <Box display="flex" justifyContent="center" mt="20px">
+          <Button
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+            variant="contained"
+            sx={{ mr: 1 }}
+          >
+            Prev
+          </Button>
+          <Button
+            onClick={handleNext}
+            disabled={currentPage === Math.ceil(results.length / itemsPerPage)}
+            variant="contained"
+            sx={{ ml: 1 }}
+          >
+            Next
+          </Button>
+        </Box>
+      </>
+    );
+  };
+
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -235,13 +319,12 @@ const Trendspage = () => {
               {errorColumn1}
             </Typography>
           ) : (
-            renderResults(
+            renderResultsColumn1(
               resultsColumn1,
               currentPageColumn1,
               handlePrevColumn1,
               handleNextColumn1,
-              itemsPerPageColumn1,
-              true // Pass true to indicate this is for Column 1
+              itemsPerPageColumn1
             )
           )}
         </Box>
@@ -266,7 +349,7 @@ const Trendspage = () => {
               {errorColumn2}
             </Typography>
           ) : (
-            renderResults(
+            renderResultsColumn2(
               resultsColumn2,
               currentPageColumn2,
               handlePrevColumn2,
