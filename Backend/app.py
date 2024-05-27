@@ -870,6 +870,8 @@ def rank_documents_bm25_bert():
             }
         )
     return jsonify(results)
+from google_trends import daily_trends, realtime_trends
+
 
 @app.route("/api/top-trends", methods=["GET"])
 def top_trends():
@@ -997,7 +999,6 @@ def stories_by_date():
         del story["original_date"]
 
     return jsonify(matching_stories)
-
 
 if __name__ == "__main__":
 
