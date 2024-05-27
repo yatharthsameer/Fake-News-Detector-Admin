@@ -20,7 +20,7 @@ const Trendspage = () => {
   const [errorColumn1, setErrorColumn1] = useState(null);
   const [errorColumn2, setErrorColumn2] = useState(null);
 
-  const itemsPerPageColumn1 = expandedQuery ? 4 : 4; // Set items per page based on expanded view
+  const itemsPerPageColumn1 = expandedQuery ? 5 : 5; // Set items per page based on expanded view
   const itemsPerPageColumn2 = 5;
 
   const theme = useTheme();
@@ -100,7 +100,7 @@ const Trendspage = () => {
         "Content-Type": "application/json",
         charset: "utf-8",
       },
-      body: JSON.stringify({ date: "28 Dec 2019" }),
+      body: JSON.stringify({ date: formattedDate }),
     })
       .then((response) => response.json())
       .then((data) => {
