@@ -681,6 +681,7 @@ from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 docs, origdata = load_data("csvProcessing/allData.json")
 
 model = ensemble(docs, use_translation=True)
+# model = ensemble(docs, use_translation=False)
 
 
 # print("Models loaded successfully.")
@@ -872,60 +873,29 @@ def rank_documents_bm25_bert():
     return jsonify(results)
 from google_trends import daily_trends, realtime_trends
 
+import threading
+
+
+def start_scheduler():
+    from scheduler import run_scheduler
+
+    scheduler_thread = threading.Thread(target=run_scheduler)
+    scheduler_thread.daemon = True
+    print("Starting scheduler thread...")
+    scheduler_thread.start()
+
 
 @app.route("/api/top-trends", methods=["GET"])
 def top_trends():
     try:
-        # Fetch daily trends for today and yesterday
-        today_trends = daily_trends(country="IN")
-        yesterday = datetime.today() - timedelta(days=1)
-        yesterday_str = yesterday.strftime("%Y%m%d")
-        yesterday_trends = daily_trends(date=yesterday_str, country="IN")
-
-        # Combine today's and yesterday's trends and take the union
-        combined_trends = set(today_trends + yesterday_trends)
-
-        # Get the top 10 trends
-        top_10_trends = list(combined_trends)[:10]
-
-        combined_results = []
-        for query in top_10_trends:
-            # Call the rank_documents_bm25_bert function for each query
-            req = {"query": query}
-            with app.test_request_context(json=req):
-                response = rank_documents_bm25_bert()
-                if response.status_code == 200:
-                    result_data = response.json
-                    if result_data:
-                        top_story_percentage = (
-                            result_data[0]["percentage"] if result_data else 0
-                        )
-                        combined_results.append(
-                            {
-                                "query": query,
-                                "top_story_percentage": top_story_percentage,
-                                "result_data": result_data,
-                            }
-                        )
-
-        # Sort combined results based on top story percentage
-        sorted_results = sorted(
-            combined_results, key=lambda x: x["top_story_percentage"], reverse=True
-        )
-
-        # Get the top 5 queries with the highest match percentages
-        top_5_results = sorted_results[:5]
-
-        # Prepare the response in the required format
-        response_data = [
-            {result["query"]: result["result_data"][:1]} for result in top_5_results
-        ]
-
-        return jsonify(response_data)
-
+        # Load the cached results from the file
+        with open("top_trends_cache.json", "r", encoding="utf-8") as cache_file:
+            cached_data = json.load(cache_file)
+        return jsonify(cached_data)
     except Exception as e:
-        print(f"Error fetching trends: {str(e)}")
+        print(f"Error fetching cached trends: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
 
 import re
 from datetime import datetime, timedelta
@@ -1001,6 +971,8 @@ def stories_by_date():
     return jsonify(matching_stories)
 
 if __name__ == "__main__":
+    start_scheduler()
+
 
     app.run(host="127.0.0.1", port=8080, debug=True, use_reloader=False)
 # [END gae_python3_app]
