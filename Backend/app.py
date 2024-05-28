@@ -972,7 +972,7 @@ def stories_by_date():
     return jsonify(matching_stories)
 
 if __name__ == "__main__":
-    start_scheduler()
+    # start_scheduler()
 
 
     app.run(host="127.0.0.1", port=8080, debug=True, use_reloader=False)
