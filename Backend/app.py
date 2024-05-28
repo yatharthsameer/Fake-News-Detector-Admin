@@ -883,6 +883,7 @@ def start_scheduler():
     scheduler_thread.daemon = True
     print("Starting scheduler thread...")
     scheduler_thread.start()
+start_scheduler()
 
 
 @app.route("/api/top-trends", methods=["GET"])
