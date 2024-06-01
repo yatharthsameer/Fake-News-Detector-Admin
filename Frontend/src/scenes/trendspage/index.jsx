@@ -6,8 +6,10 @@ import {
   CircularProgress,
   ButtonBase,
   useTheme,
+  Grid, // Import Grid
 } from "@mui/material";
 import { tokens } from "../../theme";
+import Header from "../../components/Header";
 
 const Trendspage = () => {
   const [resultsColumn1, setResultsColumn1] = useState([]);
@@ -64,7 +66,7 @@ const Trendspage = () => {
   const fetchTopTrends = () => {
     setIsLoadingColumn1(true);
     // fetch("http://localhost:8080/api/top-trends")
-      fetch("/api/top-trends")
+    fetch("/api/top-trends")
       .then((response) => response.json())
       .then((data) => {
         const flattenedData = [];
@@ -94,7 +96,7 @@ const Trendspage = () => {
     )} ${currentDate.getFullYear()}`;
 
     // fetch("http://localhost:8080/api/stories-by-date", {
-      fetch("/api/stories-by-date", {
+    fetch("/api/stories-by-date", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -293,72 +295,76 @@ const Trendspage = () => {
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h4" color={colors.grey[100]}>
-          Trendspage
-        </Typography>
+        <Header
+          title="Trends Page"
+        />
       </Box>
-      <Box display="flex" justifyContent="space-between" gap="20px" mt="20px">
-        <Box flex={1} backgroundColor={colors.primary[400]} p="20px">
-          <Typography variant="h5" color={colors.grey[100]} mb="10px">
-            Based on Current Trends
-          </Typography>
-          {isLoadingColumn1 ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height="50vh"
-            >
-              <CircularProgress sx={{ color: colors.blueAccent[600] }} />
-              <Typography variant="h6" sx={{ mt: 2 }}>
-                Loading...
-              </Typography>
-            </Box>
-          ) : errorColumn1 ? (
-            <Typography color="error" variant="h6">
-              {errorColumn1}
+      <Grid container spacing={2} >
+        <Grid item xs={12} md={6}>
+          <Box backgroundColor={colors.primary[400]} p="20px">
+            <Typography variant="h5" color={colors.grey[100]} mb="10px">
+              Based on Current Trends
             </Typography>
-          ) : (
-            renderResultsColumn1(
-              resultsColumn1,
-              currentPageColumn1,
-              handlePrevColumn1,
-              handleNextColumn1,
-              itemsPerPageColumn1
-            )
-          )}
-        </Box>
-        <Box flex={1} backgroundColor={colors.primary[400]} p="20px">
-          <Typography variant="h5" color={colors.grey[100]} mb="10px">
-            Based on Historical Trends
-          </Typography>
-          {isLoadingColumn2 ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height="50vh"
-            >
-              <CircularProgress sx={{ color: colors.blueAccent[600] }} />
-              <Typography variant="h6" sx={{ mt: 2 }}>
-                Loading...
+            {isLoadingColumn1 ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                height="50vh"
+              >
+                <CircularProgress sx={{ color: colors.blueAccent[600] }} />
+                <Typography variant="h6" sx={{ mt: 2 }}>
+                  Loading...
+                </Typography>
+              </Box>
+            ) : errorColumn1 ? (
+              <Typography color="error" variant="h6">
+                {errorColumn1}
               </Typography>
-            </Box>
-          ) : errorColumn2 ? (
-            <Typography color="error" variant="h6">
-              {errorColumn2}
+            ) : (
+              renderResultsColumn1(
+                resultsColumn1,
+                currentPageColumn1,
+                handlePrevColumn1,
+                handleNextColumn1,
+                itemsPerPageColumn1
+              )
+            )}
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Box backgroundColor={colors.primary[400]} p="20px">
+            <Typography variant="h5" color={colors.grey[100]} mb="10px">
+              Based on Historical Trends
             </Typography>
-          ) : (
-            renderResultsColumn2(
-              resultsColumn2,
-              currentPageColumn2,
-              handlePrevColumn2,
-              handleNextColumn2,
-              itemsPerPageColumn2
-            )
-          )}
-        </Box>
-      </Box>
+            {isLoadingColumn2 ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                height="50vh"
+              >
+                <CircularProgress sx={{ color: colors.blueAccent[600] }} />
+                <Typography variant="h6" sx={{ mt: 2 }}>
+                  Loading...
+                </Typography>
+              </Box>
+            ) : errorColumn2 ? (
+              <Typography color="error" variant="h6">
+                {errorColumn2}
+              </Typography>
+            ) : (
+              renderResultsColumn2(
+                resultsColumn2,
+                currentPageColumn2,
+                handlePrevColumn2,
+                handleNextColumn2,
+                itemsPerPageColumn2
+              )
+            )}
+          </Box>
+        </Grid>
+      </Grid>
     </Box>
   );
 };

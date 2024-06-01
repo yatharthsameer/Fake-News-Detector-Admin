@@ -1,5 +1,5 @@
 import { ResponsiveLine } from "@nivo/line";
-import { useTheme } from "@mui/material";
+import { useTheme, useMediaQuery } from "@mui/material";
 import { tokens } from "../theme";
 import { mockLineData as data } from "../data/mockData";
 
@@ -10,6 +10,12 @@ const LineChart = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  // Filter function to get alternate x-axis values
+  const getAlternateTickValues = (data) => {
+    return data.filter((_, index) => index % 2 === 0).map((d) => d.x);
+  };
 
   return (
     <ResponsiveLine
@@ -47,8 +53,8 @@ const LineChart = ({
           },
         },
       }}
-      colors={isDashboard ? { datum: "color" } : { scheme: "nivo" }} // added
-      margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+      colors={isDashboard ? { datum: "color" } : { scheme: "nivo" }}
+      margin={{ top: 50, right: 20, bottom: 50, left: 45 }}
       xScale={{ type: "point" }}
       yScale={{
         type: "linear",
@@ -57,29 +63,29 @@ const LineChart = ({
         stacked: true,
         reverse: false,
       }}
-      //change y format to integer
       yFormat=" >-1"
       curve="catmullRom"
       axisTop={null}
       axisRight={null}
       axisBottom={{
         orient: "bottom",
-        tickSize: 5, // Adjust the tick size if necessary
+        tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
         legend: "Year",
         legendOffset: 36,
         legendPosition: "middle",
-        tickValues: data[0]?.data.map((d) => d.x), // Explicitly set tick values
-        tickTextColor: colors.grey[100], // Explicitly set tick text color
+        tickValues: isMobile
+          ? getAlternateTickValues(data[0]?.data)
+          : data[0]?.data.map((d) => d.x),
       }}
       axisLeft={{
         orient: "left",
-        tickValues: 5, // added
+        tickValues: 5,
         tickSize: 3,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "count", // added
+        legend: "count",
         legendOffset: -40,
         legendPosition: "middle",
       }}
@@ -93,10 +99,10 @@ const LineChart = ({
       useMesh={true}
       legends={[
         {
-          anchor: "bottom-right",
+          anchor: "top-right",
           direction: "column",
           justify: false,
-          translateX: 100,
+          translateX: 20,
           translateY: 0,
           itemsSpacing: 0,
           itemDirection: "left-to-right",
