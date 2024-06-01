@@ -23,7 +23,7 @@ const Trendspage = () => {
   const [errorColumn2, setErrorColumn2] = useState(null);
 
   const itemsPerPageColumn1 = expandedQuery ? 5 : 5; // Set items per page based on expanded view
-  const itemsPerPageColumn2 = 10 ;
+  const itemsPerPageColumn2 = 7 ;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
