@@ -35,7 +35,7 @@ const Dashboard = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [apiCallCompleted, setApiCallCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImageFile, setSelectedImageFile] = useState(null);
@@ -107,8 +107,8 @@ const Dashboard = () => {
 
     if (searchType === "text") {
       const searchQuery = searchInputRef.current.value;
-      // fetch("http://localhost:8080/api/ensemble", {
-      fetch("/api/ensemble", {
+      // fetch("https://factcheckerbtp.vishvasnews.com/api/ensemble", {
+        fetch("/api/ensemble", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
