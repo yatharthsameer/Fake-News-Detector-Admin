@@ -1,7 +1,6 @@
 import { ResponsiveLine } from "@nivo/line";
 import { useTheme, useMediaQuery } from "@mui/material";
 import { tokens } from "../theme";
-import { mockLineData as data } from "../data/mockData";
 
 const LineChart = ({
   data,
@@ -12,9 +11,9 @@ const LineChart = ({
   const colors = tokens(theme.palette.mode);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // Filter function to get alternate x-axis values
-  const getAlternateTickValues = (data) => {
-    return data.filter((_, index) => index % 2 === 0).map((d) => d.x);
+  // Function to format tick values
+  const formatTick = (year) => {
+    return parseInt(year) % 5 === 0 ? year : "";
   };
 
   return (
@@ -75,9 +74,8 @@ const LineChart = ({
         legend: "Year",
         legendOffset: 36,
         legendPosition: "middle",
-        tickValues: isMobile
-          ? getAlternateTickValues(data[0]?.data)
-          : data[0]?.data.map((d) => d.x),
+        tickValues: data[0]?.data.map((d) => d.x),
+        format: (d) => formatTick(d), // Apply the format function here
       }}
       axisLeft={{
         orient: "left",
