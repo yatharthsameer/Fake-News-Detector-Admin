@@ -65,8 +65,9 @@ const Trendspage = () => {
 
   const fetchTopTrends = () => {
     setIsLoadingColumn1(true);
-    // fetch("http://localhost:8080/api/top-trends")
-    fetch("/api/top-trends")
+    // fetch("https://factcheckerbtp.vishvasnews.com/api/top-trends")
+
+      fetch("/api/top-trends")
       .then((response) => response.json())
       .then((data) => {
         const flattenedData = [];
@@ -95,8 +96,8 @@ const Trendspage = () => {
       { month: "short" }
     )} ${currentDate.getFullYear()}`;
 
-    // fetch("http://localhost:8080/api/stories-by-date", {
-    fetch("/api/stories-by-date", {
+    // fetch("https://factcheckerbtp.vishvasnews.com/api/stories-by-date", {
+      fetch("/api/stories-by-date", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -132,7 +133,7 @@ const Trendspage = () => {
       <>
         {currentItems.map((result, index) => (
           <Box key={index} mb="20px">
-            <Typography variant="h6" color={colors.blueAccent[500]} mb="10px">
+            <Typography variant="h6" color={"#00ab05"} mb="10px">
               {result.query}
             </Typography>
             {result.results.map((item, subIndex) => (
@@ -301,7 +302,7 @@ const Trendspage = () => {
       </Box>
       <Grid container spacing={2} >
         <Grid item xs={12} md={6}>
-          <Box backgroundColor={colors.primary[400]} p="20px">
+          <Box  p="20px">
             <Typography variant="h5" color={colors.grey[100]} mb="10px">
               Based on Current Trends
             </Typography>
@@ -333,7 +334,7 @@ const Trendspage = () => {
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Box backgroundColor={colors.primary[400]} p="20px">
+          <Box  p="20px">
             <Typography variant="h5" color={colors.grey[100]} mb="10px">
               Based on Historical Trends
             </Typography>

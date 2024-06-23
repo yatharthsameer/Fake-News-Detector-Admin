@@ -5,14 +5,17 @@ import {
   Typography,
   useTheme,
   TextField,
-  InputLabel,
-  FormControl,
-  Select,
-  MenuItem,
   CircularProgress,
   useMediaQuery,
   Grid,
   ButtonBase,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  InputLabel,
+  FormControl,
+  MenuItem,
+  FormLabel,
 } from "@mui/material";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import CloseIcon from "@mui/icons-material/Close";
@@ -108,7 +111,7 @@ const Dashboard = () => {
     if (searchType === "text") {
       const searchQuery = searchInputRef.current.value;
       // fetch("https://factcheckerbtp.vishvasnews.com/api/ensemble", {
-        fetch("/api/ensemble", {
+      fetch("/api/ensemble", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -213,28 +216,51 @@ const Dashboard = () => {
           subtitle="Welcome! Search here for fact-checks using text or image queries"
         />
       </Box>
-      <Box display="flex" justifyContent="center" alignItems="center" mb="20px">
-        <FormControl
-          variant="outlined"
-          size="medium"
-          style={{
-            marginRight: "8px",
-            width: "150px",
-            backgroundColor: colors.primary[400],
-          }}
+      <Box mb="20px" display="flex" alignItems="center">
+        <FormLabel component="legend" sx={{ marginRight: 2, color: "black" }}>
+          Search Type
+        </FormLabel>
+        <RadioGroup
+          row
+          aria-label="searchType"
+          name="searchType"
+          value={searchType}
+          onChange={handleSearchTypeChange}
         >
-          <InputLabel>Search Type</InputLabel>
-          <Select
-            value={searchType}
-            onChange={handleSearchTypeChange}
-            label="Search Type"
-          >
-            <MenuItem value="text">Text</MenuItem>
-            <MenuItem value="image">Image Upload</MenuItem>
-            <MenuItem value="link">Image URL</MenuItem>
-          </Select>
-        </FormControl>
+          <FormControlLabel
+            value="text"
+            control={
+              <Radio
+                sx={{ color: "black", "&.Mui-checked": { color: "black" } }}
+              />
+            }
+            label="Text"
+            sx={{ color: "black" }}
+          />
+          <FormControlLabel
+            value="image"
+            control={
+              <Radio
+                sx={{ color: "black", "&.Mui-checked": { color: "black" } }}
+              />
+            }
+            label="Image Upload"
+            sx={{ color: "black" }}
+          />
+          <FormControlLabel
+            value="link"
+            control={
+              <Radio
+                sx={{ color: "black", "&.Mui-checked": { color: "black" } }}
+              />
+            }
+            label="Image URL"
+            sx={{ color: "black" }}
+          />
+        </RadioGroup>
+      </Box>
 
+      <Box display="flex" justifyContent="center" alignItems="center" mb="20px">
         {searchType === "text" && (
           <TextField
             inputRef={searchInputRef}
@@ -242,15 +268,30 @@ const Dashboard = () => {
             label="Search"
             size="medium"
             fullWidth
-            InputProps={{
-              style: {
-                backgroundColor: colors.primary[400],
-                borderRadius: "8px",
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "80px", // Rounded corners
+                "& fieldset": {
+                  borderColor: "#e5e5e5",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#e5e5e5",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#e5e5e5",
+                },
+                "& input": {
+                  color: "black", // Input text color
+                },
+              },
+              "& .MuiInputLabel-root": {
+                color: "#e5e5e5",
               },
             }}
             onKeyDown={handleSearchEnterKey}
           />
         )}
+
         {searchType === "link" && (
           <TextField
             value={imageUrl}
@@ -259,10 +300,24 @@ const Dashboard = () => {
             label="Image URL"
             size="medium"
             fullWidth
-            InputProps={{
-              style: {
-                backgroundColor: colors.primary[400],
-                borderRadius: "8px",
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px", // Rounded corners
+                "& fieldset": {
+                  borderColor: "#e5e5e5",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#e5e5e5",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#e5e5e5",
+                },
+                "& input": {
+                  color: "black", // Input text color
+                },
+              },
+              "& .MuiInputLabel-root": {
+                color: "#e5e5e5",
               },
             }}
             onKeyDown={handleSearchEnterKey}
@@ -276,13 +331,31 @@ const Dashboard = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "flex-start",
-              width: "calc(100% - 150px - 10px)",
-              minHeight: "56px",
+              width: "calc(100% - 15px - 10px)",
+              minHeight: "50px",
               border: "1px solid #cccccc",
-              borderRadius: "4px",
+              borderRadius: "8px", // Rounded corners
               backgroundColor: colors.primary[400],
               cursor: "pointer",
               paddingLeft: "10px",
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px", // Rounded corners for input inside dropzone
+                "& fieldset": {
+                  borderColor: "#e5e5e5",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#e5e5e5",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#e5e5e5",
+                },
+                "& input": {
+                  color: "black", // Input text color
+                },
+              },
+              "& .MuiInputLabel-root": {
+                color: "#e5e5e5",
+              },
             }}
           >
             <input {...getInputProps()} />
@@ -326,13 +399,14 @@ const Dashboard = () => {
           variant="contained"
           onClick={handleSearchButtonClick}
           sx={{
-            backgroundColor: colors.blueAccent[600],
+            backgroundColor: "#0b9933",
             color: colors.grey[100],
-            borderRadius: "8px",
+            borderRadius: "80px",
             marginLeft: "10px",
             fontSize: "14px",
             fontWeight: "bold",
             padding: "10px 20px",
+            width: "100px",
           }}
         >
           Search
@@ -368,7 +442,7 @@ const Dashboard = () => {
                       <>
                         <Grid item xs={12}>
                           <Box
-                            backgroundColor={colors.primary[400]}
+                            backgroundColor="#f4fff4"
                             p="30px"
                             mb="20px"
                             flexGrow={1}
@@ -378,6 +452,8 @@ const Dashboard = () => {
                                 display="flex"
                                 flexDirection="column"
                                 alignItems="center"
+                                backgroundColor="#f4fff4"
+                                sx={{ backgroundColor: "#f4fff4" }}
                               >
                                 {results.length > 0 ? (
                                   <>
@@ -397,7 +473,7 @@ const Dashboard = () => {
                                 ) : (
                                   <Typography
                                     variant="h5"
-                                    color={colors.greenAccent[100]}
+                                    color={"black"}
                                     sx={{ mt: "15px" }}
                                   >
                                     This claim does not have any significant
@@ -407,6 +483,7 @@ const Dashboard = () => {
                                 <Typography
                                   sx={{
                                     fontSize: isXs ? "8px" : "10px",
+                                    color: "black",
                                   }}
                                 >
                                   Disclaimer: This section of the website is run
@@ -509,7 +586,7 @@ const Dashboard = () => {
                                     />
                                   </ButtonBase>
                                   <div style={{ flex: 1, minWidth: "0" }}>
-                                         <Typography
+                                    <Typography
                                       color={colors.greenAccent[100]}
                                       variant="h5"
                                       fontWeight="600"
@@ -564,14 +641,6 @@ const Dashboard = () => {
                               >
                                 Timeline
                               </Typography>
-                              <IconButton>
-                                <DownloadOutlinedIcon
-                                  sx={{
-                                    fontSize: "26px",
-                                    color: colors.greenAccent[100],
-                                  }}
-                                />
-                              </IconButton>
                             </Box>
                             <Box height="250px">
                               <LineChart data={chartData} isDashboard={true} />
@@ -583,7 +652,7 @@ const Dashboard = () => {
                       <>
                         <Grid item xs={12} md={5} container direction="column">
                           <Box
-                            backgroundColor={colors.primary[400]}
+                            backgroundColor="#f4fff4"
                             p="30px"
                             mb="20px"
                             flexGrow={1}
@@ -593,6 +662,7 @@ const Dashboard = () => {
                                 display="flex"
                                 flexDirection="column"
                                 alignItems="center"
+                                backgroundColor="#f4fff4"
                               >
                                 {results.length > 0 ? (
                                   <>
@@ -622,6 +692,7 @@ const Dashboard = () => {
                                 <Typography
                                   sx={{
                                     fontSize: isXs ? "8px" : "10px",
+                                    color: "black",
                                   }}
                                 >
                                   Disclaimer: This section of the website is run
@@ -637,9 +708,9 @@ const Dashboard = () => {
                             )}
                           </Box>
                           <Box
-                            backgroundColor={colors.primary[400]}
                             p="30px"
                             flexGrow={1}
+                            sx={{ border: "1px solid #e5e5e5" }} // Added border color
                           >
                             <Box
                               display="flex"
@@ -653,14 +724,6 @@ const Dashboard = () => {
                               >
                                 Timeline
                               </Typography>
-                              <IconButton>
-                                <DownloadOutlinedIcon
-                                  sx={{
-                                    fontSize: "26px",
-                                    color: colors.greenAccent[100],
-                                  }}
-                                />
-                              </IconButton>
                             </Box>
                             <Box height="250px">
                               <LineChart data={chartData} isDashboard={true} />
@@ -668,12 +731,7 @@ const Dashboard = () => {
                           </Box>
                         </Grid>
                         <Grid item xs={12} md={7}>
-                          <Box
-                            backgroundColor={colors.primary[400]}
-                            p="30px"
-                            height="100%"
-                            overflow="auto"
-                          >
+                          <Box p="30px" height="100%" overflow="auto">
                             <Box
                               display="flex"
                               justifyContent="space-between"
@@ -683,7 +741,6 @@ const Dashboard = () => {
                               position="sticky"
                               top={0}
                               zIndex={10}
-                              bgcolor={colors.primary[400]}
                             >
                               <Typography
                                 color={colors.grey[100]}

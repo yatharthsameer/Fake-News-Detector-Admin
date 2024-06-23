@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import {
   Box,
   Card,
-  CardContent,
   TextField,
   Button,
   Typography,
@@ -21,26 +20,22 @@ const Login = () => {
 
   const { setIsAuthenticated } = useContext(AuthContext); // Using context to set authentication status
 
-const handleSubmit = async (event) => {
-  event.preventDefault();
-  // const response = await fetch("/api/login", {
-      // const response = await fetch("http://localhost:8080/api/login", {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include", // Make sure credentials include is set
-      });
-  if (response.ok) {
-    setIsAuthenticated(true); // Set authentication to true upon successful login
-    setTimeout(() => navigate("/form"), 1000); // Delay navigation to allow cookie handling
-  } else {
-                  alert("Please check your email and password and try again.");
-
-    console.error("Failed to log in");
-  }
-};
-
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+      credentials: "include", // Make sure credentials include is set
+    });
+    if (response.ok) {
+      setIsAuthenticated(true); // Set authentication to true upon successful login
+      setTimeout(() => navigate("/form"), 1000); // Delay navigation to allow cookie handling
+    } else {
+      alert("Please check your email and password and try again.");
+      console.error("Failed to log in");
+    }
+  };
 
   return (
     <Box
@@ -48,32 +43,82 @@ const handleSubmit = async (event) => {
       alignItems="center"
       justifyContent="center"
       sx={{
-        background: "#141B2D",
-        height: "115vh", // Full viewport height
-        display: "flex",
-      }} // Use the background color from tokens
+        height: "100vh", // Full viewport height
+      }}
     >
-      <Card sx={{ minWidth: 275, maxWidth: 400, bgcolor: "#1F2A40" }}>
-        <CardContent>
+      <Card
+        sx={{
+          width: "60%", // Adjust width as needed
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          backgroundColor: "white",
+          padding: 4,
+          borderRadius: 2,
+          boxShadow: 3,
+        }}
+      >
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            justifyContent: "center",
+            paddingLeft: 4,
+          }}
+        >
+          <img
+            alt="Vishvas News Logo"
+            src="./logoVN.png" // Replace with actual logo path
+            style={{ width: "200px", height: "auto", marginBottom: "20px" ,marginLeft:"-20px" }} // Adjusted logo size
+          />
           <Typography
-            variant="h5"
+            variant="h3" // Adjusted variant for bigger size
             component="div"
-            sx={{ mb: 2, color: colors.grey[100] }}
+            sx={{ mb: 1, color: "black", fontWeight: "bold" }}
           >
             Login
           </Typography>
+          <Typography
+            variant="subtitle2" // Adjusted variant for smaller size
+            component="div"
+            sx={{ mb: 2, color: "gray" }} // Changed color to gray for better readability
+          >
+            to continue to Login
+          </Typography>
+        </Box>
+        <Box sx={{ flex: 1 }}>
           <form onSubmit={handleSubmit}>
             <TextField
               fullWidth
               margin="normal"
               id="email"
-              label="Email"
+              label="Email id"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               variant="outlined"
-              sx={{ color: colors.grey[300] }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#e5e5e5",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#e5e5e5",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#e5e5e5",
+                  },
+                  "& input": {
+                    color: "black", // Input text color
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "#e5e5e5",
+                },
+              }}
             />
             <TextField
               fullWidth
@@ -85,18 +130,41 @@ const handleSubmit = async (event) => {
               onChange={(e) => setPassword(e.target.value)}
               required
               variant="outlined"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#e5e5e5",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#e5e5e5",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#e5e5e5",
+                  },
+                  "& input": {
+                    color: "black", // Input text color
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "#e5e5e5",
+                },
+              }}
             />
             <Button
               type="submit"
               variant="contained"
-              color="primary"
               fullWidth
-              sx={{ mt: 3 }}
+              sx={{
+                mt: 3,
+                backgroundColor: "#26a450",
+                color: "white",
+                borderRadius: 25, // Adjust border radius for rounded button
+              }}
             >
-              Login
+              LOGIN
             </Button>
           </form>
-        </CardContent>
+        </Box>
       </Card>
     </Box>
   );

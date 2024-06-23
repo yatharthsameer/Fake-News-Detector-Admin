@@ -12,16 +12,21 @@ body,
 
 .app {
   display: flex;
-  position: relative;
 }
 
 .content {
-  padding-left: 5px;
-  padding-top: 30px;
+  margin-left: 300px; /* Adjust this if the sidebar width changes */
+  padding: 30px;
 }
 
 .icon-button {
   margin-right: 20px; /* Adjust space between hamburger icon and heading */
+}
+
+@media (max-width: 600px) {
+  .content {
+    margin-left: 0; /* Reset margin for mobile view */
+  }
 }
 
 ::-webkit-scrollbar {
