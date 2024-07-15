@@ -1,6 +1,6 @@
 import os
 
-os.environ['CUDA_VISIBLE_DEVICES'] = ""
+os.environ['CUDA_VISIBLE_DEVICES'] = "2"
 
 from bert_score import BERTScorer
 from rank_bm25 import BM25Plus
@@ -14,6 +14,7 @@ from collections import defaultdict
 import spacy
 import numpy as np
 from multiprocessing import Pool, Process
+from datetime import datetime
 
 from IndicTrans2.inference.engine import Model
 
@@ -32,7 +33,16 @@ def load_data(filepath="csvProcessing/allData.json"):
         origdata = []
         for key in sorted(data, key=int):
             val = data[key]
+
+            try:
+                val['Story_Date'] = datetime.strptime(re.sub("(st|nd|rd|th)\s+", " ", val['Story_Date']), "%d %b %Y")
+            except ValueError as args:
+                print("Time error:", args)
+                continue
+
             origdata.append(val.copy())
+            del val['Story_Date']
+
 
             val["Story_URL"] = re.sub(
                 "\W+", " ", val["Story_URL"][val["Story_URL"].rfind("/", 0, -2) + 1 :]
@@ -41,6 +51,7 @@ def load_data(filepath="csvProcessing/allData.json"):
                 val[x] = (
                     re.sub("\s+", " ", val[x].lower()).strip() if val[x] and val[x].lower() not in ["na", "n/a"]   else ""
                 )
+
                 val[x] = (
                     re.sub("(quick.)?fact.check\s?\:?\s*", "", val[x])
                     if val[x].startswith("fact check")
@@ -64,6 +75,9 @@ def load_data(filepath="csvProcessing/allData.json"):
 
             # assert int(key) == len(docs), "Key Mismatch " + key + ' ' + str(len(docs))
     return docs, origdata
+
+
+
 
 
 ################################################################################
@@ -126,6 +140,8 @@ class bm25:
         return idx, res
 
 
+
+
 ################################################################################
 ################################################################################
 class ftsent:
@@ -173,14 +189,16 @@ class ftsent:
         return cosine_similarity([query_vec], [doc_vec])[0][0]
 
 
+
+
 ################################################################################
 ################################################################################
 class bertscore:
     def __init__(self, docs=[]):
         # print("Loading bertscore model...")
         ts = time()
-        # self.scorer = BERTScorer(model_type="distilbert-base-multilingual-cased")
-        self.scorer = BERTScorer(model_type="xlm-roberta-large")
+        self.scorer = BERTScorer(model_type="distilbert-base-multilingual-cased")
+        # self.scorer = BERTScorer(model_type="xlm-roberta-large")
         # self.scorer = BERTScorer(model_type="microsoft/mdeberta-v3-base")
         self.docs = [self.clean(x) for x in docs]
         te = time()
@@ -221,18 +239,29 @@ class bertscore:
         return self.scorer.score([query], [ddict["Headline"]])[0]
 
 
+
+
+
+
+
 ################################################################################
 ################################################################################
 class ensemble:
     def __init__(
-        self, docs, use_bm25=True, use_ft=True, use_bs=True, use_translation=False
+        self, docs, use_bm25=True, use_ft=True, use_bs=True, use_translation=False, use_date=True, origdocs = None, sort_date=False
     ):
         self.use_bm25 = use_bm25
         self.use_ft = use_ft
         self.use_bs = use_bs
         self.use_translation = use_translation
+        self.use_date = use_date
+        self.origdocs = origdocs
+        self.sort_date = sort_date
 
         assert use_bm25 or use_ft or use_bs, "Select at least 1 model"
+
+        assert not use_date or origdocs, "Need original docs if using date"
+        assert not sort_date or origdocs, "Need original docs if using date"
 
         self.docs = docs
 
@@ -361,6 +390,11 @@ class ensemble:
             results.append(bsidx)
 
 
+        if self.use_date:
+            dateidx = sorted(indices, key=lambda x: self.origdocs[x]['Story_Date'], reverse=True)
+            results.append(dateidx)
+
+
 
         # Reciprocal Rank Fusion
         docrrf = [0] * len(self.docs)
@@ -375,6 +409,14 @@ class ensemble:
 
         idx = idx[(res >= cutoff) & (res >= res[0] * thresh)]
         res = res[(res >= cutoff) & (res >= res[0] * thresh)]
+
+
+
+        # sort by date
+        if self.sort_date:
+            idx = sorted(idx, key=lambda x: self.origdocs[x]['Story_Date'], reverse = True)
+            res = metric[idx].round(3)
+            
 
         te = time()
         print("\nQuery time in s:", round(te - ts, 3))
@@ -396,6 +438,14 @@ class ensemble:
         # return self.BSmodel.match_percent(query, ddict)
 
 
+
+
+
+
+
+
+
+
 ################################################################################
 ################################################################################
 if __name__ == "__main__":
@@ -410,7 +460,8 @@ if __name__ == "__main__":
     # QUERY = 'anushka sharma married kohli'
     # QUERY = ['rahul gandhi drinking', 'anushka sharma', 'priyanka chopra', 'priyanka gandhi', 'priyankaa chopra', 'priyankaa gandhi', 'priyankaa gandhi posted', 'virat koli']
     # QUERY = ['virat kohli', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Sri lanka economy', 'Rolls Royce Saudi Arabia.', 'Ramu Elephant', 'ms dhoni', 'काल्‍पनिक तस्‍वीर']
-    QUERY = ['Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
+    # QUERY = ['Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
+    QUERY = ["राहुल गांधी", "नरेंद्र मोदी", "Narendra Modi", "Election Fact Check", "Karnataka Election", 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'Akhilesh Yadav', 'ms dhoni']
     # QUERY = ['अंबानी की नई बहू ने अपनी शादी में किया  शास्त्रीय नृत्य', 'आज अखिलेश यादव जी की रथ यात्रा मध्य प्रदेश के निवाडी मे', 'सलमान खान ने पार्कों की साफ़ सफाई के जागरुकता के लिए पार्क में झाड़ू लगाया।', 'केरल बेस्ड मालाबार गोल्ड कंपनी की 99.9% ज्वेलरी हिंदू खरीदते हैं, लेकिन यह कंपनी इस फोटो के अनुसार अपना स्कॉलरशिप 100% सिर्फ मुस्लिम बच्चों को देती है।', 'गोकर्ण (कर्नाटक) के पास एक फ्रांसीसी पर्यटक द्वारा खींची गई एक तस्वीर', 'कंगना ने मानी हार']
     # 7689
     # with open("queries_test.txt") as fp:
@@ -418,7 +469,7 @@ if __name__ == "__main__":
 
    
     docs, orig = load_data("../csvProcessing/allData.json")
-    model = ensemble(docs, use_translation=False)
+    model = ensemble(docs, use_translation=True, origdocs=orig)
 
 
     # trans = Model("IndicTrans2/en-indic", model_type="fairseq")
@@ -428,42 +479,42 @@ if __name__ == "__main__":
 
     for query in QUERY:
         
-        print("\n\n")
-        print("#"*100)
-        print("#"*100)
-        print("#"*40 + " BM25 " + "#"*40)
-        print("QUERY:", query)
+        # print("\n\n")
+        # print("#"*100)
+        # print("#"*100)
+        # print("#"*40 + " BM25 " + "#"*40)
+        # print("QUERY:", query)
 
         
-        indices = set()
+        # indices = set()
         
-        idx, res = model.BM25model.rank(query)
-        indices |= set(idx)
-        for i, v in zip(idx[:10], res[:10]): 
-            print(" --> ", v, i, docs[i])
+        # idx, res = model.BM25model.rank(query)
+        # indices |= set(idx)
+        # for i, v in zip(idx[:10], res[:10]): 
+        #     print(" --> ", v, i, docs[i])
 
 
-        print("\n")
-        print("#"*40 + " FT-sent " + "#"*40)
-        print("QUERY:", query)
+        # print("\n")
+        # print("#"*40 + " FT-sent " + "#"*40)
+        # print("QUERY:", query)
         
-        idx, res = model.FTmodel(query)
-        indices |= set(idx)
-        for i, v in zip(idx[:10], res[:10]): 
-            print(" --> ", v, i, docs[i])
+        # idx, res = model.FTmodel(query)
+        # indices |= set(idx)
+        # for i, v in zip(idx[:10], res[:10]): 
+        #     print(" --> ", v, i, docs[i])
 
 
-        print("\n")
-        print("#"*40 + " BERTSCORE " + "#"*40)
-        print("QUERY:", query)
+        # print("\n")
+        # print("#"*40 + " BERTSCORE " + "#"*40)
+        # print("QUERY:", query)
 
-        indices = np.array(list(indices))
-        print(len(indices))
-        tmpdocs = [model.docs[i] for i in indices]    
-        idx, res = model.BSmodel(query, tmpdocs)
-        idx = indices[idx]
-        for i, v in zip(idx[:10], res[:10]): 
-            print(" --> ", v, i, docs[i])
+        # indices = np.array(list(indices))
+        # print(len(indices))
+        # tmpdocs = [model.docs[i] for i in indices]    
+        # idx, res = model.BSmodel(query, tmpdocs)
+        # idx = indices[idx]
+        # for i, v in zip(idx[:10], res[:10]): 
+        #     print(" --> ", v, i, docs[i])
         
         
         
@@ -485,7 +536,7 @@ if __name__ == "__main__":
 
         for i, v in zip(idx[:], scores[:]):
             print(" --> ", v, i, docs[i])
-            print(" +-> ", orig[i]["Headline"])
+            print(" +-> ", orig[i]["Story_Date"], orig[i]["Headline"])
             print()
 
 

@@ -14,6 +14,7 @@ from collections import defaultdict
 import spacy
 import numpy as np
 from multiprocessing import Pool, Process
+from datetime import datetime
 
 from IndicTrans2.inference.engine import Model as IT2Model
 
@@ -32,7 +33,16 @@ def load_data(filepath="csvProcessing/allData.json"):
         origdata = []
         for key in sorted(data, key=int):
             val = data[key]
+            
+            try:
+                val['Story_Date'] = datetime.strptime(re.sub("(st|nd|rd|th)\s+", " ", val['Story_Date']), "%d %b %Y")
+            except ValueError as args:
+                print("Time error:", args)
+                continue
+
             origdata.append(val.copy())
+            del val['Story_Date']
+
 
             val["Story_URL"] = re.sub(
                 "\W+", " ", val["Story_URL"][val["Story_URL"].rfind("/", 0, -2) + 1 :]
@@ -64,6 +74,10 @@ def load_data(filepath="csvProcessing/allData.json"):
 
             # assert int(key) == len(docs), "Key Mismatch " + key + ' ' + str(len(docs))
     return docs, origdata
+
+
+
+
 
 
 ################################################################################
@@ -125,6 +139,10 @@ class bm25:
         return idx, res
 
 
+
+
+
+
 ################################################################################
 ################################################################################
 class ftsent:
@@ -170,6 +188,10 @@ class ftsent:
         query_vec = self.model.get_sentence_vector(self.clean(query))
         doc_vec = self.model.get_sentence_vector(self.clean(ddict["Headline"]))
         return cosine_similarity([query_vec], [doc_vec])[0][0]
+
+
+
+
 
 
 ################################################################################
@@ -221,18 +243,30 @@ class bertscore:
         return self.scorer.score([query], [ddict["Headline"]])[0]
 
 
+
+
+
+
+
+
 ################################################################################
 ################################################################################
 class ensemble:
     def __init__(
-        self, docs, use_bm25=True, use_ft=True, use_bs=True, use_translation=False
+        self, docs, use_bm25=True, use_ft=True, use_bs=True, use_translation=False, use_date=True, origdocs = None, sort_date=False
     ):
         self.use_bm25 = use_bm25
         self.use_ft = use_ft
         self.use_bs = use_bs
         self.use_translation = use_translation
+        self.use_date = use_date
+        self.origdocs = origdocs
+        self.sort_date = sort_date
 
         assert use_bm25 or use_ft or use_bs, "Select at least 1 model"
+
+        assert not use_date or origdocs, "Need original docs if using date"
+        assert not sort_date or origdocs, "Need original docs if using date"
 
         self.docs = docs
 
@@ -366,6 +400,11 @@ class ensemble:
             results.append(bsidx)
 
 
+        if self.use_date:
+            dateidx = sorted(indices, key=lambda x: self.origdocs[x]['Story_Date'], reverse=True)
+            results.append(dateidx)
+
+
 
         # Reciprocal Rank Fusion
         docrrf = [0] * len(self.docs)
@@ -380,6 +419,13 @@ class ensemble:
 
         idx = idx[(res >= cutoff) & (res >= res[0] * thresh)]
         res = res[(res >= cutoff) & (res >= res[0] * thresh)]
+
+
+        # sort by date
+        if self.sort_date:
+            idx = sorted(idx, key=lambda x: self.origdocs[x]['Story_Date'], reverse = True)
+            res = metric[idx].round(3)
+        
 
         te = time()
         print("\nQuery time in s:", round(te - ts, 3))
