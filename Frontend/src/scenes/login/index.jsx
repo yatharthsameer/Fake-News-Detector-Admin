@@ -71,7 +71,12 @@ const Login = () => {
           <img
             alt="Vishvas News Logo"
             src="./logoVN.png" // Replace with actual logo path
-            style={{ width: "200px", height: "auto", marginBottom: "20px" ,marginLeft:"-20px" }} // Adjusted logo size
+            style={{
+              width: "200px",
+              height: "auto",
+              marginBottom: "20px",
+              marginLeft: "-20px",
+            }} // Adjusted logo size
           />
           <Typography
             variant="h3" // Adjusted variant for bigger size
@@ -116,7 +121,7 @@ const Login = () => {
                   },
                 },
                 "& .MuiInputLabel-root": {
-                  color: "#e5e5e5",
+                  color: "black",
                 },
               }}
             />
@@ -146,7 +151,7 @@ const Login = () => {
                   },
                 },
                 "& .MuiInputLabel-root": {
-                  color: "#e5e5e5",
+                  color: "black",
                 },
               }}
             />

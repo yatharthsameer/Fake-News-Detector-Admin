@@ -28,7 +28,7 @@ const LineChart = ({
           },
           legend: {
             text: {
-              fill: colors.grey[100],
+              fill: "black",
             },
           },
           ticks: {
@@ -37,18 +37,19 @@ const LineChart = ({
               strokeWidth: 1,
             },
             text: {
-              fill: colors.grey[100],
+              fill: "black",
             },
           },
         },
         legends: {
           text: {
-            fill: colors.grey[100],
+            fill: "black",
           },
         },
         tooltip: {
           container: {
-            color: colors.primary[500],
+            color: "black", // Set the tooltip text color to black
+            background: "#fff",
           },
         },
       }}

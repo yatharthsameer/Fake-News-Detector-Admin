@@ -272,20 +272,20 @@ const Dashboard = () => {
               "& .MuiOutlinedInput-root": {
                 borderRadius: "80px", // Rounded corners
                 "& fieldset": {
-                  borderColor: "#e5e5e5",
+                  borderColor: "black",
                 },
                 "&:hover fieldset": {
-                  borderColor: "#e5e5e5",
+                  borderColor: "black",
                 },
                 "&.Mui-focused fieldset": {
-                  borderColor: "#e5e5e5",
+                  borderColor: "black",
                 },
                 "& input": {
                   color: "black", // Input text color
                 },
               },
               "& .MuiInputLabel-root": {
-                color: "#e5e5e5",
+                color: "black",
               },
             }}
             onKeyDown={handleSearchEnterKey}
@@ -302,22 +302,22 @@ const Dashboard = () => {
             fullWidth
             sx={{
               "& .MuiOutlinedInput-root": {
-                borderRadius: "8px", // Rounded corners
+                borderRadius: "80px", // Rounded corners
                 "& fieldset": {
-                  borderColor: "#e5e5e5",
+                  borderColor: "black",
                 },
                 "&:hover fieldset": {
-                  borderColor: "#e5e5e5",
+                  borderColor: "black",
                 },
                 "&.Mui-focused fieldset": {
-                  borderColor: "#e5e5e5",
+                  borderColor: "black",
                 },
                 "& input": {
                   color: "black", // Input text color
                 },
               },
               "& .MuiInputLabel-root": {
-                color: "#e5e5e5",
+                color: "black",
               },
             }}
             onKeyDown={handleSearchEnterKey}
@@ -335,7 +335,7 @@ const Dashboard = () => {
               minHeight: "50px",
               border: "1px solid #cccccc",
               borderRadius: "8px", // Rounded corners
-              backgroundColor: colors.primary[400],
+              backgroundColor: "#fff",
               cursor: "pointer",
               paddingLeft: "10px",
               "& .MuiOutlinedInput-root": {
@@ -388,7 +388,7 @@ const Dashboard = () => {
                 </IconButton>
               </Box>
             ) : (
-              <Typography>
+              <Typography style={{ color: "black" }}>
                 Drag 'n' drop an image here, or click to select one (jpeg/png)
               </Typography>
             )}
