@@ -280,7 +280,7 @@ class ensemble:
 
         if use_translation:
             try:
-                self.trans = Model("IndicTrans2/fairseq_model", model_type="fairseq")
+                self.trans = Model("IndicTrans2/indic-en", model_type="fairseq")
                 # QUERY = model.batch_translate(QUERY, "hin_Deva", "eng_Latn") 
                 # self.trans = GoogleTranslator()
                 # self.transen = GoogleTranslator(source="en", target="hi")
@@ -460,8 +460,9 @@ if __name__ == "__main__":
     # QUERY = 'anushka sharma married kohli'
     # QUERY = ['rahul gandhi drinking', 'anushka sharma', 'priyanka chopra', 'priyanka gandhi', 'priyankaa chopra', 'priyankaa gandhi', 'priyankaa gandhi posted', 'virat koli']
     # QUERY = ['virat kohli', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Sri lanka economy', 'Rolls Royce Saudi Arabia.', 'Ramu Elephant', 'ms dhoni', 'काल्‍पनिक तस्‍वीर']
-    # QUERY = ['Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
-    QUERY = ["राहुल गांधी", "नरेंद्र मोदी", "Narendra Modi", "Election Fact Check", "Karnataka Election", 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'Akhilesh Yadav', 'ms dhoni']
+    # QUERY = ["राहुल गांधी", "नरेंद्र मोदी", "Narendra Modi", "Election Fact Check", "Karnataka Election", 'Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
+    QUERY = ['राहुल गांधी बेरोजगार']
+    # QUERY = ["राहुल गांधी", "नरेंद्र मोदी", "Narendra Modi", "Election Fact Check", "Karnataka Election", 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'Akhilesh Yadav', 'ms dhoni']
     # QUERY = ['अंबानी की नई बहू ने अपनी शादी में किया  शास्त्रीय नृत्य', 'आज अखिलेश यादव जी की रथ यात्रा मध्य प्रदेश के निवाडी मे', 'सलमान खान ने पार्कों की साफ़ सफाई के जागरुकता के लिए पार्क में झाड़ू लगाया।', 'केरल बेस्ड मालाबार गोल्ड कंपनी की 99.9% ज्वेलरी हिंदू खरीदते हैं, लेकिन यह कंपनी इस फोटो के अनुसार अपना स्कॉलरशिप 100% सिर्फ मुस्लिम बच्चों को देती है।', 'गोकर्ण (कर्नाटक) के पास एक फ्रांसीसी पर्यटक द्वारा खींची गई एक तस्वीर', 'कंगना ने मानी हार']
     # 7689
     # with open("queries_test.txt") as fp:
@@ -469,7 +470,7 @@ if __name__ == "__main__":
 
    
     docs, orig = load_data("../csvProcessing/allData.json")
-    model = ensemble(docs, use_translation=True, origdocs=orig)
+    model = ensemble(docs, use_translation=True, origdocs=orig, use_date=True, sort_date=False)
 
 
     # trans = Model("IndicTrans2/en-indic", model_type="fairseq")

@@ -33,6 +33,7 @@ def load_data(filepath="csvProcessing/allData.json"):
         origdata = []
         for key in sorted(data, key=int):
             val = data[key]
+            val['key'] = key
             
             try:
                 val['Story_Date'] = datetime.strptime(re.sub("(st|nd|rd|th)\s+", " ", val['Story_Date']), "%d %b %Y")
@@ -42,6 +43,7 @@ def load_data(filepath="csvProcessing/allData.json"):
 
             origdata.append(val.copy())
             del val['Story_Date']
+            del val['key']
 
 
             val["Story_URL"] = re.sub(

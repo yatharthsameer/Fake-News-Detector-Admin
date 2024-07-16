@@ -867,8 +867,10 @@ def rank_documents_bm25_bert():
         else None
     )
 
-    for i, score in zip(idx[:10], scores[:10]):
-        doc_id = str(i + 1)  # Convert index to integer
+    origkeys = [origdata[i]['key'] i for i in idx]
+
+    for doc_id, score in zip(origkeys[:10], scores[:10]):
+        # doc_id = str(i)  # Convert index to integer
         print(doc_id)
         doc_obj = data[doc_id]  # Access the corresponding document object
 
@@ -879,6 +881,8 @@ def rank_documents_bm25_bert():
             }
         )
     return jsonify(results)
+
+
 from google_trends import daily_trends, realtime_trends
 
 import threading
