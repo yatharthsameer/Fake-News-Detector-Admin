@@ -182,11 +182,10 @@ const Dashboard = () => {
           setApiCallCompleted(true);
         })
         .catch((error) => {
-            setIsLoading(false);
-            setErrorMessage(
-              "The server encountered some issue, please click search again."
-            );
-            setApiCallCompleted(true);
+          setIsLoading(false);
+                    setApiCallCompleted(true);
+
+          setErrorMessage(error.message);
         });
     }
   };
