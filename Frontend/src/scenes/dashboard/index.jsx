@@ -179,16 +179,14 @@ const Dashboard = () => {
           setIsLoading(false);
           setResults(data);
           setChartData(processChartData(data));
-                    setApiCallCompleted(true);
-
-          setImageUrl("");
-          setErrorMessage("");
+          setApiCallCompleted(true);
         })
         .catch((error) => {
-          setIsLoading(false);
-                    setApiCallCompleted(true);
-
-          setErrorMessage(error.message);
+            setIsLoading(false);
+            setErrorMessage(
+              "The server encountered some issue, please click search again."
+            );
+            setApiCallCompleted(true);
         });
     }
   };
