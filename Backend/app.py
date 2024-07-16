@@ -867,7 +867,7 @@ def rank_documents_bm25_bert():
         else None
     )
 
-    origkeys = [origdata[i]['key'] i for i in idx]
+    origkeys = [origdata[i]['key'] for i in idx]
 
     for doc_id, score in zip(origkeys[:10], scores[:10]):
         # doc_id = str(i)  # Convert index to integer
