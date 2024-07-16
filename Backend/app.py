@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 from DeepImageSearch import Load_Data, Search_Setup
 import os
 from sentence_transformers import SentenceTransformer, util
+import urllib.request
 
 import torch  # Import torch for tensor operations
 import pandas as pd
@@ -571,78 +572,84 @@ def get_embedding(text):
         )  # Ensure the output is 1-D
     return embedding
 
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+import time
+
 
 @app.route("/api/uploadImageURL", methods=["POST"])
 def upload_image_url():
-
     json_data = request.get_json()
     image_url = json_data.get("image_url")
 
     if not image_url:
         return jsonify({"error": "No image URL provided"}), 400
 
-    temp_image_path = "./temp_image.jpg"  # Define the path outside try-except block
+    temp_image_path = "./temp_image.jpg"
 
     try:
-        # Fetch the image from the URL
-        response = requests.get(image_url, stream=True)
-
-        # Check if the request was successful
-        if response.status_code == 200:
-            # Create a PIL Image from the binary data
-            image = Image.open(BytesIO(response.content))
-
-            # Save the image to a temporary file
-            image.save(temp_image_path)
-
-            # Proceed with your existing logic for handling uploaded images
-            similar_images = st.get_similar_images(
-                image_path=temp_image_path, number_of_images=20
-            )
-
-            data = {}
-            with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
-                data = json.load(file)
-            response_data = []
-            seen_urls = set()  # Set to keep track of URLs we've already added
-
-            for img_info in similar_images:
-                image_index = img_info["path"].split("_")[-1].split(".")[0]
-
-                if image_index in data:
-                    corresponding_object = data[image_index]
-                    story_url = corresponding_object.get("Story_URL")
-
-                    # Check if we've already added this story URL
-                    if story_url not in seen_urls:
-                        if img_info["match_percentage"] > 60:
-                            response_data.append(
-                                {
-                                    "percentage": round(
-                                        img_info["match_percentage"], 2
-                                    ),
-                                    "data": corresponding_object,
-                                }
-                            )
-                            seen_urls.add(story_url)  # Mark this URL as seen
-            return jsonify(response_data)
-
-        else:
-            return jsonify({"error": "Failed to fetch image from URL"}), 500
-    except UnidentifiedImageError as e:
-        return (
-            jsonify(
-                {
-                    "error": "Cannot identify image file. Ensure the URL points directly to an image."
-                }
-            ),
-            400,
+        # Set up Selenium with ChromeDriver
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()), options=chrome_options
         )
+
+        # Open the URL
+        driver.get(image_url)
+        time.sleep(2)  # Wait for the page to load
+
+        # Scroll down slightly to load more content
+        driver.execute_script("window.scrollBy(0, 200);")
+        time.sleep(1)  # Wait for the scrolling to complete
+
+        # Take a screenshot
+        driver.save_screenshot(temp_image_path)
+
+        # Close the browser
+        driver.quit()
+
+        # Load the screenshot with PIL
+        image = Image.open(temp_image_path)
+
+        # Proceed with your existing logic for handling uploaded images
+        similar_images = st.get_similar_images(
+            image_path=temp_image_path, number_of_images=20
+        )
+
+        with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        response_data = []
+        seen_urls = set()
+
+        for img_info in similar_images:
+            image_index = img_info["path"].split("_")[-1].split(".")[0]
+
+            if image_index in data:
+                corresponding_object = data[image_index]
+                story_url = corresponding_object.get("Story_URL")
+
+                if story_url not in seen_urls and img_info["match_percentage"] > 60:
+                    response_data.append(
+                        {
+                            "percentage": round(img_info["match_percentage"], 2),
+                            "data": corresponding_object,
+                        }
+                    )
+                    seen_urls.add(story_url)
+        return jsonify(response_data)
+
     except Exception as e:
-        # Clean up the temporary file in case of an error
         if os.path.exists(temp_image_path):
             os.remove(temp_image_path)
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
 
 @app.route("/api/searchEmbed", methods=["POST"])
@@ -681,7 +688,7 @@ from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 docs, origdata = load_data("csvProcessing/allData.json")
 
 model = ensemble(docs, use_translation=True, origdocs=origdata)
-# model = ensemble(docs, use_translation=False)
+# model = ensemble(docs, use_translation=False, origdocs=origdata)
 
 
 # print("Models loaded successfully.")

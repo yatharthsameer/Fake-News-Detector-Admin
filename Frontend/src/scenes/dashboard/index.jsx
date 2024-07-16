@@ -163,7 +163,10 @@ const Dashboard = () => {
         });
     } else if (searchType === "link" && imageUrl.trim()) {
       const imgURLQ = imageUrl.trim();
+
       fetch("/api/uploadImageURL", {
+    //  fetch("https://factcheckerbtp.vishvasnews.com/api/uploadImageURL", {
+      // fetch("http://localhost:8080/api/uploadImageURL", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -176,11 +179,15 @@ const Dashboard = () => {
           setIsLoading(false);
           setResults(data);
           setChartData(processChartData(data));
+                    setApiCallCompleted(true);
+
           setImageUrl("");
           setErrorMessage("");
         })
         .catch((error) => {
           setIsLoading(false);
+                    setApiCallCompleted(true);
+
           setErrorMessage(error.message);
         });
     }
@@ -268,6 +275,9 @@ const Dashboard = () => {
             label="Search"
             size="medium"
             fullWidth
+            InputLabelProps={{
+              style: { color: "black" },
+            }}
             sx={{
               "& .MuiOutlinedInput-root": {
                 borderRadius: "80px", // Rounded corners
@@ -300,6 +310,9 @@ const Dashboard = () => {
             label="Image URL"
             size="medium"
             fullWidth
+            InputLabelProps={{
+              style: { color: "black" },
+            }}
             sx={{
               "& .MuiOutlinedInput-root": {
                 borderRadius: "80px", // Rounded corners
@@ -327,6 +340,9 @@ const Dashboard = () => {
         {searchType === "image" && (
           <Box
             {...getRootProps()}
+            InputLabelProps={{
+              style: { color: "black" },
+            }}
             sx={{
               display: "flex",
               alignItems: "center",
@@ -338,6 +354,7 @@ const Dashboard = () => {
               backgroundColor: "#fff",
               cursor: "pointer",
               paddingLeft: "10px",
+
               "& .MuiOutlinedInput-root": {
                 borderRadius: "8px", // Rounded corners for input inside dropzone
                 "& fieldset": {
