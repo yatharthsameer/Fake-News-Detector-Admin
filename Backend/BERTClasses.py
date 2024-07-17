@@ -19,7 +19,6 @@ from datetime import datetime
 from IndicTrans2.inference.engine import Model as IT2Model
 
 
-
 ################################################################################
 ################################################################################
 # for SPACY; Use 1 if there are problems with the multiproccessing library
@@ -78,14 +77,11 @@ def load_data(filepath="csvProcessing/allData.json"):
     return docs, origdata
 
 
-
-
-
-
 ################################################################################
 ################################################################################
 class bm25:
-    def __init__(self, docs, use_lemma=True):
+
+    def __init__(self, docs, use_lemma=False):
         self.use_lemma = use_lemma
         # print("Loading BM25 model...")
         ts = time()
@@ -105,13 +101,12 @@ class bm25:
 
     def __call__(self, query, **kwargs):
         return self.rank(query, **kwargs)
-    
+
     def add_docs(self, docs):
         tmp = [self.clean(x) for x in docs]
         self.docs.extend(tmp)
         tokenized_corpus = map(self.tokenize, tmp)
         self.scorer = BM25Plus(tokenized_corpus)
-
 
     def clean(self, text: str):
         # print (text)
@@ -139,10 +134,6 @@ class bm25:
 
         # print("BM25 Query time in s:", round(te-ts, 3))
         return idx, res
-
-
-
-
 
 
 ################################################################################
@@ -192,10 +183,6 @@ class ftsent:
         return cosine_similarity([query_vec], [doc_vec])[0][0]
 
 
-
-
-
-
 ################################################################################
 ################################################################################
 class bertscore:
@@ -243,12 +230,6 @@ class bertscore:
 
     def match_percent(self, query, ddict):
         return self.scorer.score([query], [ddict["Headline"]])[0]
-
-
-
-
-
-
 
 
 ################################################################################
@@ -453,16 +434,6 @@ class ensemble:
         # return self.BSmodel.match_percent(query, ddict)
 
 
-
-
-
-
-
-
-
-
-
-
 ################################################################################
 ################################################################################
 if __name__ == "__main__":
@@ -548,6 +519,3 @@ if __name__ == "__main__":
             print(" --> ", v, i, docs[i])
             print(" +-> ", orig[i]["Headline"])
             print()
-
-
-
