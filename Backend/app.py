@@ -526,7 +526,7 @@ def upload_file():
 
                 # Check if we've already added this story URL
                 if story_url not in seen_urls:
-                    if img_info["match_percentage"] > 60:
+                    if img_info["match_percentage"] > 40:
                         response_data.append(
                             {
                                 "percentage": round(img_info["match_percentage"], 2),
@@ -689,15 +689,9 @@ from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 docs, origdata = load_data("csvProcessing/allData.json")
 
 model = ensemble(docs, use_translation=True, origdocs=origdata, use_date_level=2)
-#model = ensemble(docs, use_translation=False, origdocs=origdata)
+# model = ensemble(docs, use_translation=False, origdocs=origdata)
 
 
-# print("Models loaded successfully.")
-# def restart_server():
-#     os.execv(sys.executable, ["python3"] + sys.argv)
-
-
-# add the new documents to a temp file and feed it to this function
 def add_docs(filename):
     newdocs, neworig = load_data(filename)
     docs.extend(newdocs)
@@ -852,6 +846,8 @@ def append_story(request_data):
 def rank_documents_bm25_bert():
     req = request.json
     query = req.get("query", "")
+    log_query("text", query)
+
     data = []
     with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
         data = json.load(file)
@@ -868,6 +864,43 @@ def rank_documents_bm25_bert():
     )
 
     origkeys = [origdata[i]['key'] for i in idx]
+
+    for doc_id, score in zip(origkeys[:10], scores[:10]):
+        # doc_id = str(i)  # Convert index to integer
+        print(doc_id)
+        # doc_obj = data[doc_id]  # Access the corresponding document object
+
+        results.append(
+            {
+                "percentage": percent,
+                "data": data[doc_id],  # Include the whole news object
+            }
+        )
+    return jsonify(results)
+
+
+def rank_documents_bm25_bert_trends():
+    req = request.json
+    query = req.get("query", "")
+    data = []
+    with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
+        data = json.load(file)
+    print("Data loaded successfully trends")
+
+    # Using combined BM25 and BERTScore model to rank documents
+    model.use_date_level = 1
+
+    idx, scores = model.rank(query)
+    model.use_date_level = 2
+    results = []
+    print(type(idx))
+    percent = (
+        round(20 * max(scores[0], model.match_percent(query, origdata[idx[0]]))) * 5
+        if len(idx) > 0
+        else None
+    )
+
+    origkeys = [origdata[i]["key"] for i in idx]
 
     for doc_id, score in zip(origkeys[:10], scores[:10]):
         # doc_id = str(i)  # Convert index to integer
@@ -954,8 +987,8 @@ def stories_by_date():
         print(f"Invalid date format {specified_date_str}")
         return jsonify({"error": f"Invalid date format {specified_date_str}"}), 400
 
-    start_date = specified_date - timedelta(days=3)
-    end_date = specified_date + timedelta(days=3)
+    start_date = specified_date - timedelta(days=1)
+    end_date = specified_date + timedelta(days=1)
 
     matching_stories = []
 

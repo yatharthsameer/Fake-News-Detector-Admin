@@ -11,7 +11,7 @@ app = Flask(__name__)
 # model = ensemble(docs,use_translation=True, origdocs=orig, use_date_level= 0 or 1)
 # OR
 # model = ensemble(docs,use_translation=True, origdocs=orig)
-# OR 
+# OR
 # set model.use_date_level = 1 before calling the api, and set it to 2 again once done
 
 
@@ -34,9 +34,10 @@ def fetch_and_store_top_trends():
             with app.test_request_context(json=req):
                 from app import (
                     rank_documents_bm25_bert,
+                    rank_documents_bm25_bert_trends,
                 )  # Import here to avoid circular import
 
-                response = rank_documents_bm25_bert()
+                response = rank_documents_bm25_bert_trends()
                 if response.status_code == 200:
                     result_data = response.json
                     if result_data:
