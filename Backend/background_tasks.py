@@ -7,6 +7,14 @@ from flask import Flask
 app = Flask(__name__)
 
 
+# docs, orig = load_data("csvProcessing/allData.json")
+# model = ensemble(docs,use_translation=True, origdocs=orig, use_date_level= 0 or 1)
+# OR
+# model = ensemble(docs,use_translation=True, origdocs=orig)
+# OR 
+# set model.use_date_level = 1 before calling the api, and set it to 2 again once done
+
+
 def fetch_and_store_top_trends():
     try:
         print("Fetching and storing top trends...")

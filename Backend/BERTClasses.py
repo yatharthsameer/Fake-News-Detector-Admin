@@ -1,6 +1,6 @@
 import os
 
-os.environ['CUDA_VISIBLE_DEVICES'] = "1"
+os.environ['CUDA_VISIBLE_DEVICES'] = "2"
 
 from bert_score import BERTScorer
 from rank_bm25 import BM25Plus
@@ -85,7 +85,7 @@ def load_data(filepath="csvProcessing/allData.json"):
 ################################################################################
 ################################################################################
 class bm25:
-    def __init__(self, docs, use_lemma=False):
+    def __init__(self, docs, use_lemma=True):
         self.use_lemma = use_lemma
         # print("Loading BM25 model...")
         ts = time()
@@ -168,7 +168,7 @@ class ftsent:
         self.doc_vecs.extend([self.model.get_sentence_vector(x) for x in docs])
 
 
-    def rank(self, query: str, thresh=0.8, cutoff=0.6, max_out=25):
+    def rank(self, query: str, thresh=0.85, cutoff=0.6, max_out=25):
         ts = time()
         query_vec = self.model.get_sentence_vector(self.clean(query))
         cos_sim = cosine_similarity([query_vec], self.doc_vecs)
@@ -255,20 +255,20 @@ class bertscore:
 ################################################################################
 class ensemble:
     def __init__(
-        self, docs, use_bm25=True, use_ft=True, use_bs=True, use_translation=False, use_date=True, origdocs = None, sort_date=False
+        self, docs, use_bm25=True, use_ft=True, use_bs=True, use_translation=False, use_date_level=1, origdocs = None
     ):
         self.use_bm25 = use_bm25
         self.use_ft = use_ft
         self.use_bs = use_bs
         self.use_translation = use_translation
-        self.use_date = use_date
+        self.use_date_level = use_date_level
         self.origdocs = origdocs
-        self.sort_date = sort_date
+        # self.sort_date = sort_date
 
         assert use_bm25 or use_ft or use_bs, "Select at least 1 model"
 
-        assert not use_date or origdocs, "Need original docs if using date"
-        assert not sort_date or origdocs, "Need original docs if using date"
+        assert not use_date_level or origdocs, "Need original docs if using date"
+        # assert not sort_date or origdocs, "Need original docs if using date"
 
         self.docs = docs
 
@@ -286,14 +286,14 @@ class ensemble:
             # (docs -> sort) - > threshold
 
         if use_translation:
-            try:
-                self.trans = IT2Model("IndicTrans2/ct2_fp16_model", model_type="ctranslate2")
+            self.trans = IT2Model("IndicTrans2/ct2_fp16_model", model_type="ctranslate2")
+            # try:
                 # self.trans = GoogleTranslator()
                 # self.transen = GoogleTranslator(source="en", target="hi")
 
-            except Exception as args:
-                print("ERROR TRANS INIT:", args)
-                self.use_translation = False
+            # except Exception as args:
+                # print("ERROR TRANS INIT:", args)
+                # self.use_translation = False
 
     def __call__(self, query, **kwargs):
         return self.rank(query, **kwargs)
@@ -306,28 +306,17 @@ class ensemble:
             
         if self.use_ft:
             self.FTmodel.add_docs(docs)
-        if self.use_bs:
-            self.BSmodel.add_docs(docs)
 
 
     def translate(self, text):
         assert self.use_translation, "Translator not initialized"
 
-        # if english
-        enchars = re.sub("[^A-Za-z0-9]", "", text)
-        # print(enchars)
-        if len(enchars) >= 0.6 * len(text):
-            # print("En -> Hi")
-            # return self.transen.translate(text)
-            return text
-
         print("Hi -> En")
-        # return self.trans.translate(text)
         return self.trans.translate_paragraph(text, "hin_Deva", "eng_Latn")
 
 
     @staticmethod
-    def mergeranks(idx1, score1, idx2, score2, w1=10, w2=1):
+    def mergeranks(idx1, score1, idx2, score2, w1=1, w2=1):
         temp = defaultdict(float)
         for i, s in zip(idx1, score1):
             temp[i] += s * w1
@@ -338,9 +327,28 @@ class ensemble:
         idxf = sorted(temp, key=lambda x: temp[x])
 
         return idxf #, [temp[i] / (w1 + w2) for i in idxf]        
-        
 
-    def rank(self, query, thresh=0.45, cutoff=0.3, max_out=20, k=2):
+
+
+    def RFF(self, ranklists, k, max_out, cutoff, thresh):
+        # Reciprocal Rank Fusion
+        docrrf = [0] * len(self.docs)
+        for num, idx in enumerate(ranklists):
+            print("len%d" % num, len(idx), end="\t")
+            for rank, i in enumerate(idx):
+                docrrf[i] += 1 / (k + rank)
+
+        metric = np.array(docrrf) * k / len(ranklists)
+        idx = metric.argsort()[-max_out:][::-1]
+        res = metric[idx].round(3)
+
+        idx = idx[(res >= cutoff) & (res >= res[0] * thresh)]
+        res = res[(res >= cutoff) & (res >= res[0] * thresh)]
+
+        return idx, res
+
+
+    def rank(self, query, thresh=0.4, cutoff=0.2, max_out=20, k=5):
         ts = time()
 
         assert k >= 1, "Select k >= 1"
@@ -354,23 +362,25 @@ class ensemble:
 
         transquery = None
         if self.use_translation:
-            try:
-                transquery = self.translate(query)
-                if query != transquery:
-                    query = query + " | " + transquery
-
-                print(query)
-            except Exception as args:
-                print("TRANSLATE ERROR:", args)
+            # if not english
+            enchars = re.sub("[^A-Za-z0-9]", "", query)
+            # print(enchars)
+            if len(enchars) < 0.6 * len(query):
+                # print("En -> Hi")
+                try:
+                    transquery = self.translate(query)
+                    print(transquery)
+                except Exception as args:
+                    print("TRANSLATE ERROR:", args)
 
         if self.use_bm25:
             bm25idx, bm25res = self.BM25model.rank(query)
 
-            # if transquery:
-            #     bm25idx2, bm25res2 = self.BM25model.rank(transquery, thresh=0.8)
-            #     bm25idx = self.mergeranks(bm25idx, bm25res, bm25idx2, bm25res2, w1=20)
-            #     # indices |= set(bm25idx2)
-            #     # results.append(bm25idx2)
+            if transquery:
+                bm25idx2, bm25res2 = self.BM25model.rank(transquery)
+                # bm25idx = self.mergeranks(bm25idx, bm25res, bm25idx2, bm25res2)
+                indices |= set(bm25idx2)
+                results.append(bm25idx2)
 
             indices |= set(bm25idx)
             results.append(bm25idx)
@@ -378,11 +388,11 @@ class ensemble:
         if self.use_ft:
             ftidx, ftres = self.FTmodel.rank(query)
 
-            # if transquery:
-            #     ftidx2, ftres2 = self.FTmodel.rank(transquery)
-            #     # ftidx = self.mergeranks(ftidx, ftres, ftidx2, ftres2, w1=10)
-            #     indices |= set(ftidx2)
-            #     # results.append(ftidx2)
+            if transquery:
+                ftidx2, ftres2 = self.FTmodel.rank(transquery)
+                # ftidx = self.mergeranks(ftidx, ftres, ftidx2, ftres2)
+                indices |= set(ftidx2)
+                results.append(ftidx2)
 
             indices |= set(ftidx)
             results.append(ftidx)
@@ -394,59 +404,63 @@ class ensemble:
             print("Total #docs for running bertscore:", len(indices))
 
             tmpidx, bsres = self.BSmodel.rank(query, tmpdocs)
-            # if transquery:
-                # tmpidx2, bsres2 = self.BSmodel.rank(transquery, tmpdocs, cutoff=0.6, thresh=0.9)
-                # tmpidx = self.mergeranks(tmpidx, bsres, tmpidx2, bsres2, w1=10)
+            if transquery:
+                tmpidx2, bsres2 = self.BSmodel.rank(transquery, tmpdocs)
+                # tmpidx = self.mergeranks(tmpidx, bsres, tmpidx2, bsres2)
+                bsidx2 = indices[tmpidx2]
+                results.append(bsidx2)
 
             bsidx = indices[tmpidx]
             results.append(bsidx)
 
 
-        if self.use_date:
-            dateidx = sorted(indices, key=lambda x: self.origdocs[x]['Story_Date'], reverse=True)
-            results.append(dateidx)
+        if self.use_date_level:
+            dateidx = sorted(indices, key=lambda x: self.origdocs[x]['Story_Date'], reverse=True)[:max_out + 1]
+            for _ in range(self.use_date_level):
+                results.append(dateidx)      
 
 
-
-        # Reciprocal Rank Fusion
-        docrrf = [0] * len(self.docs)
-        for num, idx in enumerate(results):
-            print("len%d" % num, len(idx), end="\t")
-            for rank, i in enumerate(idx):
-                docrrf[i] += 1 / (k + rank)
-
-        metric = np.array(docrrf) * k / len(results)
-        idx = metric.argsort()[-max_out:][::-1]
-        res = metric[idx].round(3)
-
-        idx = idx[(res >= cutoff) & (res >= res[0] * thresh)]
-        res = res[(res >= cutoff) & (res >= res[0] * thresh)]
+        idx, res = self.RFF(results, k, max_out, cutoff, thresh)
 
 
         # sort by date
-        if self.sort_date:
-            idx = sorted(idx, key=lambda x: self.origdocs[x]['Story_Date'], reverse = True)
-            res = metric[idx].round(3)
-        
+        # if self.sort_date:
+        #     print("SORT DATE NOT IMPLEMENTED")
+        #     idx = sorted(idx, key=lambda x: self.origdocs[x]['Story_Date'], reverse = True)
+        #     res = metric[idx].round(3)
+            
 
         te = time()
         print("\nQuery time in s:", round(te - ts, 3))
         return idx, res
 
+
+     
+
     def match_percent(self, query, ddict):
         per = self.FTmodel.match_percent(query, ddict)
 
-        if self.use_translation:
-            try:
-                qt = self.translate(query)
-                tmp = self.FTmodel.match_percent(qt, ddict)
-                per = max(per, tmp)
-            except Exception as args:
-                print("TRANSLATE ERROR:", args)
+        # if self.use_translation:
+        #     try:
+        #         qt = self.translate(query)
+        #         tmp = self.FTmodel.match_percent(qt, ddict)
+        #         per = max(per, tmp)
+        #     except Exception as args:
+        #         print("TRANSLATE ERROR:", args)
 
         return round(per, 3)
 
         # return self.BSmodel.match_percent(query, ddict)
+
+
+
+
+
+
+
+
+
+
 
 
 ################################################################################
@@ -463,53 +477,54 @@ if __name__ == "__main__":
     # QUERY = 'anushka sharma married kohli'
     # QUERY = ['rahul gandhi drinking', 'anushka sharma', 'priyanka chopra', 'priyanka gandhi', 'priyankaa chopra', 'priyankaa gandhi', 'priyankaa gandhi posted', 'virat koli']
     # QUERY = ['virat kohli', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Sri lanka economy', 'Rolls Royce Saudi Arabia.', 'Ramu Elephant', 'ms dhoni', 'काल्‍पनिक तस्‍वीर']
+    # QUERY = ["राहुल गांधी", "नरेंद्र मोदी", "राहुल गांधी बेरोजगार", "Narendra Modi", "Election Fact Check", "Karnataka Election", 'Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
     QUERY=['राहुल गांधी'] 
-   #QUERY = ['Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'Fact Check : रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'Fact Check : केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
+    # QUERY = ['Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'Fact Check : रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'Fact Check : केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
     # with open("queries_test.txt") as fp:
     #     QUERY = fp.read().splitlines()
 
     docs, orig = load_data("csvProcessing/allData.json")
-    model = ensemble(docs,use_translation=True, origdocs=orig, sort_date=True)
+    model = ensemble(docs,use_translation=True, origdocs=orig, use_date_level=2)
 
 
     for query in QUERY:
         
-        print("\n\n")
-        print("#"*100)
-        print("#"*100)
-        print("#"*40 + " BM25 " + "#"*40)
-        print("QUERY:", query)
+        # print("\n\n")
+        # print("#"*100)
+        # print("#"*100)
+        # print("#"*40 + " BM25 " + "#"*40)
+        # print("QUERY:", query)
 
         
-        indices = set()
+        # indices = set()
         
-        idx, res = model.BM25model.rank(query)
-        indices |= set(idx)
-        for i, v in zip(idx[:10], res[:10]): 
-            print(" --> ", v, i, docs[i])
+        # idx, res = model.BM25model.rank(query)
+        # indices |= set(idx)
+        # for i, v in zip(idx[:10], res[:10]): 
+        #     print(" --> ", v, i, docs[i])
 
 
-        print("\n")
-        print("#"*40 + " FT-sent " + "#"*40)
-        print("QUERY:", query)
+        # print("\n")
+        # print("#"*40 + " FT-sent " + "#"*40)
+        # print("QUERY:", query)
         
-        idx, res = model.FTmodel(query)
-        indices |= set(idx)
-        for i, v in zip(idx[:10], res[:10]): 
-            print(" --> ", v, i, docs[i])
+        # idx, res = model.FTmodel(query)
+        # indices |= set(idx)
+        # for i, v in zip(idx[:10], res[:10]): 
+        #     print(" --> ", v, i, docs[i])
 
 
-        print("\n")
-        print("#"*40 + " BERTSCORE " + "#"*40)
-        print("QUERY:", query)
+        # print("\n")
+        # print("#"*40 + " BERTSCORE " + "#"*40)
+        # print("QUERY:", query)
 
-        indices = np.array(list(indices))
-        print(len(indices))
-        tmpdocs = [model.docs[i] for i in indices]    
-        idx, res = model.BSmodel(query, tmpdocs)
-        idx = indices[idx]
-        for i, v in zip(idx[:10], res[:10]): 
-            print(" --> ", v, i, docs[i])
+        # indices = np.array(list(indices))
+        # print(len(indices))
+        # tmpdocs = [model.docs[i] for i in indices]    
+        # idx, res = model.BSmodel(query, tmpdocs)
+        # idx = indices[idx]
+        # for i, v in zip(idx[:10], res[:10]): 
+        #     print(" --> ", v, i, docs[i])
         
         
         
@@ -520,7 +535,7 @@ if __name__ == "__main__":
         print("QUERY:", query)
         
 
-        idx, scores = model.rank(query, cutoff=0.3, thresh=0.3, k = 5, max_out=20)
+        idx, scores = model.rank(query)
         percent = (
                 max(scores[0], model.match_percent(query, orig[idx[0]]))
                 if len(idx) > 0

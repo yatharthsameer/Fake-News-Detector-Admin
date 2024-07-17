@@ -688,7 +688,7 @@ from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 # Load the documents at app start to avoid reloading them on each request
 docs, origdata = load_data("csvProcessing/allData.json")
 
-model = ensemble(docs, use_translation=True, origdocs=origdata)
+model = ensemble(docs, use_translation=True, origdocs=origdata, use_date_level=2)
 #model = ensemble(docs, use_translation=False, origdocs=origdata)
 
 
@@ -858,7 +858,7 @@ def rank_documents_bm25_bert():
     print("Data loaded successfully.")
 
     # Using combined BM25 and BERTScore model to rank documents
-    idx, scores = model.rank(query, cutoff=0.3, thresh=0.3, k=5, max_out=20)
+    idx, scores = model.rank(query)
     results = []
     print(type(idx))
     percent = (
@@ -872,7 +872,7 @@ def rank_documents_bm25_bert():
     for doc_id, score in zip(origkeys[:10], scores[:10]):
         # doc_id = str(i)  # Convert index to integer
         print(doc_id)
-        doc_obj = data[doc_id]  # Access the corresponding document object
+        # doc_obj = data[doc_id]  # Access the corresponding document object
 
         results.append(
             {
