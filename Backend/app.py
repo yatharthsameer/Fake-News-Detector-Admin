@@ -689,7 +689,7 @@ from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 docs, origdata = load_data("csvProcessing/allData.json")
 
 model = ensemble(docs, use_translation=True, origdocs=origdata)
-# model = ensemble(docs, use_translation=False, origdocs=origdata)
+#model = ensemble(docs, use_translation=False, origdocs=origdata)
 
 
 # print("Models loaded successfully.")

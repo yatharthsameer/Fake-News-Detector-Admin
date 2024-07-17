@@ -85,7 +85,7 @@ def load_data(filepath="csvProcessing/allData.json"):
 ################################################################################
 ################################################################################
 class bm25:
-    def __init__(self, docs, use_lemma=True):
+    def __init__(self, docs, use_lemma=False):
         self.use_lemma = use_lemma
         # print("Loading BM25 model...")
         ts = time()
@@ -287,7 +287,7 @@ class ensemble:
 
         if use_translation:
             try:
-                self.trans = IT2Model("IndicTrans2/indic-en", model_type="fairseq")
+                self.trans = IT2Model("IndicTrans2/ct2_fp16_model", model_type="ctranslate2")
                 # self.trans = GoogleTranslator()
                 # self.transen = GoogleTranslator(source="en", target="hi")
 
@@ -463,12 +463,13 @@ if __name__ == "__main__":
     # QUERY = 'anushka sharma married kohli'
     # QUERY = ['rahul gandhi drinking', 'anushka sharma', 'priyanka chopra', 'priyanka gandhi', 'priyankaa chopra', 'priyankaa gandhi', 'priyankaa gandhi posted', 'virat koli']
     # QUERY = ['virat kohli', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Sri lanka economy', 'Rolls Royce Saudi Arabia.', 'Ramu Elephant', 'ms dhoni', 'काल्‍पनिक तस्‍वीर']
-    QUERY = ['Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'Fact Check : रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'Fact Check : केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
+    QUERY=['राहुल गांधी'] 
+   #QUERY = ['Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'Fact Check : रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'Fact Check : केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
     # with open("queries_test.txt") as fp:
     #     QUERY = fp.read().splitlines()
 
     docs, orig = load_data("csvProcessing/allData.json")
-    model = ensemble(docs, use_translation=False)
+    model = ensemble(docs,use_translation=True, origdocs=orig, sort_date=True)
 
 
     for query in QUERY:
