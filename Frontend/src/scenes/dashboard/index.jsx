@@ -165,8 +165,8 @@ const Dashboard = () => {
       const imgURLQ = imageUrl.trim();
 
       fetch("/api/uploadImageURL", {
-    //  fetch("https://factcheckerbtp.vishvasnews.com/api/uploadImageURL", {
-      // fetch("http://localhost:8080/api/uploadImageURL", {
+      // fetch("https://factcheckerbtp.vishvasnews.com/api/uploadImageURL", {
+        // fetch("http://localhost:8080/api/uploadImageURL", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -177,19 +177,25 @@ const Dashboard = () => {
         .then((response) => response.json())
         .then((data) => {
           setIsLoading(false);
-          setResults(data);
-          setChartData(processChartData(data));
-          setApiCallCompleted(true);
+          if (data.error) {
+            setErrorMessage(data.error);
+            setApiCallCompleted(true);
+          } else {
+            setResults(data);
+            setChartData(processChartData(data));
+            setApiCallCompleted(true);
+            setErrorMessage("");
+          }
         })
         .catch((error) => {
           setIsLoading(false);
-                    setApiCallCompleted(true);
-
-          setErrorMessage(error.message);
+          setApiCallCompleted(true);
+          setErrorMessage(
+            "The server encountered some issue, please click search again."
+          );
         });
     }
   };
-
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0];
     setSelectedImageFile(file);
