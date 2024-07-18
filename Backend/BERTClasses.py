@@ -79,7 +79,7 @@ def load_data(filepath="csvProcessing/allData.json"):
 
 
 class bm25:
-    def __init__(self, docs, use_lemma=True):
+    def __init__(self, docs, use_lemma=False):
         self.use_lemma = use_lemma
         ts = time()
         self.nlp = spacy.load("en_core_web_sm")
