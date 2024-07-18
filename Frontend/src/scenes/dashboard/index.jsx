@@ -139,33 +139,53 @@ const Dashboard = () => {
           );
           setApiCallCompleted(true);
         });
-    } else if (searchType === "image" && selectedImageFile) {
-      const formData = new FormData();
-      formData.append("file", selectedImageFile);
+    }  
 
-      fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setIsLoading(false);
-          setResults(data);
-          setChartData(processChartData(data));
-          setApiCallCompleted(true);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          setErrorMessage(
-            "The server encountered some issue, please click search again."
-          );
-          setApiCallCompleted(true);
+else if (searchType === "image" && selectedImageFile) {
+  const MAX_FILE_SIZE = 2 * 1024 * 1024;
+  if (selectedImageFile.size > MAX_FILE_SIZE) {
+    setIsLoading(false);
+    setApiCallCompleted(true);
+    setErrorMessage("File size is too large. Maximum allowed size is 5MB.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", selectedImageFile);
+
+  fetch("/api/upload", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => {
+      setIsLoading(false);
+      setApiCallCompleted(true);
+      if (!response.ok) {
+        return response.json().then((data) => {
+          setErrorMessage(data.error || "Unknown error occurred");
+          return null;
         });
-    } else if (searchType === "link" && imageUrl.trim()) {
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data) {
+        setResults(data);
+        setChartData(processChartData(data));
+        setErrorMessage("");
+      }
+    })
+    .catch((error) => {
+      setIsLoading(false);
+      setApiCallCompleted(true);
+      setErrorMessage("The server encountered some issue, please click search again.");
+    });
+}
+ else if (searchType === "link" && imageUrl.trim()) {
       const imgURLQ = imageUrl.trim();
 
       fetch("/api/uploadImageURL", {
-      // fetch("https://factcheckerbtp.vishvasnews.com/api/uploadImageURL", {
+        // fetch("https://factcheckerbtp.vishvasnews.com/api/uploadImageURL", {
         // fetch("http://localhost:8080/api/uploadImageURL", {
         method: "POST",
         headers: {

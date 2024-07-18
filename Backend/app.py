@@ -503,83 +503,70 @@ def upload_file():
         return jsonify({"error": "No selected file"}), 400
 
     if file:
-        filename = secure_filename("test.jpg")
-        filepath = os.path.join("./", filename)
-        file.save(filepath)
+        try:
+            filename = secure_filename("test.jpg")
+            filepath = os.path.join("./", filename)
+            file.save(filepath)
+        except Exception as e:
+            return jsonify({"error": f"Failed to save file: {str(e)}"}), 500
 
-        # Get similar images using the uploaded image
-        # This function should be properly defined or imported above
-        similar_images = st.get_similar_images(image_path=filepath, number_of_images=20)
-        print(f"Found similar images: {similar_images}")
-        data = {}
-        with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
-            data = json.load(file)
-        response_data = []
-        seen_urls = set()  # Set to keep track of URLs we've already added
+        try:
+            # Get similar images using the uploaded image
+            similar_images = st.get_similar_images(
+                image_path=filepath, number_of_images=20
+            )
+        except Exception as e:
+            return (
+                jsonify({"error": f"Error during image similarity search: {str(e)}"}),
+                500,
+            )
 
-        for img_info in similar_images:
-            image_index = img_info["path"].split("_")[-1].split(".")[0]
+        try:
+            data = {}
+            with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            return jsonify({"error": "Data file not found"}), 500
+        except json.JSONDecodeError:
+            return jsonify({"error": "Error decoding JSON data"}), 500
+        except Exception as e:
+            return jsonify({"error": f"Error loading data: {str(e)}"}), 500
 
-            if image_index in data:
-                corresponding_object = data[image_index]
-                story_url = corresponding_object.get("Story_URL")
+        try:
+            response_data = []
+            seen_urls = set()  # Set to keep track of URLs we've already added
 
-                # Check if we've already added this story URL
-                if story_url not in seen_urls:
-                    if img_info["match_percentage"] > 10:
-                        response_data.append(
-                            {
-                                "percentage": round(img_info["match_percentage"], 2),
-                                "data": corresponding_object,
-                            }
-                        )
-                        seen_urls.add(story_url)  # Mark this URL as seen
+            for img_info in similar_images:
+                image_index = img_info["path"].split("_")[-1].split(".")[0]
 
-        return jsonify(response_data)
+                if image_index in data:
+                    corresponding_object = data[image_index]
+                    story_url = corresponding_object.get("Story_URL")
+
+                    # Check if we've already added this story URL
+                    if story_url not in seen_urls:
+                        if img_info["match_percentage"] > 20:
+                            response_data.append(
+                                {
+                                    "percentage": round(
+                                        img_info["match_percentage"], 2
+                                    ),
+                                    "data": corresponding_object,
+                                }
+                            )
+                            seen_urls.add(story_url)  # Mark this URL as seen
+
+            return jsonify(response_data)
+        except KeyError as e:
+            return jsonify({"error": f"Data missing key: {str(e)}"}), 500
+        except Exception as e:
+            return jsonify({"error": f"Error processing response data: {str(e)}"}), 500
     else:
         return jsonify({"error": "File processing failed"}), 500
 
 
 # ###################################################################################
 
-
-# Load IndicBERT model and tokenizer
-tokenizer = AutoTokenizer.from_pretrained("ai4bharat/indic-bert")
-model = AutoModel.from_pretrained("ai4bharat/indic-bert")
-
-# Load the data from the JSON file
-with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
-    data = json.load(file)
-    print("Data loaded successfully.")
-
-# Load the pre-computed embeddings and associated texts from the CSV file
-# Note: Ensure you have regenerated these embeddings using IndicBERT
-embeddings_df = pd.read_csv("indicbert_text_embeddings.csv")
-embeddings = embeddings_df.drop(columns=["Text"]).values.astype(np.float32)
-texts = embeddings_df["Text"].tolist()
-
-
-def get_embedding(text):
-    """Generate embeddings for the given text using IndicBERT."""
-    inputs = tokenizer(
-        text, return_tensors="pt", padding=True, truncation=True, max_length=512
-    )
-    with torch.no_grad():
-        outputs = model(**inputs)
-        # Using mean pooling to get a fixed size embedding vector
-        embedding = (
-            outputs.last_hidden_state.mean(dim=1).squeeze().numpy()
-        )  # Ensure the output is 1-D
-    return embedding
-
-
-# from selenium import webdriver
-# from selenium.webdriver.chrome.service import Service
-# from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
-# from selenium.webdriver.chrome.options import Options
-# from webdriver_manager.chrome import ChromeDriverManager
-# import time
 @app.route("/api/uploadImageURL", methods=["POST"])
 def upload_image_url():
 
@@ -596,56 +583,69 @@ def upload_image_url():
         response = requests.get(image_url, stream=True)
 
         # Check if the request was successful
-        if response.status_code == 200:
+        if response.status_code != 200:
+            return (
+                jsonify(
+                    {
+                        "error": f"Failed to fetch image from URL, status code: {response.status_code}"
+                    }
+                ),
+                500,
+            )
+
+        try:
             # Create a PIL Image from the binary data
             image = Image.open(BytesIO(response.content))
 
             # Save the image to a temporary file
             image.save(temp_image_path)
 
-            # Proceed with your existing logic for handling uploaded images
-            similar_images = st.get_similar_images(
-                image_path=temp_image_path, number_of_images=20
+        except UnidentifiedImageError:
+            return (
+                jsonify(
+                    {
+                        "error": "Cannot identify image file. Ensure the URL points directly to an image."
+                    }
+                ),
+                400,
             )
 
-            data = {}
-            with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
-                data = json.load(file)
-            response_data = []
-            seen_urls = set()  # Set to keep track of URLs we've already added
+        except Exception as e:
+            return jsonify({"error": f"Error processing image: {str(e)}"}), 500
 
-            for img_info in similar_images:
-                image_index = img_info["path"].split("_")[-1].split(".")[0]
-
-                if image_index in data:
-                    corresponding_object = data[image_index]
-                    story_url = corresponding_object.get("Story_URL")
-
-                    # Check if we've already added this story URL
-                    if story_url not in seen_urls:
-                        if img_info["match_percentage"] > 10:
-                            response_data.append(
-                                {
-                                    "percentage": round(
-                                        img_info["match_percentage"], 2
-                                    ),
-                                    "data": corresponding_object,
-                                }
-                            )
-                            seen_urls.add(story_url)  # Mark this URL as seen
-            return jsonify(response_data)
-
-        else:
-            return jsonify({"error": "Failed to fetch image from URL"}), 500
-    except UnidentifiedImageError as e:
-        return (
-            jsonify(
-                {
-                    "error": "Cannot identify image file. Ensure the URL points directly to an image."
-                }
-            ),
-            400,
+        # Proceed with your existing logic for handling uploaded images
+        similar_images = st.get_similar_images(
+            image_path=temp_image_path, number_of_images=20
         )
+
+        data = {}
+        with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+        response_data = []
+        seen_urls = set()  # Set to keep track of URLs we've already added
+
+        for img_info in similar_images:
+            image_index = img_info["path"].split("_")[-1].split(".")[0]
+
+            if image_index in data:
+                corresponding_object = data[image_index]
+                story_url = corresponding_object.get("Story_URL")
+
+                # Check if we've already added this story URL
+                if story_url not in seen_urls:
+                    if img_info["match_percentage"] > 20:
+                        response_data.append(
+                            {
+                                "percentage": round(img_info["match_percentage"], 2),
+                                "data": corresponding_object,
+                            }
+                        )
+                        seen_urls.add(story_url)  # Mark this URL as seen
+        return jsonify(response_data)
+
+    except requests.RequestException as e:
+        return jsonify({"error": f"Error fetching image: {str(e)}"}), 500
+
     except Exception as e:
         # Clean up the temporary file in case of an error
         if os.path.exists(temp_image_path):
