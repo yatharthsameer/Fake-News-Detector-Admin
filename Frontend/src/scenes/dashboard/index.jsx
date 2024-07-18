@@ -142,8 +142,11 @@ const Dashboard = () => {
     }  
 
 else if (searchType === "image" && selectedImageFile) {
-  const MAX_FILE_SIZE = 2 * 1024 * 1024;
+  const MAX_FILE_SIZE = 2 * 1000 * 1000;
+  console.log("hi",selectedImageFile.size);
   if (selectedImageFile.size > MAX_FILE_SIZE) {
+      console.log("hi", selectedImageFile.size);
+
     setIsLoading(false);
     setApiCallCompleted(true);
     setErrorMessage("File size is too large. Maximum allowed size is 5MB.");
