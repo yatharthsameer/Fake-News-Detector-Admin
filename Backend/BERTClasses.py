@@ -21,7 +21,7 @@ from datetime import datetime
 from IndicTrans2.inference.engine import Model as IT2Model
 
 # for SPACY; Use 1 if there are problems with the multiproccessing library
-NUM_PROCS = 1
+NUM_PROCS = 4
 
 
 def load_data(filepath="csvProcessing/allData.json"):
