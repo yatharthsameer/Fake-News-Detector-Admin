@@ -44,3 +44,4 @@ Frontend/build/asset-manifest.json
 # soham
 *.pyc
 *.vscode/
+Backend/instance/db.sqlite
