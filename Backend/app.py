@@ -526,7 +526,7 @@ def upload_file():
 
                 # Check if we've already added this story URL
                 if story_url not in seen_urls:
-                    if img_info["match_percentage"] > 40:
+                    if img_info["match_percentage"] > 10:
                         response_data.append(
                             {
                                 "percentage": round(img_info["match_percentage"], 2),
@@ -623,7 +623,7 @@ def upload_image_url():
 
                     # Check if we've already added this story URL
                     if story_url not in seen_urls:
-                        if img_info["match_percentage"] > 60:
+                        if img_info["match_percentage"] > 10:
                             response_data.append(
                                 {
                                     "percentage": round(
