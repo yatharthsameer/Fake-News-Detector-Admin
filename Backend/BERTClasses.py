@@ -137,7 +137,7 @@ class bm25:
             if updateFile:
                 print("UPDATING LEMMA FILE")
                 with open("csvProcessing/lemmaData.json", 'w') as fw:
-                    json.dump({od['key'] : le for le, od in zip(tokenized_corpus, orig_docs)}, fw)
+                    json.dump({od['key'] : le for le, od in zip(tokenized_corpus, orig_docs)}, fw, indent=4, ensure_ascii=False)
 
         else:
             tokenized_corpus = map(self.tokenize, docs)
