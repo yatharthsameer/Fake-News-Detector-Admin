@@ -552,7 +552,7 @@ def upload_file():
 
                     # Check if we've already added this story URL
                     if story_url not in seen_urls:
-                        if img_info["match_percentage"] > 20:
+                        if img_info["match_percentage"] > 60:
                             response_data.append(
                                 {
                                     "percentage": round(
@@ -648,7 +648,7 @@ def upload_image_url():
 
                 # Check if we've already added this story URL
                 if story_url not in seen_urls:
-                    if img_info["match_percentage"] > 20:
+                    if img_info["match_percentage"] > 60:
                         response_data.append(
                             {
                                 "percentage": round(img_info["match_percentage"], 2),
@@ -674,7 +674,7 @@ from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 docs, origdata = load_data("csvProcessing/allData.json")
 
 model = ensemble(docs, use_translation=True, orig_docs=origdata, use_date_level=1)
-# model = ensemble(docs, use_translation=False, origdocs=origdata)
+# model = ensemble(docs, use_translation=False, orig_docs=origdata)
 
 
 def add_docs(filename):

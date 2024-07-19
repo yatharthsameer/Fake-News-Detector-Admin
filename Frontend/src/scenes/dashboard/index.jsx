@@ -142,7 +142,7 @@ const Dashboard = () => {
     }  
 
 else if (searchType === "image" && selectedImageFile) {
-  const MAX_FILE_SIZE = 2 * 1000 * 1000;
+  const MAX_FILE_SIZE = 7 * 1000 * 1000;
   console.log("hi",selectedImageFile.size);
   if (selectedImageFile.size > MAX_FILE_SIZE) {
       console.log("hi", selectedImageFile.size);
@@ -157,6 +157,8 @@ else if (searchType === "image" && selectedImageFile) {
   formData.append("file", selectedImageFile);
 
   fetch("/api/upload", {
+  // fetch("https://factcheckerbtp.vishvasnews.com/api/upload", {
+  // fetch("http://localhost:8080/api/upload", {
     method: "POST",
     body: formData,
   })
