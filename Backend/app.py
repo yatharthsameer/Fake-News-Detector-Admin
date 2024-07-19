@@ -688,7 +688,7 @@ from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 # Load the documents at app start to avoid reloading them on each request
 docs, origdata = load_data("csvProcessing/allData.json")
 
-model = ensemble(docs, use_translation=True, origdocs=origdata, use_date_level=2)
+model = ensemble(docs, use_translation=True, orig_docs=origdata, use_date_level=2)
 # model = ensemble(docs, use_translation=False, origdocs=origdata)
 
 
@@ -858,7 +858,7 @@ def rank_documents_bm25_bert():
     results = []
     print(type(idx))
     percent = (
-        round(20 * max(scores[:3] + [model.match_percent(query, origdata[idx[0]])] )) * 5
+        round(20 * max(list(scores[:3]) + [model.match_percent(query, origdata[idx[0]])] )) * 5
         if len(idx) > 0
         else None
     )
@@ -895,7 +895,7 @@ def rank_documents_bm25_bert_trends():
     results = []
     print(type(idx))
     percent = (
-        round(20 * max(scores[0], model.match_percent(query, origdata[idx[0]]))) * 5
+        round(20 * max(scores[:3])) * 5
         if len(idx) > 0
         else None
     )

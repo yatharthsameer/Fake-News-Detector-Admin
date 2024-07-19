@@ -425,7 +425,7 @@ if __name__ == "__main__":
 
         idx, scores = model.rank(query)
         percent = (
-            max(scores[:3] + [model.match_percent(query, orig[idx[0]])])
+            max(list(scores[:3]) + [model.match_percent(query, orig[idx[0]])])
             if len(idx) > 0
             else None
         )
