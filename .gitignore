@@ -45,3 +45,6 @@ Frontend/build/asset-manifest.json
 *.pyc
 *.vscode/
 Backend/instance/db.sqlite
+Backend/DeepImageSearch/__pycache__/__init__.cpython-312.pyc
+Backend/DeepImageSearch/__pycache__/config.cpython-312.pyc
+Backend/DeepImageSearch/__pycache__/DeepImageSearch.cpython-312.pyc
