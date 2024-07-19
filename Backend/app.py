@@ -495,6 +495,13 @@ st.run_index()
 
 @app.route("/api/upload", methods=["POST"])
 def upload_file():
+    file_path = "csvProcessing/allData.json"  # Ensure this path is correct
+    data= {}
+    # Load the current data from the JSON file or initialize as an empty dictionary if the file does not exist
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+
     if "file" not in request.files:
         return jsonify({"error": "No file part"}), 400
 
@@ -569,10 +576,18 @@ def upload_file():
 
 @app.route("/api/uploadImageURL", methods=["POST"])
 def upload_image_url():
+    file_path = "csvProcessing/allData.json"  # Ensure this path is correct
+    data = {}
+    # Load the current data from the JSON file or initialize as an empty dictionary if the file does not exist
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
 
     json_data = request.get_json()
     image_url = json_data.get("image_url")
-
+    data = {}
+    with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
+        data = json.load(file)
     if not image_url:
         return jsonify({"error": "No image URL provided"}), 400
 
@@ -651,36 +666,6 @@ def upload_image_url():
         if os.path.exists(temp_image_path):
             os.remove(temp_image_path)
         return jsonify({"error": str(e)}), 500
-
-
-@app.route("/api/searchEmbed", methods=["POST"])
-def search_embed():
-    query = request.json.get("query", "")
-    query_embedding = get_embedding(
-        query
-    )  # Assuming get_embedding is defined elsewhere
-
-    # Load embeddings and IDs
-    embeddings_df = pd.read_csv("indicbert_text_embeddings.csv")
-    embeddings = embeddings_df.drop(columns=["ID", "Text"]).values
-    ids = embeddings_df["ID"].values
-
-    cosine_similarities = [1 - cosine(query_embedding, emb) for emb in embeddings]
-    top_10_indices = np.argsort(cosine_similarities)[::-1][:15]
-
-    response_data = []
-    for index in top_10_indices:
-        id = ids[index]
-        matched_item = data.get(str(id))  # Ensure IDs are strings if necessary
-        if matched_item:
-            response_data.append(
-                {
-                    "percentage": round(cosine_similarities[index] * 100, 2),
-                    "data": matched_item,
-                }
-            )
-
-    return jsonify(response_data)
 
 
 from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
