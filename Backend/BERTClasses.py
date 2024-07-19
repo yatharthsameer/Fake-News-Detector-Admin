@@ -15,13 +15,10 @@ import re
 from collections import defaultdict
 import spacy
 import numpy as np
-from multiprocessing import Pool, Process
+# from multiprocessing import Pool, Process
 from datetime import datetime
 
 from IndicTrans2.inference.engine import Model as IT2Model
-
-# for SPACY; Use 1 if there are problems with the multiproccessing library
-NUM_PROCS = 1
 
 
 def load_data(filepath="csvProcessing/allData.json"):
@@ -79,17 +76,17 @@ def load_data(filepath="csvProcessing/allData.json"):
 
 
 class bm25:
-    def __init__(self, docs, use_lemma=False):
+    def __init__(self, docs, orig_docs = None, use_lemma=True):
         self.use_lemma = use_lemma
         ts = time()
         self.nlp = spacy.load("en_core_web_sm")
         self.docs = [self.clean(x) for x in docs]
+        self.orig_docs = orig_docs
 
-        if NUM_PROCS > 1:
-            with Pool(NUM_PROCS) as p:
-                tokenized_corpus = p.map(self.tokenize, docs)
-        else:
-            tokenized_corpus = map(self.tokenize, docs)
+        assert not use_lemma or orig_docs, "Require original docs for doc ID checking during lemma"
+        assert len(docs) == len(orig_docs)
+
+        tokenized_corpus = self.tokenize_all(docs, orig_docs)
 
         self.scorer = BM25Plus(tokenized_corpus)
         te = time()
@@ -99,14 +96,54 @@ class bm25:
     def __call__(self, query, **kwargs):
         return self.rank(query, **kwargs)
 
-    def add_docs(self, docs):
-        tmp = [self.clean(x) for x in docs]
-        self.docs.extend(tmp)
-        tokenized_corpus = map(self.tokenize, tmp)
+    def add_docs(self, docs, orig_docs=None):
+        self.docs.extend([self.clean(x) for x in docs])
+
+        if self.orig_docs:
+            assert orig_docs
+            self.orig_docs.extend(orig_docs)
+
+        tokenized_corpus = self.tokenize_all(self.docs, self.orig_docs)
+
         self.scorer = BM25Plus(tokenized_corpus)
+
 
     def clean(self, text: str):
         return text.lower()
+
+
+    def tokenize_all(self, docs, orig_docs):
+        if self.use_lemma:
+            if not os.path.exists("csvProcessing/"):
+                os.makedirs("csvProcessing/")
+            try:
+                with open("csvProcessing/lemmaData.json") as fr:
+                    lemma_data = json.load(fr)
+
+            except Exception as args:
+                print("ERROR LOADING LEMMA TEXTS, RECOMPUTING!", args)
+                lemma_data = {}
+
+            # compute additional documents
+            tokenized_corpus = []
+            updateFile = False
+            for d, od in zip(docs, orig_docs):
+                if od['key'] in lemma_data:
+                    tokenized_corpus.append(lemma_data[od['key']])
+                else:
+                    tokenized_corpus.append(self.tokenize(d))
+                    updateFile = True
+
+            if updateFile:
+                print("UPDATING LEMMA FILE")
+                with open("csvProcessing/lemmaData.json", 'w') as fw:
+                    json.dump({od['key'] : le for le, od in zip(tokenized_corpus, orig_docs)}, fw)
+
+        else:
+            tokenized_corpus = map(self.tokenize, docs)
+
+        return tokenized_corpus
+
 
     def tokenize(self, text: str):
         if self.use_lemma:
@@ -228,15 +265,15 @@ class ensemble:
         self.use_translation = use_translation
         self.use_date_level = use_date_level
         self.origdocs = origdocs
+        self.docs = docs
 
         assert use_bm25 or use_ft or use_bs, "Select at least 1 model"
 
         assert not use_date_level or origdocs, "Need original docs if using date"
 
-        self.docs = docs
 
         if use_bm25:
-            self.BM25model = bm25(docs)
+            self.BM25model = bm25(docs,origdocs)
 
         if use_ft:
             self.FTmodel = ftsent(docs)
@@ -252,11 +289,14 @@ class ensemble:
     def __call__(self, query, **kwargs):
         return self.rank(query, **kwargs)
 
-    def add_docs(self, docs):
+    def add_docs(self, docs, orig_docs = None):
         self.docs.extend(docs)
+        
+        if self.orig_docs:
+            assert orig_docs
 
         if self.use_bm25:
-            self.BM25model.add_docs(docs)
+            self.BM25model.add_docs(docs, orig_docs)
 
         if self.use_ft:
             self.FTmodel.add_docs(docs)
@@ -373,6 +413,8 @@ class ensemble:
 
 if __name__ == "__main__":
     QUERY = ["राहुल गांधी"]
+    # QUERY = ["राहुल गांधी", "राहुल गांधी बेरोजगार", 'rahul gandhi', 'rahul gandhi drinking', "नरेंद्र मोदी",  "Narendra Modi", "Election Fact Check", "Karnataka Election", 'Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
+    
 
     docs, orig = load_data("csvProcessing/allData.json")
     model = ensemble(docs, use_translation=True, origdocs=orig, use_date_level=2)
@@ -384,7 +426,7 @@ if __name__ == "__main__":
 
         idx, scores = model.rank(query)
         percent = (
-            max(scores[0], model.match_percent(query, orig[idx[0]]))
+            max(scores[:3] + [model.match_percent(query, orig[idx[0]])])
             if len(idx) > 0
             else None
         )

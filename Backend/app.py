@@ -696,7 +696,7 @@ def add_docs(filename):
     newdocs, neworig = load_data(filename)
     docs.extend(newdocs)
     origdata.extend(neworig)
-    model.add_docs(newdocs)
+    model.add_docs(newdocs, neworig)
 
 
 @app.route("/api/appendDataIndividual", methods=["POST"])
@@ -858,7 +858,7 @@ def rank_documents_bm25_bert():
     results = []
     print(type(idx))
     percent = (
-        round(20 * max(scores[0], model.match_percent(query, origdata[idx[0]]))) * 5
+        round(20 * max(scores[:3] + [model.match_percent(query, origdata[idx[0]])] )) * 5
         if len(idx) > 0
         else None
     )
