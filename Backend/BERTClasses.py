@@ -249,6 +249,7 @@ class bertscore:
 
 
 class ensemble:
+
     def __init__(
         self,
         docs,
@@ -257,23 +258,22 @@ class ensemble:
         use_bs=True,
         use_translation=False,
         use_date_level=1,
-        origdocs=None,
+        orig_docs=None,
     ):
         self.use_bm25 = use_bm25
         self.use_ft = use_ft
         self.use_bs = use_bs
         self.use_translation = use_translation
         self.use_date_level = use_date_level
-        self.origdocs = origdocs
+        self.orig_docs = orig_docs
         self.docs = docs
 
         assert use_bm25 or use_ft or use_bs, "Select at least 1 model"
 
-        assert not use_date_level or origdocs, "Need original docs if using date"
-
+        assert not use_date_level or orig_docs, "Need original docs if using date"
 
         if use_bm25:
-            self.BM25model = bm25(docs,origdocs)
+            self.BM25model = bm25(docs, orig_docs)
 
         if use_ft:
             self.FTmodel = ftsent(docs)
@@ -291,7 +291,7 @@ class ensemble:
 
     def add_docs(self, docs, orig_docs = None):
         self.docs.extend(docs)
-        
+
         if self.orig_docs:
             assert orig_docs
 
@@ -395,7 +395,7 @@ class ensemble:
 
         if self.use_date_level:
             dateidx = sorted(
-                indices, key=lambda x: self.origdocs[x]["Story_Date"], reverse=True
+                indices, key=lambda x: self.orig_docs[x]["Story_Date"], reverse=True
             )[: max_out + 1]
             for _ in range(self.use_date_level):
                 results.append(dateidx)
@@ -414,10 +414,9 @@ class ensemble:
 if __name__ == "__main__":
     QUERY = ["राहुल गांधी"]
     # QUERY = ["राहुल गांधी", "राहुल गांधी बेरोजगार", 'rahul gandhi', 'rahul gandhi drinking', "नरेंद्र मोदी",  "Narendra Modi", "Election Fact Check", "Karnataka Election", 'Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
-    
 
     docs, orig = load_data("csvProcessing/allData.json")
-    model = ensemble(docs, use_translation=True, origdocs=orig, use_date_level=2)
+    model = ensemble(docs, use_translation=True, orig_docs=orig, use_date_level=2)
 
     for query in QUERY:
         print("\n")
