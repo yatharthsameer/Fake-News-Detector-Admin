@@ -282,7 +282,7 @@ else if (searchType === "image" && selectedImageFile) {
             label="Image Upload"
             sx={{ color: "black" }}
           />
-          <FormControlLabel
+        {/* <FormControlLabel
             value="link"
             control={
               <Radio
@@ -291,7 +291,7 @@ else if (searchType === "image" && selectedImageFile) {
             }
             label="Image URL"
             sx={{ color: "black" }}
-          />
+          />  */}
         </RadioGroup>
       </Box>
 
