@@ -19,6 +19,14 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 
+// Custom validation method for date format
+const storyDateValidation = yup
+  .string()
+  .matches(
+    /^(?:[1-9]|[12][0-9]|3[01])(st|nd|rd|th) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4}$/,
+    "Story Date must be in the format '24th Jul 2024' or '8th Oct 2020'"
+  );
+
 const Form = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
   const [file, setFile] = useState(null);
@@ -616,7 +624,7 @@ const Form = () => {
 };
 
 const validationSchema = yup.object().shape({
-  Story_Date: yup.string().required("Story date is required"),
+  Story_Date: storyDateValidation.required("Story date is required"),
   Story_URL: yup
     .string()
     .url("Enter a valid URL")

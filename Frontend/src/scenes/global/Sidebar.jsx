@@ -70,12 +70,12 @@ const Sidebar = () => {
       to: "/trendspage",
       icon: <CalendarTodayOutlinedIcon sx={{ color: "white" }} />,
     }
-    // ,
-    // {
-    //   title: "Add fact-check(s)",
-    //   to: "/form",
-    //   icon: <ReceiptOutlinedIcon sx={{ color: "white" }} />,
-    // },
+    ,
+    {
+      title: "Add fact-check(s)",
+      to: "/form",
+      icon: <ReceiptOutlinedIcon sx={{ color: "white" }} />,
+    },
   ];
 
   const drawerContent = (
