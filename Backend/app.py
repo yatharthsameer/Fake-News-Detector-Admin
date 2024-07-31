@@ -1,19 +1,19 @@
 from flask import Flask, request, jsonify, session, render_template
 from flask_cors import CORS
 import json
-import google.generativeai as genai
+# import google.generativeai as genai
 from werkzeug.utils import secure_filename
 from DeepImageSearch import Load_Data, Search_Setup
 import os
-from sentence_transformers import SentenceTransformer, util
-import urllib.request
+# from sentence_transformers import SentenceTransformer, util
+# import urllib.request
 
 import torch  # Import torch for tensor operations
 import pandas as pd
 import numpy as np
 import logging
 from logging.handlers import RotatingFileHandler
-from transformers import AutoModel, AutoTokenizer, AutoModelForCausalLM
+# from transformers import AutoModel, AutoTokenizer, AutoModelForCausalLM
 from scipy.spatial.distance import cosine
 import requests  # Import requests to fetch image from URL
 from PIL import Image, UnidentifiedImageError  # Import PIL to handle image operations
@@ -177,305 +177,305 @@ with open("csvProcessing/allData.json", "r") as file:
     print("Data loaded successfully.")
 
 
-def tokenize(text):
-    """Tokenize the text into individual keywords or tokens, excluding stop words."""
-    tokens = set(text.lower().split())
-    return tokens.difference(stop_words)
+# def tokenize(text):
+#     """Tokenize the text into individual keywords or tokens, excluding stop words."""
+#     tokens = set(text.lower().split())
+#     return tokens.difference(stop_words)
 
 
-def calculate_match_percentage(query_tokens, text_tokens):
-    """Calculate the matching percentage based on the number of tokens that match."""
-    if query_tokens:
-        matching_tokens = query_tokens.intersection(text_tokens)
-        return len(matching_tokens) / len(query_tokens)
-    return 0
+# def calculate_match_percentage(query_tokens, text_tokens):
+#     """Calculate the matching percentage based on the number of tokens that match."""
+#     if query_tokens:
+#         matching_tokens = query_tokens.intersection(text_tokens)
+#         return len(matching_tokens) / len(query_tokens)
+#     return 0
 
 
-def fact_check(query, data, limit=None):
-    print(f"Fact-checking the query: {query}")
-    query_tokens = tokenize(query)
-    scores = []
+# def fact_check(query, data, limit=None):
+#     print(f"Fact-checking the query: {query}")
+#     query_tokens = tokenize(query)
+#     scores = []
 
-    # Iterate through data.items() for the new dictionary structure
-    for id, obj in data.items():
-        headline_tokens = tokenize(obj["Headline"])
-        claim_tokens = tokenize(obj["What_(Claim)"])
-        # Adjust image and subject/person tokenization based on the presence of data
-        img_tokens = (
-            tokenize(obj["img"]) if "img" in obj and obj["img"] != "NA" else set()
-        )
-        about_person_tokens = (
-            tokenize(obj["About_Person"])
-            if "About_Person" in obj and obj["About_Person"] != "NA"
-            else set()
-        )
-        about_subject_tokens = (
-            tokenize(obj["About_Subject"])
-            if "About_Subject" in obj and obj["About_Subject"] != "NA"
-            else set()
-        )
+#     # Iterate through data.items() for the new dictionary structure
+#     for id, obj in data.items():
+#         headline_tokens = tokenize(obj["Headline"])
+#         claim_tokens = tokenize(obj["What_(Claim)"])
+#         # Adjust image and subject/person tokenization based on the presence of data
+#         img_tokens = (
+#             tokenize(obj["img"]) if "img" in obj and obj["img"] != "NA" else set()
+#         )
+#         about_person_tokens = (
+#             tokenize(obj["About_Person"])
+#             if "About_Person" in obj and obj["About_Person"] != "NA"
+#             else set()
+#         )
+#         about_subject_tokens = (
+#             tokenize(obj["About_Subject"])
+#             if "About_Subject" in obj and obj["About_Subject"] != "NA"
+#             else set()
+#         )
 
-        # Calculate matches
-        headline_match = calculate_match_percentage(query_tokens, headline_tokens)
-        claim_match = calculate_match_percentage(query_tokens, claim_tokens)
-        img_match = calculate_match_percentage(query_tokens, img_tokens)
-        about_person_match = calculate_match_percentage(
-            query_tokens, about_person_tokens
-        )
-        about_subject_match = calculate_match_percentage(
-            query_tokens, about_subject_tokens
-        )
+#         # Calculate matches
+#         headline_match = calculate_match_percentage(query_tokens, headline_tokens)
+#         claim_match = calculate_match_percentage(query_tokens, claim_tokens)
+#         img_match = calculate_match_percentage(query_tokens, img_tokens)
+#         about_person_match = calculate_match_percentage(
+#             query_tokens, about_person_tokens
+#         )
+#         about_subject_match = calculate_match_percentage(
+#             query_tokens, about_subject_tokens
+#         )
 
-        avg_match = (
-            headline_match
-            + claim_match
-            + img_match
-            + about_person_match
-            + about_subject_match
-        ) / 5
-        scores.append((avg_match, obj))
+#         avg_match = (
+#             headline_match
+#             + claim_match
+#             + img_match
+#             + about_person_match
+#             + about_subject_match
+#         ) / 5
+#         scores.append((avg_match, obj))
 
-    # Rank and limit the results
-    sorted_results = sorted(scores, key=lambda x: x[0], reverse=True)
+#     # Rank and limit the results
+#     sorted_results = sorted(scores, key=lambda x: x[0], reverse=True)
 
-    # Filter out the results where the match is 1% or less
-    top_matches = [match for match in sorted_results if match[0] > 0.01]
+#     # Filter out the results where the match is 1% or less
+#     top_matches = [match for match in sorted_results if match[0] > 0.01]
 
-    print(f"Found {len(top_matches)} top matches with more than 1% match.")
-    return top_matches
+#     print(f"Found {len(top_matches)} top matches with more than 1% match.")
+#     return top_matches
 
 
-@app.route("/api/search", methods=["POST"])
-def search():
-    query = request.json.get("query", "")
-    # Log the query
-    log_query("text", query)
-    results = fact_check(query, data)
-    if len(results) == 0:
-        return (
-            jsonify(
-                {
-                    "error": "Your search yielded 0 matches in our database, Please check your query"
-                }
-            ),
-            404,
-        )
+# @app.route("/api/search", methods=["POST"])
+# def search():
+#     query = request.json.get("query", "")
+#     # Log the query
+#     log_query("text", query)
+#     results = fact_check(query, data)
+#     if len(results) == 0:
+#         return (
+#             jsonify(
+#                 {
+#                     "error": "Your search yielded 0 matches in our database, Please check your query"
+#                 }
+#             ),
+#             404,
+#         )
 
-    # print(results)
+#     # print(results)
 
-    seen_headlines = set()  # Set to keep track of seen headlines
-    response_data_TFIDF = []
-    for match in results:
-        if match[0] > 0.01:  # Filter out the results where the match is 1% or less
-            headline = match[1]["Headline"]
-            # Check if headline has already been added
-            if headline not in seen_headlines:
-                seen_headlines.add(headline)  # Mark headline as seen
-                response_data_TFIDF.append(
-                    {"percentage": round(match[0] * 100, 2), "data": match[1]}
-                )
-            # else:
-            # print(f"Duplicate headline found and skipped: {headline}")
+#     seen_headlines = set()  # Set to keep track of seen headlines
+#     response_data_TFIDF = []
+#     for match in results:
+#         if match[0] > 0.01:  # Filter out the results where the match is 1% or less
+#             headline = match[1]["Headline"]
+#             # Check if headline has already been added
+#             if headline not in seen_headlines:
+#                 seen_headlines.add(headline)  # Mark headline as seen
+#                 response_data_TFIDF.append(
+#                     {"percentage": round(match[0] * 100, 2), "data": match[1]}
+#                 )
+#             # else:
+#             # print(f"Duplicate headline found and skipped: {headline}")
 
-    # Format the top matches
-    seen_headlines_top = (
-        set()
-    )  # Initialize an empty set to keep track of seen headlines
-    top_matches = {}
+#     # Format the top matches
+#     seen_headlines_top = (
+#         set()
+#     )  # Initialize an empty set to keep track of seen headlines
+#     top_matches = {}
 
-    for i, (_, match_data) in enumerate(results[:40], start=1):
-        headline = match_data["Headline"]
-        if (
-            headline not in seen_headlines_top
-        ):  # Check if the headline has not been seen before
-            seen_headlines_top.add(
-                headline
-            )  # Add the headline to the set of seen headlines
-            top_matches[str(i)] = match_data  # Add the match data to top_matches
-    print(top_matches)
-    seen_headlines = set()  # Initialize a set to track seen headlines
+#     for i, (_, match_data) in enumerate(results[:40], start=1):
+#         headline = match_data["Headline"]
+#         if (
+#             headline not in seen_headlines_top
+#         ):  # Check if the headline has not been seen before
+#             seen_headlines_top.add(
+#                 headline
+#             )  # Add the headline to the set of seen headlines
+#             top_matches[str(i)] = match_data  # Add the match data to top_matches
+#     print(top_matches)
+#     seen_headlines = set()  # Initialize a set to track seen headlines
 
-    gemini_input_objects = {}
-    for i, (_, match_data) in enumerate(results[:40], start=1):
-        headline = match_data["Headline"]
-        if headline not in seen_headlines:
-            seen_headlines.add(
-                headline
-            )  # Add the headline to the set of seen headlines
-            gemini_input_objects[str(i)] = {
-                "Story_Date": match_data["Story_Date"],
-                "Headline": match_data["Headline"],
-                "What_(Claim)": match_data["What_(Claim)"],
-                "About_Subject": match_data["About_Subject"],
-                "About_Person": match_data["About_Person"],
-                "Story_URL": match_data["Story_URL"],
-            }
+#     gemini_input_objects = {}
+#     for i, (_, match_data) in enumerate(results[:40], start=1):
+#         headline = match_data["Headline"]
+#         if headline not in seen_headlines:
+#             seen_headlines.add(
+#                 headline
+#             )  # Add the headline to the set of seen headlines
+#             gemini_input_objects[str(i)] = {
+#                 "Story_Date": match_data["Story_Date"],
+#                 "Headline": match_data["Headline"],
+#                 "What_(Claim)": match_data["What_(Claim)"],
+#                 "About_Subject": match_data["About_Subject"],
+#                 "About_Person": match_data["About_Person"],
+#                 "Story_URL": match_data["Story_URL"],
+#             }
 
-        gemini_input_str = json.dumps(
-            gemini_input_objects, indent=2, ensure_ascii=False
-        )
+#         gemini_input_str = json.dumps(
+#             gemini_input_objects, indent=2, ensure_ascii=False
+#         )
 
-    prompt = f"""
-You are an advanced AI specializing in debunking fake news.
+#     prompt = f"""
+# You are an advanced AI specializing in debunking fake news.
 
-You will be given a text (claim) and a set of news articles. Each news article will be in the form of a JSON object having the fields "Headline", "What_(Claim)", "About_Subject", and "About_Person" .  \n\n
-Your task is to compute the percentage similarity between the claim text and each news article.
-\n\n
+# You will be given a text (claim) and a set of news articles. Each news article will be in the form of a JSON object having the fields "Headline", "What_(Claim)", "About_Subject", and "About_Person" .  \n\n
+# Your task is to compute the percentage similarity between the claim text and each news article.
+# \n\n
 
-EXAMPLE_INPUT:\n
-      [ \n
- "1": {{
-        "Story_URL": "https://www.vishvasnews.com/ai-check/fact-check-pm-modi/",\n
-        "Headline": "Fact Check: पीएम मोदी और अमेरिकी राष्ट्रपति जो बाइडेन की वायरल तस्वीरें AI निर्मित हैं",\n
-        "What_(Claim)": "पीएम मोदी और अमेरिकी राष्ट्रपति कुर्ता-पायजामा पहनकर टहल रहे हैं।",\n
-        "About_Subject": "PM ans USA President",\n
-        "About_Person": "Narendra Modi, Joe Biden ",
-        }},\n
-"2": {{\n
-        "Story_URL": "https://www.vishvas/act-check-artificially-generated-photo-of-elon-musk-in-moroccos-chefchaouen-goes-viral-as-real/",\n
-        "Headline": "Fact Check: मोरक्को की ‘ब्लू सिटी’ में नजर आ रहे एलन मस्क की यह तस्वीर असल नहीं, AI जनरेटेड है",\n
-        "What_(Claim)": "एलन मस्क मोरक्को में यात्रा कर रहे हैं",\n
-        "About_Subject": "AI generated image",\n
-        "About_Person": "Elon Musk"\n
-    }}\n\n
-    "3": {{
-        "Story_URL": "https://www.vishfact-check-uppsc-pcs-j-2018-result-candidate-list-viral-with-misleading-claim/",\n
-        "Headline": "Fact Check: UPPSC के पीसीएस-जे 2018 के सफल अभ्‍यर्थियों की अधूरी लिस्‍ट भ्रामक दावे से वायरल",\n
-        "What_(Claim)": "यह UPPSC के पीसीएस-जे का रिजल्ट है, जिसमें जनरल वर्ग के परीक्षार्थियों के नाम हैं।",\n
-        "About_Subject": "UPPCS PCS J Result",\n
-        "About_Person": "Akanksha Tiwari",\n
-    }}\n
+# EXAMPLE_INPUT:\n
+#       [ \n
+#  "1": {{
+#         "Story_URL": "https://www.vishvasnews.com/ai-check/fact-check-pm-modi/",\n
+#         "Headline": "Fact Check: पीएम मोदी और अमेरिकी राष्ट्रपति जो बाइडेन की वायरल तस्वीरें AI निर्मित हैं",\n
+#         "What_(Claim)": "पीएम मोदी और अमेरिकी राष्ट्रपति कुर्ता-पायजामा पहनकर टहल रहे हैं।",\n
+#         "About_Subject": "PM ans USA President",\n
+#         "About_Person": "Narendra Modi, Joe Biden ",
+#         }},\n
+# "2": {{\n
+#         "Story_URL": "https://www.vishvas/act-check-artificially-generated-photo-of-elon-musk-in-moroccos-chefchaouen-goes-viral-as-real/",\n
+#         "Headline": "Fact Check: मोरक्को की ‘ब्लू सिटी’ में नजर आ रहे एलन मस्क की यह तस्वीर असल नहीं, AI जनरेटेड है",\n
+#         "What_(Claim)": "एलन मस्क मोरक्को में यात्रा कर रहे हैं",\n
+#         "About_Subject": "AI generated image",\n
+#         "About_Person": "Elon Musk"\n
+#     }}\n\n
+#     "3": {{
+#         "Story_URL": "https://www.vishfact-check-uppsc-pcs-j-2018-result-candidate-list-viral-with-misleading-claim/",\n
+#         "Headline": "Fact Check: UPPSC के पीसीएस-जे 2018 के सफल अभ्‍यर्थियों की अधूरी लिस्‍ट भ्रामक दावे से वायरल",\n
+#         "What_(Claim)": "यह UPPSC के पीसीएस-जे का रिजल्ट है, जिसमें जनरल वर्ग के परीक्षार्थियों के नाम हैं।",\n
+#         "About_Subject": "UPPCS PCS J Result",\n
+#         "About_Person": "Akanksha Tiwari",\n
+#     }}\n
 
-QUERY_CLAIM: “did elon musk go to morocco and the city”\n
+# QUERY_CLAIM: “did elon musk go to morocco and the city”\n
 
-       Note: In this example "1", “2” & "3" are the indexes of the json objects in NEWS_OBJECTS.
-\n
-EXPECTED_OUTPUT_FORMAT:\n
-{{\n
-“1” : “0%”,\n
-“2” : “70%”,\n
-"3" : "6%"\n
-}}
+#        Note: In this example "1", “2” & "3" are the indexes of the json objects in NEWS_OBJECTS.
+# \n
+# EXPECTED_OUTPUT_FORMAT:\n
+# {{\n
+# “1” : “0%”,\n
+# “2” : “70%”,\n
+# "3" : "6%"\n
+# }}
 
-    \n\n
-    --------------end of example ----------------------------------------\n
-Here is the \n
-Query: "{query}"\n
-News Articles: {gemini_input_str}\n\n
-Here is the query again:\n
-Query: "{query}"\n\n
-    Please provide the similarity scores in the following JSON format, assigning higher percentages to articles that are more similar to the query:\n\n
-{{\n
-  "index": "match percentage",\n
-}}
+#     \n\n
+#     --------------end of example ----------------------------------------\n
+# Here is the \n
+# Query: "{query}"\n
+# News Articles: {gemini_input_str}\n\n
+# Here is the query again:\n
+# Query: "{query}"\n\n
+#     Please provide the similarity scores in the following JSON format, assigning higher percentages to articles that are more similar to the query:\n\n
+# {{\n
+#   "index": "match percentage",\n
+# }}
  
- """
+#  """
 
-    # print(prompt)
-    # Gemini API call would go here, assuming `gemini_api_response` is the response from the API
-    # For demonstration, let's assume we receive a response like this:
+#     # print(prompt)
+#     # Gemini API call would go here, assuming `gemini_api_response` is the response from the API
+#     # For demonstration, let's assume we receive a response like this:
 
-    api_keys = [
-        "AIzaSyDd26SvuTQqx5kIW50llUWnWCMtP4bZpWg",
-        "AIzaSyCXmFr_2SiyXrVBD8dAkp-usgCyXA-qH8E",
-        "AIzaSyCr7GxmtXmdS--QrjTAy4oQUjpn9qsPAPw",
-    ]
-    attempt = 0
-    max_attempts = 3
-    gemini_response = None
-    gemini_response_valid = False
+#     api_keys = [
+#         "AIzaSyDd26SvuTQqx5kIW50llUWnWCMtP4bZpWg",
+#         "AIzaSyCXmFr_2SiyXrVBD8dAkp-usgCyXA-qH8E",
+#         "AIzaSyCr7GxmtXmdS--QrjTAy4oQUjpn9qsPAPw",
+#     ]
+#     attempt = 0
+#     max_attempts = 3
+#     gemini_response = None
+#     gemini_response_valid = False
 
-    while attempt < max_attempts and not gemini_response_valid:
-        try:
-            current_api_key = api_keys[attempt]
-            genai.configure(api_key=current_api_key)
-            model = genai.GenerativeModel("gemini-pro")
-            messages = [{"role": "user", "parts": [prompt]}]
-            safety_settings = [
-                {"category": "HARM_CATEGORY_DANGEROUS", "threshold": "BLOCK_NONE"},
-                {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-                {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-                {
-                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                    "threshold": "BLOCK_NONE",
-                },
-                {
-                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                    "threshold": "BLOCK_NONE",
-                },
-            ]
-            gemini_api_response = model.generate_content(
-                messages,
-                safety_settings=safety_settings,
-                generation_config=genai.types.GenerationConfig(
-                    temperature=0.4,
-                ),
-            )
-            response_text = gemini_api_response.text
-            print(response_text)
-            gemini_response_data = json.loads(
-                response_text
-            )  # Attempt to parse the response
+#     while attempt < max_attempts and not gemini_response_valid:
+#         try:
+#             current_api_key = api_keys[attempt]
+#             genai.configure(api_key=current_api_key)
+#             model = genai.GenerativeModel("gemini-pro")
+#             messages = [{"role": "user", "parts": [prompt]}]
+#             safety_settings = [
+#                 {"category": "HARM_CATEGORY_DANGEROUS", "threshold": "BLOCK_NONE"},
+#                 {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+#                 {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+#                 {
+#                     "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+#                     "threshold": "BLOCK_NONE",
+#                 },
+#                 {
+#                     "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+#                     "threshold": "BLOCK_NONE",
+#                 },
+#             ]
+#             gemini_api_response = model.generate_content(
+#                 messages,
+#                 safety_settings=safety_settings,
+#                 generation_config=genai.types.GenerationConfig(
+#                     temperature=0.4,
+#                 ),
+#             )
+#             response_text = gemini_api_response.text
+#             print(response_text)
+#             gemini_response_data = json.loads(
+#                 response_text
+#             )  # Attempt to parse the response
 
-            # try:
-            #     response_data = json.loads(response_text)
-            # except :
-            #     print("Parsing error" )
-            #     return jsonify(response_data_TFIDF)
-            if isinstance(gemini_response_data, dict):
-                gemini_response_valid = True
-                enhanced_response_data = []
-                for index, percentage in gemini_response_data.items():
-                    if index in top_matches:
-                        # Append both the data from top_matches and the percentage from Gemini response
-                        # Ensure percentage is converted to an integer for sorting
-                        numeric_percentage = int(
-                            percentage.rstrip("%")
-                        )  # Remove '%' and convert to int
+#             # try:
+#             #     response_data = json.loads(response_text)
+#             # except :
+#             #     print("Parsing error" )
+#             #     return jsonify(response_data_TFIDF)
+#             if isinstance(gemini_response_data, dict):
+#                 gemini_response_valid = True
+#                 enhanced_response_data = []
+#                 for index, percentage in gemini_response_data.items():
+#                     if index in top_matches:
+#                         # Append both the data from top_matches and the percentage from Gemini response
+#                         # Ensure percentage is converted to an integer for sorting
+#                         numeric_percentage = int(
+#                             percentage.rstrip("%")
+#                         )  # Remove '%' and convert to int
 
-                        if numeric_percentage > 60:
+#                         if numeric_percentage > 60:
 
-                            enhanced_response_data.append(
-                                {
-                                    "percentage": numeric_percentage,
-                                    "numeric_percentage": numeric_percentage,
-                                    "data": top_matches[index],
-                                }
-                            )
+#                             enhanced_response_data.append(
+#                                 {
+#                                     "percentage": numeric_percentage,
+#                                     "numeric_percentage": numeric_percentage,
+#                                     "data": top_matches[index],
+#                                 }
+#                             )
 
-                # Sort the enhanced_response_data by 'numeric_percentage' in descending order
-                sorted_enhanced_response_data = sorted(
-                    enhanced_response_data,
-                    key=lambda x: x["numeric_percentage"],
-                    reverse=True,
-                )
+#                 # Sort the enhanced_response_data by 'numeric_percentage' in descending order
+#                 sorted_enhanced_response_data = sorted(
+#                     enhanced_response_data,
+#                     key=lambda x: x["numeric_percentage"],
+#                     reverse=True,
+#                 )
 
-                # Remove the 'numeric_percentage' key from each item as it was only needed for sorting
-                for item in sorted_enhanced_response_data:
-                    item.pop("numeric_percentage", None)
-                print(sorted_enhanced_response_data)
-                return jsonify(sorted_enhanced_response_data)
+#                 # Remove the 'numeric_percentage' key from each item as it was only needed for sorting
+#                 for item in sorted_enhanced_response_data:
+#                     item.pop("numeric_percentage", None)
+#                 print(sorted_enhanced_response_data)
+#                 return jsonify(sorted_enhanced_response_data)
 
-            else:
-                raise ValueError("Response format not as expected.")
+#             else:
+#                 raise ValueError("Response format not as expected.")
 
-        except Exception as e:
-            print(f"Attempt {attempt + 1} failed: {str(e)}")
-            attempt += 1  # Move to the next attempt
+#         except Exception as e:
+#             print(f"Attempt {attempt + 1} failed: {str(e)}")
+#             attempt += 1  # Move to the next attempt
 
-            # Assume response_text is a JSON string that looks like: {"1": "75%", "2": "50%", "3": "25%"}
-            # gemini_response = json.loads(response_text)
-            # print(gemini_response)
-            # print(top_matches)
-    if not gemini_response_valid:
-        return (
-            jsonify(
-                {
-                    "error": "Failed to get a valid response from the API after multiple attempts."
-                }
-            ),
-            500,
-        )
+#             # Assume response_text is a JSON string that looks like: {"1": "75%", "2": "50%", "3": "25%"}
+#             # gemini_response = json.loads(response_text)
+#             # print(gemini_response)
+#             # print(top_matches)
+#     if not gemini_response_valid:
+#         return (
+#             jsonify(
+#                 {
+#                     "error": "Failed to get a valid response from the API after multiple attempts."
+#                 }
+#             ),
+#             500,
+#         )
 
     # Prepare the final response data with enhanced match percentages
 
