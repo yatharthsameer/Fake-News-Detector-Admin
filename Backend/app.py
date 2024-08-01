@@ -696,7 +696,7 @@ def append_data_individual():
             "https://factcheckerbtp.vishvasnews.com/api/appendDataIndividual",
             json=request_data,
             verify=False,
-            timeout=30,
+            timeout=3600,
         )
         response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
     except requests.exceptions.RequestException as e:
@@ -787,7 +787,7 @@ def append_data_csv():
                 "https://factcheckerbtp.vishvasnews.com/api/appendDataCSV",
                 files=files,
                 verify=False,
-                timeout=30,
+                timeout=3600,
             )
             response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
     except requests.exceptions.RequestException as e:
