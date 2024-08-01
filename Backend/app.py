@@ -695,7 +695,8 @@ def append_data_individual():
         response = requests.post(
             "https://factcheckerbtp.vishvasnews.com/api/appendDataIndividual",
             json=request_data,
-            verify=False  
+            verify=False,
+            timeout=30,
         )
         response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
     except requests.exceptions.RequestException as e:
@@ -783,9 +784,10 @@ def append_data_csv():
         with open(filepath, "rb") as file:
             files = {"file": file}
             response = requests.post(
-                "https://factcheckerbtp.vishvasnews.com/api/appendDataCSV", files=files  ,verify=False  
-
-
+                "https://factcheckerbtp.vishvasnews.com/api/appendDataCSV",
+                files=files,
+                verify=False,
+                timeout=30,
             )
             response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
     except requests.exceptions.RequestException as e:
