@@ -1,25 +1,22 @@
-import { React, useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Button,
   TextField,
-  IconButton,
   Typography,
   useTheme,
+  IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { useState } from "react";
-import { tokens } from "../../theme";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext"; // Import AuthContext
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 import { useDropzone } from "react-dropzone";
-import CloseIcon from "@mui/icons-material/Close"; // Import Close icon for file removal
-import CircularProgress from "@mui/material/CircularProgress";
-
+import CloseIcon from "@mui/icons-material/Close";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { tokens } from "../../theme";
 
-// Custom validation method for date format
 const storyDateValidation = yup
   .string()
   .matches(
@@ -33,43 +30,45 @@ const Form = () => {
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
-  const [view, setView] = useState("csv"); // Default to CSV upload
+  const [view, setView] = useState("csv");
   const [isLoading, setIsLoading] = useState(false);
 
   const onDrop = (acceptedFiles) => {
-    setFile(acceptedFiles[0]); // Set the first file (assuming single file upload)
+    setFile(acceptedFiles[0]);
   };
+
   const removeFile = () => {
-    setFile(null); // Function to remove the selected file
+    setFile(null);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: "text/csv",
-    noClick: file != null, // Prevent opening the file dialog if a file is already selected
+    noClick: file != null,
     noKeyboard: file != null,
   });
+
   const csvInstructions =
     "Ensure your CSV file has the columns in this order: Story Date, Story URL, Headline, What (Claim), About Subject, About Person, Featured Image, Tags.";
 
   const handleCSVSubmit = async () => {
-    setIsLoading(true); // Set loading state to true
-    setMessage(""); // Clear any previous messages
+    setIsLoading(true);
+    setMessage("");
     if (!file) {
       setMessage("No file selected");
       setIsError(true);
+      setIsLoading(false);
       return;
     }
     const formData = new FormData();
     formData.append("file", file);
     try {
-      // const response = await fetch("http://localhost:8080/api/appendDataCSV", {
       const response = await fetch("/api/appendDataCSV", {
         method: "POST",
         body: formData,
       });
 
-      const result = await response.json(); // Parse the JSON result first
+      const result = await response.json();
 
       if (!response.ok) {
         let errorMessage = "Failed to upload CSV.";
@@ -103,8 +102,8 @@ const Form = () => {
   };
 
   const handleFormSubmit = async (values) => {
-    setIsLoading(true); // Set loading state to true
-    setMessage(""); // Clear any previous messages
+    setIsLoading(true);
+    setMessage("");
     try {
       const response = await fetch("/api/appendDataIndividual", {
         method: "POST",
@@ -114,43 +113,44 @@ const Form = () => {
         },
         body: JSON.stringify(values),
       });
-      if (!response.ok) throw new Error("Failed to submit data");
       const result = await response.json();
-      setMessage(result.message || "Data submitted successfully");
-      setIsError(false);
+      if (!response.ok) {
+        setMessage(result.error || "Failed to submit data");
+        setIsError(true);
+      } else {
+        setMessage(result.message || "Data submitted successfully");
+        setIsError(false);
+      }
     } catch (error) {
       console.error("An error occurred during form submission:", error);
       setMessage(`Form submission error: ${error.message}`);
       setIsError(true);
     }
-    setIsLoading(false); // Set loading state to true
+    setIsLoading(false);
   };
 
   const theme = useTheme();
-
   const colors = tokens(theme.palette.mode);
 
   const handleLogout = async () => {
     console.log("Logging out");
-
     try {
       const response = await fetch("/api/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Ensure cookies are sent with the request
+        credentials: "include",
       });
 
       if (response.ok) {
-        setIsAuthenticated(false); // Make sure to set authentication to false
+        setIsAuthenticated(false);
         navigate("/login");
       } else {
         throw new Error("Failed to logout");
       }
     } catch (error) {
       alert("Logged out successfully");
-
       navigate("/login");
     }
   };
@@ -161,14 +161,12 @@ const Form = () => {
         Add Fact Check(s)
       </Typography>
 
-      {/* Toggle Buttons */}
       <ToggleButtonGroup
         color="primary"
         value={view}
         exclusive
         onChange={(event, newView) => {
           if (newView !== null) {
-            // Prevent unselecting both options
             setView(newView);
           }
         }}
@@ -208,7 +206,6 @@ const Form = () => {
       </ToggleButtonGroup>
 
       {view === "csv" ? (
-        // CSV Upload View
         <div
           {...getRootProps()}
           style={{
@@ -246,10 +243,10 @@ const Form = () => {
               </IconButton>
             </Box>
           )}
-          <Typography variant="body1" sx={{ mb: 2 }}>
+          <Typography variant="body1" sx={{ mb: 2, color: "black" }}>
             {csvInstructions}
           </Typography>
-          {isLoading ? (
+          {isLoading && (
             <Box
               display="flex"
               justifyContent="center"
@@ -257,15 +254,14 @@ const Form = () => {
               height="50vh"
               flexDirection="column"
             >
-              <CircularProgress sx={{ color: colors.blueAccent[600] }} />
+              <CircularProgress sx={{ color: "black" }} />
               <Typography variant="h6" sx={{ mt: 2 }}>
                 Adding entries to the database, please wait...
               </Typography>
             </Box>
-          ) : null}
+          )}
         </div>
       ) : (
-        // Form Input View
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={initialValues}
@@ -562,7 +558,7 @@ const Form = () => {
         {view === "form" ? (
           <Button
             type="submit"
-            form="form-id" // Ensure the button submits Formik form
+            form="form-id"
             color="primary"
             variant="contained"
             sx={{
@@ -630,7 +626,7 @@ const validationSchema = yup.object().shape({
     .url("Enter a valid URL")
     .required("Story URL is required"),
   Headline: yup.string().required("Headline is required"),
-  "What_(Claim)": yup.string().required("Claim is required"), // Use the key as a string literal
+  "What_(Claim)": yup.string().required("Claim is required"),
   img: yup
     .string()
     .url("Enter a valid image URL")

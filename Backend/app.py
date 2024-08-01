@@ -368,7 +368,7 @@ with open("csvProcessing/allData.json", "r") as file:
 # {{\n
 #   "index": "match percentage",\n
 # }}
- 
+
 #  """
 
 #     # print(prompt)
@@ -477,7 +477,7 @@ with open("csvProcessing/allData.json", "r") as file:
 #             500,
 #         )
 
-    # Prepare the final response data with enhanced match percentages
+# Prepare the final response data with enhanced match percentages
 
 
 # ###################################################################################
@@ -689,6 +689,26 @@ def append_data_individual():
     request_data = request.get_json()
     result, status_code = append_story(request_data)
     print(result)
+
+    # Make POST request to external API
+    try:
+        response = requests.post(
+            "https://factcheckerbtp.vishvasnews.com/api/appendDataIndividual",
+            json=request_data,
+        )
+        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
+    except requests.exceptions.RequestException as e:
+        print(f"Error during external API call: {e}")
+        return (
+            jsonify(
+                {
+                    "error": "Failed to forward request to external API",
+                    "details": str(e),
+                }
+            ),
+            500,
+        )
+
     return jsonify(result), status_code
 
 
@@ -758,6 +778,26 @@ def append_data_csv():
                 error_details.append({"row": row_number, "error": result["message"]})
 
     os.remove(filepath)
+
+    # Make POST request to external API
+    try:
+        with open(filepath, "rb") as file:
+            files = {"file": file}
+            response = requests.post(
+                "https://factcheckerbtp.vishvasnews.com/api/appendDataCSV", files=files
+            )
+            response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
+    except requests.exceptions.RequestException as e:
+        print(f"Error during external API call: {e}")
+        return (
+            jsonify(
+                {
+                    "error": "Failed to forward request to external API",
+                    "details": str(e),
+                }
+            ),
+            500,
+        )
 
     return jsonify(
         {
@@ -1000,6 +1040,7 @@ def stories_by_date():
         del story["original_date"]
 
     return jsonify(matching_stories)
+
 
 if __name__ == "__main__":
     # start_scheduler()
