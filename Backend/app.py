@@ -777,8 +777,6 @@ def append_data_csv():
                 failed_entries += 1
                 error_details.append({"row": row_number, "error": result["message"]})
 
-    os.remove(filepath)
-
     # Make POST request to external API
     try:
         with open(filepath, "rb") as file:
@@ -798,6 +796,7 @@ def append_data_csv():
             ),
             500,
         )
+    os.remove(filepath)
 
     return jsonify(
         {
