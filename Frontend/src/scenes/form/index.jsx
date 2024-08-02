@@ -33,21 +33,13 @@ const Form = () => {
   const navigate = useNavigate();
   const [view, setView] = useState("csv");
   const [isLoading, setIsLoading] = useState(false);
-  const [csvData, setCsvData] = useState([]);
 
   const onDrop = (acceptedFiles) => {
     setFile(acceptedFiles[0]);
-    Papa.parse(acceptedFiles[0], {
-      header: true,
-      complete: (result) => {
-        setCsvData(result.data);
-      },
-    });
   };
 
   const removeFile = () => {
     setFile(null);
-    setCsvData([]);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -100,7 +92,6 @@ const Form = () => {
         setMessage(result.message);
         setIsError(false);
         setFile(null);
-        setCsvData([]);
       }
       setIsLoading(false);
     } catch (error) {
@@ -167,7 +158,13 @@ const Form = () => {
 
   return (
     <Box m="20px">
-      <Typography variant="h4" component="h2" align="center" gutterBottom>
+      <Typography
+        variant="h4"
+        component="h2"
+        sx={{ color: "black" }}
+        align="center"
+        gutterBottom
+      >
         Add Fact Check(s)
       </Typography>
 
@@ -270,32 +267,172 @@ const Form = () => {
               </Typography>
             </Box>
           )}
-          {csvData.length > 0 && (
-            <Box mt={4}>
-              <Typography variant="h6">Sample CSV Format:</Typography>
-              <table>
-                <thead>
-                  <tr>
-                    {Object.keys(csvData[0]).map((header) => (
-                      <th key={header}>{header}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {csvData.slice(0, 5).map((row, index) => (
-                    <tr key={index}>
-                      {Object.values(row).map((value, i) => (
-                        <td key={i}>{value}</td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <Typography variant="body2" sx={{ mt: 2 }}>
-                Showing first 5 rows as a sample.
-              </Typography>
-            </Box>
-          )}
+          <Box mt={4}>
+            <br />
+            <br />
+            <Typography
+              variant="h6"
+              sx={{
+                color: "black",
+              }}
+            >
+              Sample CSV Format:
+            </Typography>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  <th
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    Story Date
+                  </th>
+                  <th
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    Story URL
+                  </th>
+                  <th
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    Headline
+                  </th>
+                  <th
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    What (Claim)
+                  </th>
+                  <th
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    About Subject
+                  </th>
+                  <th
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    About Person
+                  </th>
+                  <th
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    Featured Image
+                  </th>
+                  <th
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    Tags
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    24th Jul 2024
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    http://example.com
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    Sample Headline
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    Sample Claim
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    Sample Subject
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    Sample Person
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    http://example.com/image.jpg
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    tag1, tag2
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </Box>
         </div>
       ) : (
         <Formik
@@ -651,204 +788,6 @@ const Form = () => {
       >
         {message}
       </Typography>
-
-      {view === "csv" && (
-        <Box mt={4}>
-          <Typography variant="h6" sx={{ color: "black" }} gutterBottom>
-            Expected CSV Format:
-          </Typography>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  Story Date
-                </th>
-                <th
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  Story URL
-                </th>
-                <th
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  Headline
-                </th>
-                <th
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  What (Claim)
-                </th>
-                <th
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  About Subject
-                </th>
-                <th
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  About Person
-                </th>
-                <th
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  Featured Image
-                </th>
-                <th
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  Tags
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  24th Jul 2024
-                </td>
-                <td
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  http://example.com
-                </td>
-                <td
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  Sample Headline
-                </td>
-                <td
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  Sample Claim
-                </td>
-                <td
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  Sample Subject
-                </td>
-                <td
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  Sample Person
-                </td>
-                <td
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  http://example.com/image.jpg
-                </td>
-                <td
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    color: "black",
-                  }}
-                >
-                  tag1, tag2
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          {csvData.length > 0 && (
-            <Box mt={4}>
-              <Typography variant="h6">Uploaded CSV Preview:</Typography>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr>
-                    {Object.keys(csvData[0]).map((header) => (
-                      <th
-                        key={header}
-                        style={{ border: "1px solid black", padding: "8px" }}
-                      >
-                        {header}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {csvData.slice(0, 5).map((row, index) => (
-                    <tr key={index}>
-                      {Object.values(row).map((value, i) => (
-                        <td
-                          key={i}
-                          style={{ border: "1px solid black", padding: "8px" }}
-                        >
-                          {value}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <Typography variant="body2" sx={{ mt: 2 }}>
-                Showing first 5 rows as a sample.
-              </Typography>
-            </Box>
-          )}
-        </Box>
-      )}
     </Box>
   );
 };
