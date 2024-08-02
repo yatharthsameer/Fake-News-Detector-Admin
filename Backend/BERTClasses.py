@@ -362,10 +362,12 @@ class ensemble:
 
             if transquery:
                 bm25idx2, bm25res2 = self.BM25model.rank(transquery)
-                indices |= set(bm25idx2)
+                # NEW CHANGE: CLIPPING INPUT INDICES FOR BS
+                indices |= set(bm25idx2[:15])
                 results.append(bm25idx2)
 
-            indices |= set(bm25idx)
+            # NEW CHANGE: CLIPPING INPUT INDICES FOR BS
+            indices |= set(bm25idx[:15])
             results.append(bm25idx)
 
         if self.use_ft:
@@ -373,10 +375,12 @@ class ensemble:
 
             if transquery:
                 ftidx2, ftres2 = self.FTmodel.rank(transquery)
-                indices |= set(ftidx2)
+                # NEW CHANGE: CLIPPING INPUT INDICES FOR BS
+                indices |= set(ftidx2[:15])
                 results.append(ftidx2)
 
-            indices |= set(ftidx)
+            # NEW CHANGE: CLIPPING INPUT INDICES FOR BS
+            indices |= set(ftidx[:15])
             results.append(ftidx)
 
         if self.use_bs:
