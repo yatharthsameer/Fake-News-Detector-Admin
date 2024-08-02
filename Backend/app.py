@@ -534,7 +534,9 @@ def append_data_csv():
             "tags": first_row.get("Tags"),
         }
         result, status_code = append_story(json_data)
-        if (status_code != 200|status_code != 400|status_code != 500):
+        # if (status_code != 200|status_code != 400|status_code != 500):
+        # i dont want to send error response to user if the status code is not 200 or 400 or 500
+        if status_code != 200 and status_code != 400 and status_code != 500:
             os.remove(filepath)
             return (
                 jsonify(
