@@ -691,25 +691,25 @@ def append_data_individual():
     print(result)
 
     # Make POST request to external API
-    try:
-        response = requests.post(
-            "https://factcheckerbtp.vishvasnews.com/api/appendDataIndividual",
-            json=request_data,
-            verify=False,
-            timeout=3600,
-        )
-        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
-    except requests.exceptions.RequestException as e:
-        print(f"Error during external API call: {e}")
-        return (
-            jsonify(
-                {
-                    "error": "Failed to forward request to external API",
-                    "details": str(e),
-                }
-            ),
-            500,
-        )
+    # try:
+    response = requests.post(
+        "https://factcheckerbtp.vishvasnews.com/api/appendDataIndividual",
+        json=request_data,
+        verify=False,
+        timeout=3600,
+    )
+        # response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
+    # except requests.exceptions.RequestException as e:
+    #     print(f"Error during external API call: {e}")
+    #     return (
+    #         jsonify(
+    #             {
+    #                 "error": "Failed to forward request to external API",
+    #                 "details": str(e),
+    #             }
+    #         ),
+    #         500,
+    #     )
 
     return jsonify(result), status_code
 
@@ -780,27 +780,27 @@ def append_data_csv():
                 error_details.append({"row": row_number, "error": result["message"]})
 
     # Make POST request to external API
-    try:
-        with open(filepath, "rb") as file:
-            files = {"file": file}
-            response = requests.post(
-                "https://factcheckerbtp.vishvasnews.com/api/appendDataCSV",
-                files=files,
-                verify=False,
-                timeout=3600,
-            )
-            response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
-    except requests.exceptions.RequestException as e:
-        print(f"Error during external API call: {e}")
-        return (
-            jsonify(
-                {
-                    "error": "Failed to forward request to external API",
-                    "details": str(e),
-                }
-            ),
-            500,
+    # try:
+    with open(filepath, "rb") as file:
+        files = {"file": file}
+        response = requests.post(
+            "https://factcheckerbtp.vishvasnews.com/api/appendDataCSV",
+            files=files,
+            verify=False,
+            timeout=3600,
         )
+            # response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
+    # except requests.exceptions.RequestException as e:
+    #     print(f"Error during external API call: {e}")
+    #     return (
+    #         jsonify(
+    #             {
+    #                 "error": "Failed to forward request to external API",
+    #                 "details": str(e),
+    #             }
+    #         ),
+    #         500,
+    #     )
     os.remove(filepath)
 
     return jsonify(
