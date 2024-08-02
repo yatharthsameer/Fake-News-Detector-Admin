@@ -683,6 +683,19 @@ def add_docs(filename):
     origdata.extend(neworig)
     model.add_docs(newdocs, neworig)
 
+import threading
+def send_individual_data_to_external_api(request_data):
+    try:
+        response = requests.post(
+            "https://factcheckerbtp.vishvasnews.com/api/appendDataIndividual",
+            json=request_data,
+            verify=False,
+            timeout=3600,
+        )
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"Error during external API call: {e}")
+
 
 @app.route("/api/appendDataIndividual", methods=["POST"])
 def append_data_individual():
@@ -690,28 +703,29 @@ def append_data_individual():
     result, status_code = append_story(request_data)
     print(result)
 
-    # Make POST request to external API
-    # try:
-    response = requests.post(
-        "https://factcheckerbtp.vishvasnews.com/api/appendDataIndividual",
-        json=request_data,
-        verify=False,
-        timeout=3600,
-    )
-        # response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
-    # except requests.exceptions.RequestException as e:
-    #     print(f"Error during external API call: {e}")
-    #     return (
-    #         jsonify(
-    #             {
-    #                 "error": "Failed to forward request to external API",
-    #                 "details": str(e),
-    #             }
-    #         ),
-    #         500,
-    #     )
+    # Start a thread to send the request to the external API
+    threading.Thread(
+        target=send_individual_data_to_external_api, args=(request_data,)
+    ).start()
 
-    return jsonify(result), status_code
+    return jsonify({"message": "Data received, processing started"}), 200
+
+
+def send_csv_data_to_external_api(filepath):
+    try:
+        with open(filepath, "rb") as file:
+            files = {"file": file}
+            response = requests.post(
+                "https://factcheckerbtp.vishvasnews.com/api/appendDataCSV",
+                files=files,
+                verify=False,
+                timeout=3600,
+            )
+            response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"Error during external API call: {e}")
+    finally:
+        os.remove(filepath)
 
 
 @app.route("/api/appendDataCSV", methods=["POST"])
@@ -779,33 +793,12 @@ def append_data_csv():
                 failed_entries += 1
                 error_details.append({"row": row_number, "error": result["message"]})
 
-    # Make POST request to external API
-    # try:
-    with open(filepath, "rb") as file:
-        files = {"file": file}
-        response = requests.post(
-            "https://factcheckerbtp.vishvasnews.com/api/appendDataCSV",
-            files=files,
-            verify=False,
-            timeout=3600,
-        )
-            # response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
-    # except requests.exceptions.RequestException as e:
-    #     print(f"Error during external API call: {e}")
-    #     return (
-    #         jsonify(
-    #             {
-    #                 "error": "Failed to forward request to external API",
-    #                 "details": str(e),
-    #             }
-    #         ),
-    #         500,
-    #     )
-    os.remove(filepath)
+    # Start a thread to send the CSV data to the external API
+    threading.Thread(target=send_csv_data_to_external_api, args=(filepath,)).start()
 
     return jsonify(
         {
-            "message": f"Added {successful_entries} successful entries and discarded {duplicate_entries} duplicates. Failed to append {failed_entries} entries.",
+            "message": f"File received, processing started. Added {successful_entries} successful entries and discarded {duplicate_entries} duplicates. Failed to append {failed_entries} entries.",
             "results": results,
             "error_details": error_details,
         }
