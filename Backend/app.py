@@ -683,19 +683,6 @@ def add_docs(filename):
     origdata.extend(neworig)
     model.add_docs(newdocs, neworig)
 
-import threading
-def send_individual_data_to_external_api(request_data):
-    try:
-        response = requests.post(
-            "https://factcheckerbtp.vishvasnews.com/api/appendDataIndividual",
-            json=request_data,
-            verify=False,
-            timeout=3600,
-        )
-        response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        print(f"Error during external API call: {e}")
-
 
 @app.route("/api/appendDataIndividual", methods=["POST"])
 def append_data_individual():
@@ -703,53 +690,31 @@ def append_data_individual():
     result, status_code = append_story(request_data)
     print(result)
 
-    # Start a thread to send the request to the external API
-    threading.Thread(
-        target=send_individual_data_to_external_api, args=(request_data,)
-    ).start()
+    # Make POST request to external API
+    # try:
+    response = requests.post(
+        "https://factcheckerbtp.vishvasnews.com/api/appendDataIndividual",
+        json=request_data,
+        verify=False,
+        timeout=3600,
+    )
+    # response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
+    # except requests.exceptions.RequestException as e:
+    #     print(f"Error during external API call: {e}")
+    #     return (
+    #         jsonify(
+    #             {
+    #                 "error": "Failed to forward request to external API",
+    #                 "details": str(e),
+    #             }
+    #         ),
+    #         500,
+    #     )
 
-    return jsonify({"message": "Data received, processing started"}), 200
+    return jsonify(result), status_code
 
 
-def send_csv_data_to_external_api(filepath):
-    try:
-        with open(filepath, "rb") as file:
-            files = {"file": file}
-            response = requests.post(
-                "https://factcheckerbtp.vishvasnews.com/api/appendDataCSV",
-                files=files,
-                verify=False,
-                timeout=3600,
-            )
-            response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        print(f"Error during external API call: {e}")
-    finally:
-        os.remove(filepath)
-
-
-@app.route("/api/appendDataCSV", methods=["POST"])
-def append_data_csv():
-    if "file" not in request.files:
-        return jsonify({"error": "No file part"}), 400
-    file = request.files["file"]
-    if file.filename == "":
-        return jsonify({"error": "No selected file"}), 400
-
-    filename = secure_filename(file.filename)
-    filepath = os.path.join("/tmp", filename)
-    file.save(filepath)
-
-    expected_columns = {
-        "Story Date",
-        "Story URL",
-        "Headline",
-        "What (Claim)",
-        "About Subject",
-        "About Person",
-        "Featured Image",
-        "Tags",
-    }
+def process_csv_data(filepath, expected_columns):
     successful_entries = 0
     duplicate_entries = 0
     failed_entries = 0
@@ -762,15 +727,10 @@ def append_data_csv():
         missing_columns = expected_columns - headers
         if missing_columns:
             os.remove(filepath)
-            return (
-                jsonify(
-                    {
-                        "error": "The CSV file is missing the following required columns:",
-                        "missing_columns": sorted(list(missing_columns)),
-                    }
-                ),
-                400,
+            print(
+                f"The CSV file is missing the following required columns: {sorted(list(missing_columns))}"
             )
+            return
 
         for row_number, row in enumerate(csv_reader, start=1):
             json_data = {
@@ -793,16 +753,103 @@ def append_data_csv():
                 failed_entries += 1
                 error_details.append({"row": row_number, "error": result["message"]})
 
-    # Start a thread to send the CSV data to the external API
-    threading.Thread(target=send_csv_data_to_external_api, args=(filepath,)).start()
+    try:
+        with open(filepath, "rb") as file:
+            files = {"file": file}
+            response = requests.post(
+                "https://factcheckerbtp.vishvasnews.com/api/appendDataCSV",
+                files=files,
+                verify=False,
+                # timeout=3600,
+            )
+            response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"Error during external API call: {e}")
+    finally:
+        os.remove(filepath)
 
-    return jsonify(
+    print(
         {
-            "message": f"File received, processing started. Added {successful_entries} successful entries and discarded {duplicate_entries} duplicates. Failed to append {failed_entries} entries.",
+            "message": f"Added {successful_entries} successful entries and discarded {duplicate_entries} duplicates. Failed to append {failed_entries} entries.",
             "results": results,
             "error_details": error_details,
         }
-    ), (200 if failed_entries == 0 else 400)
+    )
+
+
+@app.route("/api/appendDataCSV", methods=["POST"])
+def append_data_csv():
+    if "file" not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
+    if not file.filename.endswith(".csv"):
+        return jsonify({"error": "Invalid file format, only CSV is allowed"}), 400
+
+    filename = secure_filename(file.filename)
+    filepath = os.path.join("/tmp", filename)
+    file.save(filepath)
+
+    expected_columns = {
+        "Story Date",
+        "Story URL",
+        "Headline",
+        "What (Claim)",
+        "About Subject",
+        "About Person",
+        "Featured Image",
+        "Tags",
+    }
+
+    # Process one row to check for errors
+    with open(filepath, mode="r", encoding="utf-8") as file:
+        csv_reader = csv.DictReader(file)
+        headers = set(csv_reader.fieldnames)
+        missing_columns = expected_columns - headers
+        if missing_columns:
+            os.remove(filepath)
+            return (
+                jsonify(
+                    {
+                        "error": "The CSV file is missing the following required columns:",
+                        "missing_columns": sorted(list(missing_columns)),
+                    }
+                ),
+                400,
+            )
+
+        first_row = next(csv_reader, None)
+        if first_row is None:
+            os.remove(filepath)
+            return jsonify({"error": "The CSV file is empty"}), 400
+
+        json_data = {
+            "Story_Date": first_row.get("Story Date"),
+            "Story_URL": first_row.get("Story URL"),
+            "Headline": first_row.get("Headline"),
+            "What_(Claim)": first_row.get("What (Claim)"),
+            "About_Subject": first_row.get("About Subject"),
+            "About_Person": first_row.get("About Person"),
+            "img": first_row.get("Featured Image"),
+            "tags": first_row.get("Tags"),
+        }
+        result, status_code = append_story(json_data)
+        if status_code != 200:
+            os.remove(filepath)
+            return (
+                jsonify(
+                    {"error": "Error in processing the first row", "details": result}
+                ),
+                status_code,
+            )
+
+    threading.Thread(target=process_csv_data, args=(filepath, expected_columns)).start()
+
+    return (
+        jsonify({"message": "Success, your data is being added to the database"}),
+        200,
+    )
 
 
 def append_story(request_data):
