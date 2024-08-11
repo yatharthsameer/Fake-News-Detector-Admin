@@ -4,11 +4,12 @@ import {
   Button,
   TextField,
   Typography,
-  useTheme,
   IconButton,
   CircularProgress,
+  useTheme,
 } from "@mui/material";
-import { Formik } from "formik";
+
+import { Formik, FieldArray } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
@@ -16,7 +17,6 @@ import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { tokens } from "../../theme";
-import Papa from "papaparse";
 
 const storyDateValidation = yup
   .string()
@@ -24,6 +24,30 @@ const storyDateValidation = yup
     /^(?:[1-9]|[12][0-9]|3[01])(st|nd|rd|th) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4}$/,
     "Story Date must be in the format '24th Jul 2024' or '8th Oct 2020'"
   );
+
+const validationSchema = yup.object().shape({
+  Story_Date: storyDateValidation.required("Story date is required"),
+  Story_URL: yup
+    .string()
+    .url("Enter a valid URL")
+    .required("Story URL is required"),
+  Headline: yup.string().required("Headline is required"),
+  "What_(Claim)": yup.string().required("Claim is required"),
+  img: yup.array().of(yup.string().url("Enter a valid image URL")),
+  About_Person: yup.string().notRequired(),
+  About_Subject: yup.string().required("Subject is required"),
+});
+
+const initialValues = {
+  Story_Date: "",
+  Story_URL: "",
+  Headline: "",
+  "What_(Claim)": "",
+  tags: "",
+  img: [""], // Initialize with one empty string for the first image URL
+  About_Person: "",
+  About_Subject: "",
+};
 
 const Form = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
@@ -620,40 +644,78 @@ const Form = () => {
                     },
                   }}
                 />
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  type="text"
-                  label="Image URL"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.img}
-                  name="img"
-                  error={!!touched.img && !!errors.img}
-                  helperText={touched.img && errors.img}
-                  InputLabelProps={{
-                    style: { color: "black" },
-                  }}
-                  inputProps={{
-                    style: { color: "black" },
-                  }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "black",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "black",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "black",
-                      },
-                    },
-                    "& .MuiInputLabel-root.Mui-focused": {
-                      color: "black",
-                    },
-                  }}
-                />
+                <FieldArray name="img">
+                  {({ push, remove }) => (
+                    <div>
+                      {values.img.map((imageUrl, index) => (
+                        <Box key={index} display="flex" alignItems="center">
+                          <TextField
+                            fullWidth
+                            variant="outlined"
+                            type="text"
+                            label={`Image URL ${index + 1}`}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={imageUrl}
+                            name={`img[${index}]`}
+                            error={
+                              !!touched.img &&
+                              !!errors.img &&
+                              !!errors.img[index]
+                            }
+                            helperText={
+                              touched.img && !!errors.img && errors.img[index]
+                            }
+                            InputLabelProps={{
+                              style: { color: "black" },
+                            }}
+                            inputProps={{
+                              style: { color: "black" },
+                            }}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                "& fieldset": {
+                                  borderColor: "black",
+                                },
+                                "&:hover fieldset": {
+                                  borderColor: "black",
+                                },
+                                "&.Mui-focused fieldset": {
+                                  borderColor: "black",
+                                },
+                              },
+                              "& .MuiInputLabel-root.Mui-focused": {
+                                color: "black",
+                              },
+                            }}
+                          />
+                          <IconButton
+                            onClick={() => remove(index)}
+                            size="small"
+                            sx={{ ml: 2 }}
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </Box>
+                      ))}
+                      <Button
+                        type="button"
+                        onClick={() => push("")}
+                        variant="outlined"
+                        sx={{
+                          mt: 2,
+                          color: "black",
+                          borderColor: "black",
+                          "&:hover": {
+                            borderColor: "black",
+                          },
+                        }}
+                      >
+                        Add Image URL
+                      </Button>
+                    </div>
+                  )}
+                </FieldArray>
                 <TextField
                   fullWidth
                   variant="outlined"
@@ -790,33 +852,6 @@ const Form = () => {
       </Typography>
     </Box>
   );
-};
-
-const validationSchema = yup.object().shape({
-  Story_Date: storyDateValidation.required("Story date is required"),
-  Story_URL: yup
-    .string()
-    .url("Enter a valid URL")
-    .required("Story URL is required"),
-  Headline: yup.string().required("Headline is required"),
-  "What_(Claim)": yup.string().required("Claim is required"),
-  img: yup
-    .string()
-    .url("Enter a valid image URL")
-    .required("Image URL is required"),
-  About_Person: yup.string().notRequired(),
-  About_Subject: yup.string().required("Subject is required"),
-});
-
-const initialValues = {
-  Story_Date: "",
-  Story_URL: "",
-  Headline: "",
-  "What_(Claim)": "",
-  tags: "",
-  img: "",
-  About_Person: "",
-  About_Subject: "",
 };
 
 export default Form;
