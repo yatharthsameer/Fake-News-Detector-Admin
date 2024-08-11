@@ -177,8 +177,6 @@ with open("csvProcessing/allData.json", "r") as file:
     print("Data loaded successfully.")
 
 
-
-
 # ###################################################################################
 image_list = Load_Data().from_folder(["./ImageMatching/data"])
 # Set up the search engine
@@ -195,7 +193,7 @@ st.run_index()
 @app.route("/api/upload", methods=["POST"])
 def upload_file():
     file_path = "csvProcessing/allData.json"  # Ensure this path is correct
-    data= {}
+    data = {}
     # Load the current data from the JSON file or initialize as an empty dictionary if the file does not exist
     if os.path.exists(file_path):
         with open(file_path, "r", encoding="utf-8") as file:
@@ -219,7 +217,7 @@ def upload_file():
         try:
             # Get similar images using the uploaded image
             similar_images = st.get_similar_images(
-                image_path=filepath, number_of_images=20
+                image_path=filepath, number_of_images=30
             )
         except Exception as e:
             return (
@@ -243,10 +241,13 @@ def upload_file():
             seen_urls = set()  # Set to keep track of URLs we've already added
 
             for img_info in similar_images:
-                image_index = img_info["path"].split("_")[-1].split(".")[0]
+                # Extract the story index and image number from the image name
+                image_filename = os.path.basename(img_info["path"])
+                image_parts = image_filename.split("_")
+                story_index = image_parts[1]  # This is the index of the story object
 
-                if image_index in data:
-                    corresponding_object = data[image_index]
+                if story_index in data:
+                    corresponding_object = data[story_index]
                     story_url = corresponding_object.get("Story_URL")
 
                     # Check if we've already added this story URL
@@ -271,8 +272,6 @@ def upload_file():
         return jsonify({"error": "File processing failed"}), 500
 
 
-# ###################################################################################
-
 @app.route("/api/uploadImageURL", methods=["POST"])
 def upload_image_url():
     file_path = "csvProcessing/allData.json"  # Ensure this path is correct
@@ -284,9 +283,7 @@ def upload_image_url():
 
     json_data = request.get_json()
     image_url = json_data.get("image_url")
-    data = {}
-    with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
-        data = json.load(file)
+
     if not image_url:
         return jsonify({"error": "No image URL provided"}), 400
 
@@ -327,22 +324,22 @@ def upload_image_url():
         except Exception as e:
             return jsonify({"error": f"Error processing image: {str(e)}"}), 500
 
-        # Proceed with your existing logic for handling uploaded images
+        # Proceed with logic for handling uploaded images
         similar_images = st.get_similar_images(
             image_path=temp_image_path, number_of_images=20
         )
 
-        data = {}
-        with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
-            data = json.load(file)
         response_data = []
         seen_urls = set()  # Set to keep track of URLs we've already added
 
         for img_info in similar_images:
-            image_index = img_info["path"].split("_")[-1].split(".")[0]
+            # Extract the story index and image number from the image name
+            image_filename = os.path.basename(img_info["path"])
+            image_parts = image_filename.split("_")
+            story_index = image_parts[1]  # This is the index of the story object
 
-            if image_index in data:
-                corresponding_object = data[image_index]
+            if story_index in data:
+                corresponding_object = data[story_index]
                 story_url = corresponding_object.get("Story_URL")
 
                 # Check if we've already added this story URL
@@ -355,6 +352,7 @@ def upload_image_url():
                             }
                         )
                         seen_urls.add(story_url)  # Mark this URL as seen
+
         return jsonify(response_data)
 
     except requests.RequestException as e:
@@ -390,25 +388,24 @@ def append_data_individual():
     print(result)
 
     # Make POST request to external API
-    # try:
-    response = requests.post(
-        "https://factcheckerbtp.vishvasnews.com/api/appendDataIndividual",
-        json=request_data,
-        verify=False,
-        timeout=3600,
-    )
-    # response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
-    # except requests.exceptions.RequestException as e:
-    #     print(f"Error during external API call: {e}")
-    #     return (
-    #         jsonify(
-    #             {
-    #                 "error": "Failed to forward request to external API",
-    #                 "details": str(e),
-    #             }
-    #         ),
-    #         500,
-    #     )
+    try:
+        response = requests.post(
+            "https://factcheckerbtp.vishvasnews.com/api/appendDataIndividual",
+            json=request_data,
+            verify=False,
+            timeout=3600,
+        )
+    except requests.exceptions.RequestException as e:
+        print(f"Error during external API call: {e}")
+        return (
+            jsonify(
+                {
+                    "error": "Failed to forward request to external API",
+                    "details": str(e),
+                }
+            ),
+            500,
+        )
 
     return jsonify(result), status_code
 
@@ -439,9 +436,19 @@ def process_csv_data(filepath, expected_columns):
                 "What_(Claim)": row.get("What (Claim)"),
                 "About_Subject": row.get("About Subject"),
                 "About_Person": row.get("About Person"),
-                "img": row.get("Featured Image"),
                 "tags": row.get("Tags"),
             }
+
+            # Collect all featured image URLs
+            image_urls = []
+            for i in range(
+                1, 16
+            ):  # Adjust the range according to the maximum number of images expected
+                image_url = row.get(f"Featured Image {i}")
+                if image_url:
+                    image_urls.append(image_url)
+
+            json_data["img"] = image_urls
             result, status_code = append_story(json_data)
             results.append(result)
             if status_code == 200:
@@ -459,7 +466,6 @@ def process_csv_data(filepath, expected_columns):
                 "https://factcheckerbtp.vishvasnews.com/api/appendDataCSV",
                 files=files,
                 verify=False,
-                # timeout=3600,
             )
             response.raise_for_status()
     except requests.exceptions.RequestException as e:
@@ -497,7 +503,7 @@ def append_data_csv():
         "What (Claim)",
         "About Subject",
         "About Person",
-        "Featured Image",
+        "Featured Image 1",  # Adjusted to expect multiple image columns
         "Tags",
     }
 
@@ -530,12 +536,21 @@ def append_data_csv():
             "What_(Claim)": first_row.get("What (Claim)"),
             "About_Subject": first_row.get("About Subject"),
             "About_Person": first_row.get("About Person"),
-            "img": first_row.get("Featured Image"),
             "tags": first_row.get("Tags"),
         }
+
+        # Collect all featured image URLs
+        image_urls = []
+        for i in range(
+            1, 16
+        ):  # Adjust the range according to the maximum number of images expected
+            image_url = first_row.get(f"Featured Image {i}")
+            if image_url:
+                image_urls.append(image_url)
+
+        json_data["img"] = image_urls
+
         result, status_code = append_story(json_data)
-        # if (status_code != 200|status_code != 400|status_code != 500):
-        # i dont want to send error response to user if the status code is not 200 or 400 or 500
         if status_code != 200 and status_code != 400 and status_code != 500:
             os.remove(filepath)
             return (
@@ -563,8 +578,6 @@ def append_story(request_data):
     else:
         file_data = {}
 
-    # print(file_data)
-
     # Check for duplicate entries based on Story_URL
     if any(
         story["Story_URL"] == request_data["Story_URL"] for story in file_data.values()
@@ -584,32 +597,30 @@ def append_story(request_data):
     add_docs(temp_file_path)
     os.remove(temp_file_path)  # Clean up the temporary file
 
-    # Handle image downloading and indexing
-    if "img" in request_data and request_data["img"]:
-        image_url = request_data["img"]
-        image_response = requests.get(image_url)
-        if image_response.status_code == 200:
-            image_filename = f"image_{new_index}.jpg"
-            image_path = os.path.join("./data", image_filename)
-            with open(image_path, "wb") as f:
-                f.write(image_response.content)
+    # Handle image downloading and indexing for multiple images
+    if "img" in request_data and isinstance(request_data["img"], list):
+        image_urls = request_data["img"]
+        for idx, image_url in enumerate(image_urls, start=1):
+            image_response = requests.get(image_url)
+            if image_response.status_code == 200:
+                image_filename = f"image_{new_index}_{idx}.jpg"
+                image_path = os.path.join("./data", image_filename)
+                with open(image_path, "wb") as f:
+                    f.write(image_response.content)
 
-            # Add the image to the index
-            try:
-                st.add_images_to_index([image_path])
-            except Exception as e:
-                return {"message": f"Failed to index image: {str(e)}"}, 500
-        else:
-            return {"message": "Failed to download image."}, 500
+                # Add the image to the index
+                try:
+                    st.add_images_to_index([image_path])
+                except Exception as e:
+                    return {"message": f"Failed to index image {idx}: {str(e)}"}, 500
+            else:
+                return {"message": f"Failed to download image {idx}."}, 500
 
     # Write the updated data back to the JSON file
     with open(file_path, "w", encoding="utf-8") as file:
         json.dump(file_data, file, ensure_ascii=False, indent=4)
 
-    # Optionally restart the server if necessary
-    # restart_server()
-
-    return {"message": "Data appended and image indexed successfully"}, 200
+    return {"message": "Data appended and images indexed successfully"}, 200
 
 
 @app.route("/api/ensemble", methods=["POST"])
