@@ -45,19 +45,32 @@ def load_data(filepath="csvProcessing/allData.json"):
             val["Story_URL"] = re.sub(
                 "\W+", " ", val["Story_URL"][val["Story_URL"].rfind("/", 0, -2) + 1 :]
             ).strip()
+
             for x in val:
-                val[x] = (
-                    re.sub("\s+", " ", val[x].lower()).strip()
-                    if val[x] and val[x].lower() not in ["na", "n/a"]
-                    else ""
-                )
-                val[x] = (
-                    re.sub("(quick.)?fact.check\s?\:?\s*", "", val[x])
-                    if val[x].startswith("fact check")
-                    or val[x].startswith("fact-check")
-                    or val[x].startswith("quick fact check")
-                    else val[x]
-                )
+                # Check if the value is a list
+                if isinstance(val[x], list):
+                    # Process each item in the list
+                    val[x] = [
+                        (
+                            re.sub("\s+", " ", item.lower()).strip()
+                            if item and item.lower() not in ["na", "n/a"]
+                            else ""
+                        )
+                        for item in val[x]
+                    ]
+                else:
+                    val[x] = (
+                        re.sub("\s+", " ", val[x].lower()).strip()
+                        if val[x] and val[x].lower() not in ["na", "n/a"]
+                        else ""
+                    )
+                    val[x] = (
+                        re.sub("(quick.)?fact.check\s?\:?\s*", "", val[x])
+                        if val[x].startswith("fact check")
+                        or val[x].startswith("fact-check")
+                        or val[x].startswith("quick fact check")
+                        else val[x]
+                    )
 
             tmp = [
                 val[x].strip(": ")
