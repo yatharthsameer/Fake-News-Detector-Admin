@@ -17,6 +17,15 @@ import {
   MenuItem,
   FormLabel,
 } from "@mui/material";
+// import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
+// import CloseIcon from "@mui/icons-material/Close";
+// import React, { useEffect, useCallback, useState } from "react";
+// import { useDropzone } from "react-dropzone";
+// import Header from "../../components/Header";
+// import LineChart from "../../components/LineChart";
+// import ProgressCircle from "../../components/ProgressCircle";
+// import { tokens } from "../../theme";
+
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useEffect, useCallback, useState } from "react";
@@ -110,8 +119,8 @@ const Dashboard = () => {
 
     if (searchType === "text") {
       const searchQuery = searchInputRef.current.value;
-      // fetch("https://factcheckerbtp.vishvasnews.com/api/ensemble", {
       fetch("/api/ensemble", {
+        // fetch("https://factcheckerbtp.vishvasnews.com/api/ensemble", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -139,59 +148,51 @@ const Dashboard = () => {
           );
           setApiCallCompleted(true);
         });
-    }  
+    } else if (searchType === "image" && selectedImageFile) {
+      const MAX_FILE_SIZE = 7 * 1000 * 1000;
+      if (selectedImageFile.size > MAX_FILE_SIZE) {
+        setIsLoading(false);
+        setApiCallCompleted(true);
+        setErrorMessage("File size is too large. Maximum allowed size is 5MB.");
+        return;
+      }
 
-else if (searchType === "image" && selectedImageFile) {
-  const MAX_FILE_SIZE = 7 * 1000 * 1000;
-  console.log("hi",selectedImageFile.size);
-  if (selectedImageFile.size > MAX_FILE_SIZE) {
-      console.log("hi", selectedImageFile.size);
+      const formData = new FormData();
+      formData.append("file", selectedImageFile);
 
-    setIsLoading(false);
-    setApiCallCompleted(true);
-    setErrorMessage("File size is too large. Maximum allowed size is 5MB.");
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("file", selectedImageFile);
-
-  fetch("/api/upload", {
-  // fetch("https://factcheckerbtp.vishvasnews.com/api/upload", {
-  // fetch("http://localhost:8080/api/upload", {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => {
-      setIsLoading(false);
-      setApiCallCompleted(true);
-      if (!response.ok) {
-        return response.json().then((data) => {
-          setErrorMessage(data.error || "Unknown error occurred");
-          return null;
+      fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => {
+          setIsLoading(false);
+          setApiCallCompleted(true);
+          if (!response.ok) {
+            return response.json().then((data) => {
+              setErrorMessage(data.error || "Unknown error occurred");
+              return null;
+            });
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data) {
+            setResults(data);
+            setChartData(processChartData(data));
+            setErrorMessage("");
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          setApiCallCompleted(true);
+          setErrorMessage(
+            "The server encountered some issue, please click search again."
+          );
         });
-      }
-      return response.json();
-    })
-    .then((data) => {
-      if (data) {
-        setResults(data);
-        setChartData(processChartData(data));
-        setErrorMessage("");
-      }
-    })
-    .catch((error) => {
-      setIsLoading(false);
-      setApiCallCompleted(true);
-      setErrorMessage("The server encountered some issue, please click search again.");
-    });
-}
- else if (searchType === "link" && imageUrl.trim()) {
+    } else if (searchType === "link" && imageUrl.trim()) {
       const imgURLQ = imageUrl.trim();
 
       fetch("/api/uploadImageURL", {
-        // fetch("https://factcheckerbtp.vishvasnews.com/api/uploadImageURL", {
-        // fetch("http://localhost:8080/api/uploadImageURL", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -221,6 +222,7 @@ else if (searchType === "image" && selectedImageFile) {
         });
     }
   };
+
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0];
     setSelectedImageFile(file);
@@ -247,10 +249,24 @@ else if (searchType === "image" && selectedImageFile) {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
-          title="Search fact-checks"
-          subtitle="Welcome! Search here for fact-checks using text or image queries"
+          title="MESSAGE CHECK "
+          subtitle={
+            <>
+              Welcome to MESSAGE CHECK!
+              <br />
+              If you would like to verify the authenticity of a message or image
+              you have received OR a social media post, use the search bar below
+              by inserting a query in text or uploading the image. <br />
+              The system will show posts with similar misinformation and how
+              they were debunked by fact-checkers at Vishvas News.
+              <br />
+              You can also search for debunked dis/misinformation about
+              important topics and persons using keywords.
+            </>
+          }
         />
       </Box>
+
       <Box mb="20px" display="flex" alignItems="center">
         <FormLabel component="legend" sx={{ marginRight: 2, color: "black" }}>
           Search Type
@@ -282,16 +298,6 @@ else if (searchType === "image" && selectedImageFile) {
             label="Image Upload"
             sx={{ color: "black" }}
           />
-          <FormControlLabel
-            value="link"
-            control={
-              <Radio
-                sx={{ color: "black", "&.Mui-checked": { color: "black" } }}
-              />
-            }
-            label="Image URL"
-            sx={{ color: "black" }}
-          />
         </RadioGroup>
       </Box>
 
@@ -308,7 +314,7 @@ else if (searchType === "image" && selectedImageFile) {
             }}
             sx={{
               "& .MuiOutlinedInput-root": {
-                borderRadius: "80px", // Rounded corners
+                borderRadius: "80px",
                 "& fieldset": {
                   borderColor: "black",
                 },
@@ -319,7 +325,7 @@ else if (searchType === "image" && selectedImageFile) {
                   borderColor: "black",
                 },
                 "& input": {
-                  color: "black", // Input text color
+                  color: "black",
                 },
               },
               "& .MuiInputLabel-root": {
@@ -343,7 +349,7 @@ else if (searchType === "image" && selectedImageFile) {
             }}
             sx={{
               "& .MuiOutlinedInput-root": {
-                borderRadius: "80px", // Rounded corners
+                borderRadius: "80px",
                 "& fieldset": {
                   borderColor: "black",
                 },
@@ -354,7 +360,7 @@ else if (searchType === "image" && selectedImageFile) {
                   borderColor: "black",
                 },
                 "& input": {
-                  color: "black", // Input text color
+                  color: "black",
                 },
               },
               "& .MuiInputLabel-root": {
@@ -378,13 +384,13 @@ else if (searchType === "image" && selectedImageFile) {
               width: "calc(100% - 15px - 10px)",
               minHeight: "50px",
               border: "1px solid #cccccc",
-              borderRadius: "8px", // Rounded corners
+              borderRadius: "8px",
               backgroundColor: "#fff",
               cursor: "pointer",
               paddingLeft: "10px",
 
               "& .MuiOutlinedInput-root": {
-                borderRadius: "8px", // Rounded corners for input inside dropzone
+                borderRadius: "8px",
                 "& fieldset": {
                   borderColor: "#e5e5e5",
                 },
@@ -395,7 +401,7 @@ else if (searchType === "image" && selectedImageFile) {
                   borderColor: "#e5e5e5",
                 },
                 "& input": {
-                  color: "black", // Input text color
+                  color: "black",
                 },
               },
               "& .MuiInputLabel-root": {
@@ -457,6 +463,26 @@ else if (searchType === "image" && selectedImageFile) {
           Search
         </Button>
       </Box>
+
+      {isSearchInitiated && apiCallCompleted && (
+        <Box mt={3} mb={3}>
+          <Typography variant="body1" sx={{ color: "black" }}>
+            Your query has been matched with a large set of debunked
+            news-stories in the Vishwas News database, using multiple AI-based
+            text matching methods. The “Top Matches” list shows some of the
+            news-stories that are a combination of most recent and most relevant
+            (similar) to your query. The percentage score indicates the match of
+            your query with the closest matching news-story that appears at the
+            top of the list. Other similar news-stories are also shown for your
+            information. If your query does not show a relevant match, it is
+            automatically re-directed to the team of fact-checkers at Vishvas
+            News. If the claim contained in the query is dis/misinformation,
+            they verify and debunk it. The fact-check is then published on the
+            Vishvas News website.
+          </Typography>
+        </Box>
+      )}
+
       {isLoading ? (
         <Box
           display="flex"
@@ -597,10 +623,10 @@ else if (searchType === "image" && selectedImageFile) {
                                 <Box
                                   key={index}
                                   display="flex"
-                                  flexDirection={isXs ? "column" : "row"} // Stack image and text vertically on mobile
+                                  flexDirection={isXs ? "column" : "row"}
                                   alignItems="flex-start"
                                   borderBottom={`1px solid ${colors.primary[400]}`}
-                                  p={isXs ? "0px" : "13px 3px"} // Less padding on mobile
+                                  p={isXs ? "0px" : "13px 3px"}
                                 >
                                   <ButtonBase
                                     onClick={() =>
@@ -610,24 +636,27 @@ else if (searchType === "image" && selectedImageFile) {
                                       )
                                     }
                                     sx={{
-                                      marginRight: isXs ? "0" : "20px", // Remove side margin on mobile
-                                      marginBottom: isXs ? "10px" : "0", // Add bottom margin on mobile
+                                      marginRight: isXs ? "0" : "20px",
+                                      marginBottom: isXs ? "10px" : "0",
                                       borderRadius: "4px",
                                       overflow: "hidden",
                                       display: "flex",
                                       alignItems: "center",
-                                      width: isXs ? "100%" : "auto", // Full width on mobile for better image display
-                                      height: "auto", // Ensuring height is dynamic
+                                      width: isXs ? "100%" : "auto",
+                                      height: "auto",
                                     }}
                                   >
                                     <img
-                                      src={result.data.img}
+                                      src={
+                                        result.data.img &&
+                                        result.data.img.length > 0
+                                          ? result.data.img[0]
+                                          : ""
+                                      }
                                       alt="News"
-                                      style={{
-                                        width: isXs ? "100%" : "110px", // Full width on mobile
-                                        height: isXs ? "auto" : "95px", // Auto height on mobile
-                                        objectFit: "contain",
-                                      }}
+                                      width="110px"
+                                      height="95px"
+                                      style={{ marginRight: "20px" }}
                                     />
                                   </ButtonBase>
                                   <div style={{ flex: 1, minWidth: "0" }}>
@@ -638,7 +667,7 @@ else if (searchType === "image" && selectedImageFile) {
                                       style={{
                                         whiteSpace: "normal",
                                         overflow: "hidden",
-                                      }} // Ensure text wraps and doesn't overflow
+                                      }}
                                     >
                                       <a
                                         href={result.data.Story_URL}
@@ -755,7 +784,7 @@ else if (searchType === "image" && selectedImageFile) {
                           <Box
                             p="30px"
                             flexGrow={1}
-                            sx={{ border: "1px solid #e5e5e5" }} // Added border color
+                            sx={{ border: "1px solid #e5e5e5" }}
                           >
                             <Box
                               display="flex"
@@ -841,12 +870,7 @@ else if (searchType === "image" && selectedImageFile) {
                                     }}
                                   >
                                     <img
-                                      src={
-                                        result.data.img &&
-                                        result.data.img.length > 0
-                                          ? result.data.img[0]
-                                          : ""
-                                      }
+                                      src={result.data.img}
                                       alt="News"
                                       width="110px"
                                       height="95px"
