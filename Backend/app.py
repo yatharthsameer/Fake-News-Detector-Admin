@@ -616,7 +616,7 @@ def append_data_csv():
                 jsonify(
                     {"error": "Error in processing the first row", "details": result}
                 ),
-                status_code,
+                400,
             )
 
     threading.Thread(target=process_csv_data, args=(filepath, expected_columns)).start()

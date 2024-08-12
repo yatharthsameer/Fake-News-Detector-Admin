@@ -366,7 +366,7 @@ const Form = () => {
                       color: "black",
                     }}
                   >
-                    Featured Image
+                    Tags
                   </th>
                   <th
                     style={{
@@ -375,7 +375,16 @@ const Form = () => {
                       color: "black",
                     }}
                   >
-                    Tags
+                    Featured Image 1
+                  </th>
+                  <th
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
+                    Featured Image 2
                   </th>
                 </tr>
               </thead>
@@ -442,6 +451,15 @@ const Form = () => {
                       color: "black",
                     }}
                   >
+                    tag1, tag2
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid black",
+                      padding: "8px",
+                      color: "black",
+                    }}
+                  >
                     http://example.com/image.jpg
                   </td>
                   <td
@@ -451,7 +469,7 @@ const Form = () => {
                       color: "black",
                     }}
                   >
-                    tag1, tag2
+                    http://example.com/image2.jpg
                   </td>
                 </tr>
               </tbody>
