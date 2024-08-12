@@ -189,6 +189,8 @@ st = Search_Setup(
 # Index the images
 st.run_index()
 
+from PIL import Image
+
 
 @app.route("/api/upload", methods=["POST"])
 def upload_file():
@@ -208,9 +210,17 @@ def upload_file():
 
     if file:
         try:
-            filename = secure_filename("test.jpg")
+            filename = "test.jpg"
             filepath = os.path.join("./", filename)
-            file.save(filepath)
+
+            # Check if the uploaded file is PNG and convert it to JPG
+            image = Image.open(file.stream)
+            if image.format == "PNG":
+                image = image.convert("RGB")  # Convert to RGB
+                image.save(filepath, "JPEG")
+            else:
+                image.save(filepath)  # Save as JPG directly if not PNG
+
         except Exception as e:
             return jsonify({"error": f"Failed to save file: {str(e)}"}), 500
 
@@ -309,8 +319,12 @@ def upload_image_url():
             # Create a PIL Image from the binary data
             image = Image.open(BytesIO(response.content))
 
-            # Save the image to a temporary file
-            image.save(temp_image_path)
+            # Check if the image is PNG and convert to JPG
+            if image.format == "PNG":
+                image = image.convert("RGB")
+                image.save(temp_image_path, "JPEG")
+            else:
+                image.save(temp_image_path)  # Save as JPG directly if not PNG
 
         except UnidentifiedImageError:
             return (
@@ -624,10 +638,20 @@ def append_story(request_data):
         for idx, image_url in enumerate(image_urls, start=1):
             image_response = requests.get(image_url)
             if image_response.status_code == 200:
-                image_filename = f"image_{new_index}_{idx}.jpg"
-                image_path = os.path.join("./data", image_filename)
-                with open(image_path, "wb") as f:
-                    f.write(image_response.content)
+                # Open the image from the response
+                image = Image.open(BytesIO(image_response.content))
+
+                # Check if the image is PNG and convert to JPG
+                if image.format == "PNG":
+                    image = image.convert("RGB")
+                    image_filename = f"image_{new_index}_{idx}.jpg"
+                    image_path = os.path.join("./data", image_filename)
+                    image.save(image_path, "JPEG")
+                else:
+                    image_filename = f"image_{new_index}_{idx}.jpg"
+                    image_path = os.path.join("./data", image_filename)
+                    with open(image_path, "wb") as f:
+                        f.write(image_response.content)
 
                 # Add the image to the index
                 try:
