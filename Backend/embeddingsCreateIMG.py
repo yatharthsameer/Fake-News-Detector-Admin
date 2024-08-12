@@ -1,14 +1,35 @@
+import os
 from DeepImageSearch import Load_Data, Search_Setup
 
-# Load images from a folder
+
+# Function to count the number of image files in the folder
+def count_images_in_folder(folder_path):
+    image_extensions = (
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".bmp",
+        ".gif",
+    )  # Common image file extensions
+    return sum(
+        1
+        for filename in os.listdir(folder_path)
+        if filename.lower().endswith(image_extensions)
+    )
+
+
+# Load images from the folder
 image_list = Load_Data().from_folder(["data"])
 
-# Set up the search engine
+# Determine the number of images in the data folder
+image_count = count_images_in_folder("data")
+
+# Set up the search engine with the determined image_count
 st = Search_Setup(
     image_list=image_list,
     model_name="resnet50",
     pretrained=True,
-    image_count=8707,
+    image_count=image_count,
 )
 
 # Index the images

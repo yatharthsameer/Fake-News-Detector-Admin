@@ -178,14 +178,36 @@ with open("csvProcessing/allData.json", "r") as file:
 
 
 # ###################################################################################
-image_list = Load_Data().from_folder(["./ImageMatching/data"])
+# Function to count the number of image files in the folder
+def count_images_in_folder(folder_path):
+    image_extensions = (
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".bmp",
+        ".gif",
+    )  # Common image file extensions
+    return sum(
+        1
+        for filename in os.listdir(folder_path)
+        if filename.lower().endswith(image_extensions)
+    )
+
+
+# Load images from the folder
+image_list = Load_Data().from_folder(["data"])
+
+# Determine the number of images in the data folder
+image_count = count_images_in_folder("data")
 # Set up the search engine
 st = Search_Setup(
     image_list=image_list,
     model_name="resnet50",
     pretrained=True,
-    image_count=8707,
+    image_count=image_count,
 )
+
+
 # Index the images
 st.run_index()
 
@@ -242,8 +264,10 @@ def upload_file():
             for img_info in similar_images:
                 # Extract the story index from the image filename
                 image_filename = os.path.basename(img_info["path"])
+                print("image_filename", image_filename)
                 image_parts = image_filename.split("_")
                 story_index = image_parts[1]  # This is the index of the story object
+                
 
                 if story_index in data:
                     corresponding_object = data[story_index]
