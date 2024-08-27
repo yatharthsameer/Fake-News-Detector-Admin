@@ -6,7 +6,8 @@ import {
   CircularProgress,
   ButtonBase,
   useTheme,
-  Grid, // Import Grid
+  Grid,
+  useMediaQuery,
 } from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -21,19 +22,18 @@ const Trendspage = () => {
   const [currentPageColumn2, setCurrentPageColumn2] = useState(1);
   const [errorColumn1, setErrorColumn1] = useState(null);
   const [errorColumn2, setErrorColumn2] = useState(null);
-
-  const itemsPerPageColumn1 = expandedQuery ? 5 : 5; // Set items per page based on expanded view
-  const itemsPerPageColumn2 = 7 ;
+  const [showAllResultsColumn1, setShowAllResultsColumn1] = useState(false);
+  const itemsPerPageColumn2 = 7;
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  const indexOfLastItemColumn1 = currentPageColumn1 * itemsPerPageColumn1;
-  const indexOfFirstItemColumn1 = indexOfLastItemColumn1 - itemsPerPageColumn1;
-  const currentItemsColumn1 = resultsColumn1.slice(
-    indexOfFirstItemColumn1,
-    indexOfLastItemColumn1
-  );
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Detect mobile mode
+  // const indexOfLastItemColumn1 = currentPageColumn1 * itemsPerPageColumn1;
+  // const indexOfFirstItemColumn1 = indexOfLastItemColumn1 - itemsPerPageColumn1;
+  // const currentItemsColumn1 = resultsColumn1.slice(
+  //   indexOfFirstItemColumn1,
+  //   indexOfLastItemColumn1
+  // );
 
   const indexOfLastItemColumn2 = currentPageColumn2 * itemsPerPageColumn2;
   const indexOfFirstItemColumn2 = indexOfLastItemColumn2 - itemsPerPageColumn2;
@@ -57,7 +57,6 @@ const Trendspage = () => {
   const handlePrevColumn2 = () => {
     setCurrentPageColumn2(currentPageColumn2 - 1);
   };
-
   useEffect(() => {
     fetchTopTrends();
     fetchResultsForColumn2();
@@ -66,8 +65,7 @@ const Trendspage = () => {
   const fetchTopTrends = () => {
     setIsLoadingColumn1(true);
     // fetch("https://factcheckerbtp.vishvasnews.com/api/top-trends")
-
-      fetch("/api/top-trends")
+    fetch("/api/top-trends")
       .then((response) => response.json())
       .then((data) => {
         const flattenedData = [];
@@ -82,8 +80,8 @@ const Trendspage = () => {
       .catch((error) => {
         console.error("Error fetching top trends:", error);
         setIsLoadingColumn1(false);
-        setResultsColumn1([]); // Clear previous results on error
-        setErrorColumn1("Error fetching top trends."); // Set an error message
+        setResultsColumn1([]);
+        setErrorColumn1("Error fetching top trends.");
       });
   };
 
@@ -97,7 +95,7 @@ const Trendspage = () => {
     )} ${currentDate.getFullYear()}`;
 
     // fetch("https://factcheckerbtp.vishvasnews.com/api/stories-by-date", {
-      fetch("/api/stories-by-date", {
+    fetch("/api/stories-by-date", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -113,29 +111,18 @@ const Trendspage = () => {
       .catch((error) => {
         console.error("Error fetching data for column 2:", error);
         setIsLoadingColumn2(false);
-        setResultsColumn2([]); // Clear previous results on error
-        setErrorColumn2("Error fetching data for the selected date."); // Set an error message
+        setResultsColumn2([]);
+        setErrorColumn2("Error fetching data for the selected date.");
       });
   };
 
-  const renderResultsColumn1 = (
-    results,
-    currentPage,
-    handlePrev,
-    handleNext,
-    itemsPerPage
-  ) => {
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = results.slice(indexOfFirstItem, indexOfLastItem);
+  const renderResultsColumn1 = (results) => {
+    const itemsToShow = isMobile && !showAllResultsColumn1 ? 4 : results.length;
 
     return (
       <>
-        {currentItems.map((result, index) => (
+        {results.slice(0, itemsToShow).map((result, index) => (
           <Box key={index} mb="20px">
-            <Typography variant="h6" color={"#00ab05"} mb="10px">
-              {result.query}
-            </Typography>
             {result.results.map((item, subIndex) => (
               <Box
                 key={subIndex}
@@ -154,17 +141,24 @@ const Trendspage = () => {
                   }}
                 >
                   <img
-                    src={item.data.img}
+                    src={
+                      item.data.img && item.data.img.length > 0
+                        ? item.data.img[0]
+                        : ""
+                    }
                     alt="News"
-                    width="110px"
-                    height="95px"
+                    width={isMobile ? "250px" : "150px"} // Conditional width
+                    height="95px" // Fixed height
                     style={{ marginRight: "20px" }}
                   />
                 </ButtonBase>
                 <div>
+                  <Typography variant="h5" color={"#00ab05"}>
+                    {result.query}
+                  </Typography>
                   <Typography
                     color={colors.greenAccent[100]}
-                    variant="h5"
+                    variant="h6"
                     fontWeight="600"
                   >
                     <a
@@ -187,24 +181,16 @@ const Trendspage = () => {
             ))}
           </Box>
         ))}
-        <Box display="flex" justifyContent="center" mt="20px">
-          <Button
-            onClick={handlePrev}
-            disabled={currentPage === 1}
-            variant="contained"
-            sx={{ mr: 1 }}
-          >
-            Prev
-          </Button>
-          <Button
-            onClick={handleNext}
-            disabled={currentPage === Math.ceil(results.length / itemsPerPage)}
-            variant="contained"
-            sx={{ ml: 1 }}
-          >
-            Next
-          </Button>
-        </Box>
+        {isMobile && !showAllResultsColumn1 && results.length > 4 && (
+          <Box display="flex" justifyContent="center" mt="20px">
+            <Button
+              onClick={() => setShowAllResultsColumn1(true)}
+              variant="contained"
+            >
+              Load More
+            </Button>
+          </Box>
+        )}
       </>
     );
   };
@@ -240,10 +226,14 @@ const Trendspage = () => {
               }}
             >
               <img
-                src={result.data.img}
+                src={
+                  result.data.img && result.data.img.length > 0
+                    ? result.data.img[0]
+                    : ""
+                }
                 alt="News"
-                width="110px"
-                height="95px"
+                width={isMobile ? "250px" : "150px"} // Conditional width
+                height="95px" // Fixed height
                 style={{ marginRight: "20px" }}
               />
             </ButtonBase>
@@ -294,16 +284,33 @@ const Trendspage = () => {
   };
 
   return (
-    <Box m="20px">
+    <Box mt="40px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
-          title="Trends Page"
+          title="Trends based misinformation"
+          subtitle={
+            <>
+              Recycled dis/misinformation is often deployed by bad actors to
+              create confusion and mislead recipients.
+              <br /> This section shows you already debunked dis/misinformation
+              based on:
+              <br /> <b>Current trends </b>– Fact-checks by our team based on
+              what is trending on the web.
+              <br /> <b>Historical trends</b> – Fact-checks from the past years,
+              on the same date and week +/- three days.
+            </>
+          }
         />
       </Box>
-      <Grid container spacing={2} >
+      <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
-          <Box  p="20px">
-            <Typography variant="h5" color={colors.grey[100]} mb="10px">
+          <Box>
+            <Typography
+              variant="h5"
+              color={colors.grey[100]}
+              mb="10px"
+              fontWeight="bold"
+            >
               Based on Current Trends
             </Typography>
             {isLoadingColumn1 ? (
@@ -323,21 +330,21 @@ const Trendspage = () => {
                 {errorColumn1}
               </Typography>
             ) : (
-              renderResultsColumn1(
-                resultsColumn1,
-                currentPageColumn1,
-                handlePrevColumn1,
-                handleNextColumn1,
-                itemsPerPageColumn1
-              )
+              renderResultsColumn1(resultsColumn1)
             )}
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Box  p="20px">
-            <Typography variant="h5" color={colors.grey[100]} mb="10px">
+          <Box>
+            <Typography
+              variant="h5"
+              color={colors.grey[100]}
+              mb="10px"
+              fontWeight="bold"
+            >
               Based on Historical Trends
             </Typography>
+
             {isLoadingColumn2 ? (
               <Box
                 display="flex"

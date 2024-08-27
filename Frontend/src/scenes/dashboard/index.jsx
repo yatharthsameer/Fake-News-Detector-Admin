@@ -41,6 +41,7 @@ const Dashboard = () => {
   const isXs = useMediaQuery(theme.breakpoints.down("xs"));
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
   const isMd = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Detect mobile mode
 
   const [results, setResults] = useState([]);
   const [chartData, setChartData] = useState([]);
@@ -246,22 +247,31 @@ const Dashboard = () => {
   const highestMatch = results.length > 0 ? results[0].percentage : 0;
 
   return (
-    <Box m="20px">
+    <Box mt="40px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
           title="MESSAGE CHECK "
           subtitle={
             <>
-              Welcome to MESSAGE CHECK!
+              Welcome to MESSAGE CHECK Admin!
+              <br /> <br />
+              Want to{" "}
+              <b>
+                verify the authenticity of a message or image? Or, a social
+                media post ?{" "}
+              </b>
               <br />
-              If you would like to verify the authenticity of a message or image
-              you have received OR a social media post, use the search bar below
-              by inserting a query in text or uploading the image. <br />
+              Use the search bar below by inserting a query in text or uploading
+              the image.
+              <br /> <br />
               The system will show posts with similar misinformation and how
               they were debunked by fact-checkers at Vishvas News.
               <br />
-              You can also search for debunked dis/misinformation about
-              important topics and persons using keywords.
+              You can also search for{" "}
+              <b>
+                debunked dis/misinformation about important topics and persons{" "}
+              </b>{" "}
+              using keywords.
             </>
           }
         />
@@ -296,16 +306,6 @@ const Dashboard = () => {
               />
             }
             label="Image Upload"
-            sx={{ color: "black" }}
-          />
-          <FormControlLabel
-            value="link"
-            control={
-              <Radio
-                sx={{ color: "black", "&.Mui-checked": { color: "black" } }}
-              />
-            }
-            label="Image URL"
             sx={{ color: "black" }}
           />
         </RadioGroup>
@@ -583,7 +583,7 @@ const Dashboard = () => {
                         <Grid item xs={12}>
                           <Box
                             backgroundColor={colors.primary[400]}
-                            p="30px"
+                            // p="30px"
                             height="100%"
                             overflow="auto"
                           >
@@ -664,7 +664,7 @@ const Dashboard = () => {
                                           : ""
                                       }
                                       alt="News"
-                                      width="110px"
+                                      width={isMobile ? "140px" : "150px"} // Conditional width
                                       height="95px"
                                       style={{ marginRight: "20px" }}
                                     />
@@ -887,7 +887,7 @@ const Dashboard = () => {
                                           : ""
                                       }
                                       alt="News"
-                                      width="110px"
+                                      width={isMobile ? "250px" : "150px"} // Conditional width
                                       height="95px"
                                       style={{ marginRight: "20px" }}
                                     />
