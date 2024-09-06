@@ -641,7 +641,7 @@ def append_story(request_data):
     if any(
         story["Story_URL"] == request_data["Story_URL"] for story in file_data.values()
     ):
-        return {"message": "Story URL already exists. No data appended."}, 400
+        return {"error": "Story URL already exists. No data appended."}, 400
 
     # Generate a new index for the new story
     new_index = str(max(map(int, file_data.keys()), default=0) + 1)
@@ -681,9 +681,9 @@ def append_story(request_data):
                 try:
                     st.add_images_to_index([image_path])
                 except Exception as e:
-                    return {"message": f"Failed to index image {idx}: {str(e)}"}, 500
+                    return {"error": f"Failed to index image {idx}: {str(e)}"}, 500
             else:
-                return {"message": f"Failed to download image {idx}."}, 500
+                return {"error": f"Failed to download image {idx}."}, 500
 
     # Write the updated data back to the JSON file
     with open(file_path, "w", encoding="utf-8") as file:
