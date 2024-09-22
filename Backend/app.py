@@ -829,6 +829,10 @@ def stories_by_date():
     specified_date_str = client_data.get("date", "")
     if not specified_date_str:
         return jsonify({"error": "No date provided"}), 400
+    
+    if "Sept" in specified_date_str:
+        specified_date_str = specified_date_str.replace("Sept", "Sep")
+
 
     try:
         specified_date = datetime.strptime(specified_date_str, "%d %b %Y")
