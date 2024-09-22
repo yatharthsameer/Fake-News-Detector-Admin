@@ -12,9 +12,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 import json
 from time import time
 import re
+import string
 from collections import defaultdict
 import spacy
 import numpy as np
+
 # from multiprocessing import Pool, Process
 from datetime import datetime
 
@@ -88,15 +90,38 @@ def load_data(filepath="csvProcessing/allData.json"):
     return docs, origdata
 
 
+def quote_match(quote, docset):
+    # print(quote, doc)
+    for word in quote.split():
+        if word not in docset:
+            return False
+    return True
+
+
+def doc_tokenize_sets(doc):
+    stmp = set(doc.split())
+    return stmp
+
+
+################################################################################
+################################################################################
 class bm25:
-    def __init__(self, docs, orig_docs = None, use_lemma=True):
+    def __init__(self, docs, orig_docs=None, use_lemma=True):
         self.use_lemma = use_lemma
         ts = time()
         self.nlp = spacy.load("en_core_web_sm")
         self.docs = [self.clean(x) for x in docs]
         self.orig_docs = orig_docs
+        self.docs_set = [doc_tokenize_sets(x) for x in self.docs]
 
-        assert not use_lemma or orig_docs, "Require original docs for doc ID checking during lemma"
+        if orig_docs is not None:
+            self.title_set = [
+                doc_tokenize_sets(self.clean(x["Headline"])) for x in self.orig_docs
+            ]
+
+        assert (
+            not use_lemma or orig_docs
+        ), "Require original docs for doc ID checking during lemma"
         assert len(docs) == len(orig_docs)
 
         tokenized_corpus = self.tokenize_all(docs, orig_docs)
@@ -110,20 +135,23 @@ class bm25:
         return self.rank(query, **kwargs)
 
     def add_docs(self, docs, orig_docs=None):
-        self.docs.extend([self.clean(x) for x in docs])
+        newdocs = [self.clean(x) for x in docs]
+        self.docs.extend(newdocs)
+        self.docs_set.extend([doc_tokenize_sets(x) for x in newdocs])
 
         if self.orig_docs:
             assert orig_docs
             self.orig_docs.extend(orig_docs)
+            self.title_set.extend(
+                [doc_tokenize_sets(self.clean(x["Headline"])) for x in orig_docs]
+            )
 
         tokenized_corpus = self.tokenize_all(self.docs, self.orig_docs)
 
         self.scorer = BM25Plus(tokenized_corpus)
 
-
     def clean(self, text: str):
         return text.lower()
-
 
     def tokenize_all(self, docs, orig_docs):
         if self.use_lemma:
@@ -141,50 +169,74 @@ class bm25:
             tokenized_corpus = []
             updateFile = False
             for d, od in zip(docs, orig_docs):
-                if od['key'] in lemma_data:
-                    tokenized_corpus.append(lemma_data[od['key']])
+                if od["key"] in lemma_data:
+                    tokenized_corpus.append(lemma_data[od["key"]])
                 else:
                     tokenized_corpus.append(self.tokenize(d))
                     updateFile = True
 
             if updateFile:
                 print("UPDATING LEMMA FILE")
-                with open("csvProcessing/lemmaData.json", 'w') as fw:
-                    json.dump({od['key'] : le for le, od in zip(tokenized_corpus, orig_docs)}, fw, indent=4, ensure_ascii=False)
+                with open("csvProcessing/lemmaData.json", "w") as fw:
+                    json.dump(
+                        {od["key"]: le for le, od in zip(tokenized_corpus, orig_docs)},
+                        fw,
+                        indent=4,
+                        ensure_ascii=False,
+                    )
 
         else:
             tokenized_corpus = map(self.tokenize, docs)
 
         return tokenized_corpus
 
-
     def tokenize(self, text: str):
         if self.use_lemma:
             return [x.lemma_.lower() for x in self.nlp(text)]
         return text.split()
 
-    def rank(self, query: str, thresh=0.6, max_out=25):
+    def rank(self, query: str, thresh=0.6, max_out=25, quoted=None, intitle=None):
         ts = time()
 
         tokenized_query = self.tokenize(self.clean(query))
         scores = self.scorer.get_scores(tokenized_query)
         metric = scores.round(decimals=2)
 
-        idx = metric.argsort()[-max_out:][::-1]
+        idx = metric.argsort()[::-1]
+
+        if quoted:
+            idx = np.array([i for i in idx if quote_match(quoted, self.docs_set[i])])
+            if len(idx) == 0:
+                return [], []
+
+        if intitle:
+            idx = np.array([i for i in idx if quote_match(intitle, self.title_set[i])])
+            if len(idx) == 0:
+                return [], []
+
         res = metric[idx]
 
+        # print(idx)
         idx = idx[res >= res[0] * thresh]
         res = res[res >= res[0] * thresh]
         te = time()
 
-        return idx, res
+        return idx[:max_out], res[:max_out]
 
 
+################################################################################
+################################################################################
 class ftsent:
-    def __init__(self, docs, model_path="fasttext-tmp/model.bin"):
+    def __init__(self, docs, orig_docs=None, model_path="fasttext-tmp/model.bin"):
         ts = time()
         self.model = fasttext.load_model(model_path)
         self.doc_vecs = [self.model.get_sentence_vector(x) for x in docs]
+        self.docs_set = [doc_tokenize_sets(self.clean(x)) for x in docs]
+
+        if orig_docs is not None:
+            self.title_set = [
+                doc_tokenize_sets(self.clean(x["Headline"])) for x in orig_docs
+            ]
         te = time()
 
         print("FT-sent Loading time in s:", round(te - ts, 3))
@@ -195,17 +247,37 @@ class ftsent:
     def __call__(self, query, **kwargs):
         return self.rank(query, **kwargs)
 
-    def add_docs(self, docs):
+    def add_docs(self, docs, orig_docs=None):
         self.doc_vecs.extend([self.model.get_sentence_vector(x) for x in docs])
+        self.docs_set.extend([doc_tokenize_sets(self.clean(x)) for x in docs])
 
-    def rank(self, query: str, thresh=0.85, cutoff=0.6, max_out=25):
+        if self.orig_docs:
+            assert orig_docs
+            self.title_set.extend(
+                [doc_tokenize_sets(self.clean(x["Headline"])) for x in orig_docs]
+            )
+
+    def rank(
+        self, query: str, thresh=0.85, cutoff=0.6, max_out=25, quoted=None, intitle=None
+    ):
         ts = time()
         query_vec = self.model.get_sentence_vector(self.clean(query))
         cos_sim = cosine_similarity([query_vec], self.doc_vecs)
 
         metric = (cos_sim[0] * 100).round(decimals=2)
 
-        idx = metric.argsort()[-max_out:][::-1]
+        idx = metric.argsort()[::-1]
+
+        if quoted:
+            idx = np.array([i for i in idx if quote_match(quoted, self.docs_set[i])])
+            if len(idx) == 0:
+                return [], []
+
+        if intitle:
+            idx = np.array([i for i in idx if quote_match(intitle, self.title_set[i])])
+            if len(idx) == 0:
+                return [], []
+
         res = metric[idx]
 
         idx = idx[(res >= cutoff) & (res >= res[0] * thresh)]
@@ -213,7 +285,7 @@ class ftsent:
 
         te = time()
 
-        return idx, res
+        return idx[:max_out], res[:max_out]
 
     def match_percent(self, query, ddict):
         query_vec = self.model.get_sentence_vector(self.clean(query))
@@ -221,11 +293,20 @@ class ftsent:
         return cosine_similarity([query_vec], [doc_vec])[0][0]
 
 
+################################################################################
+################################################################################
 class bertscore:
-    def __init__(self, docs=[]):
+    def __init__(self, docs=[], orig_docs=None):
         ts = time()
         self.scorer = BERTScorer(model_type="distilbert-base-multilingual-cased")
         self.docs = [self.clean(x) for x in docs]
+        self.docs_set = [doc_tokenize_sets(x) for x in self.docs]
+
+        if orig_docs:
+            self.title_set = [
+                doc_tokenize_sets(self.clean(x["Headline"])) for x in orig_docs
+            ]
+
         te = time()
 
         print("BertScore Loading time in s:", round(te - ts, 3))
@@ -236,10 +317,27 @@ class bertscore:
     def __call__(self, query, docs=None, **kwargs):
         return self.rank(query, docs, **kwargs)
 
-    def add_docs(self, docs):
-        self.docs.extend([self.clean(x) for x in docs])
+    def add_docs(self, docs, orig_docs=None):
+        newdocs = [self.clean(x) for x in docs]
+        self.docs.extend(newdocs)
+        self.docs_set.extend([doc_tokenize_sets(x) for x in newdocs])
 
-    def rank(self, query: str, docs=None, thresh=0.8, cutoff=0.6, max_out=25):
+        if self.orig_docs:
+            assert orig_docs
+            self.title_set.extend(
+                [doc_tokenize_sets(self.clean(x["Headline"])) for x in orig_docs]
+            )
+
+    def rank(
+        self,
+        query: str,
+        docs=None,
+        thresh=0.8,
+        cutoff=0.6,
+        max_out=25,
+        quoted=None,
+        intitle=None,
+    ):
         ts = time()
 
         refs = self.docs if docs is None else docs
@@ -248,19 +346,32 @@ class bertscore:
         P, R, F1 = self.scorer.score(cands, refs)
         metric = (F1.numpy() * 100).round(decimals=2)
 
-        idx = metric.argsort()[-max_out:][::-1]
+        idx = metric.argsort()[::-1]
+
+        if quoted and docs is None:
+            idx = np.array([i for i in idx if quote_match(quoted, self.docs_set[i])])
+            if len(idx) == 0:
+                return [], []
+
+        if intitle and docs is None:
+            idx = np.array([i for i in idx if quote_match(intitle, self.title_set[i])])
+            if len(idx) == 0:
+                return [], []
+
         res = metric[idx]
 
         idx = idx[(res >= cutoff) & (res >= res[0] * thresh)]
         res = res[(res >= cutoff) & (res >= res[0] * thresh)]
         te = time()
 
-        return idx, res
+        return idx[:max_out], res[:max_out]
 
     def match_percent(self, query, ddict):
         return self.scorer.score([query], [ddict["Headline"]])[0]
 
 
+################################################################################
+################################################################################
 class ensemble:
 
     def __init__(
@@ -289,7 +400,7 @@ class ensemble:
             self.BM25model = bm25(docs, orig_docs)
 
         if use_ft:
-            self.FTmodel = ftsent(docs)
+            self.FTmodel = ftsent(docs, orig_docs)
 
         if use_bs:
             self.BSmodel = bertscore()
@@ -302,7 +413,56 @@ class ensemble:
     def __call__(self, query, **kwargs):
         return self.rank(query, **kwargs)
 
-    def add_docs(self, docs, orig_docs = None):
+    def preprocess_query(self, query):
+        tmp = re.sub(
+            "[%s]" % re.escape(string.punctuation.replace("'", "")), " ", query
+        ).strip()
+        tmp = tmp.replace("'", "")
+        # tmp = re.sub(r"[^\w\s]+", " ", query, re.UNICODE).strip()
+        tmp = [x for x in tmp.split() if len(x) > 1]
+        tmp = " ".join(tmp)
+        return tmp
+
+    def find_quote(self, query):
+        print(query)
+        tmp = " ".join(re.findall('".+?"', query))
+        tmp = re.sub(
+            "[%s]" % re.escape(string.punctuation.replace("'", "")), " ", tmp
+        ).strip()
+        tmp = tmp.replace("'", "")
+        # tmp = re.sub(r"[^\w\s]+", " ", tmp, re.UNICODE).strip()
+        return tmp
+
+    def find_intitle(self, query):
+        tmp1 = [
+            y
+            for x in re.findall("intitle:\S+", query)
+            for y in re.sub(
+                "[%s]" % re.escape(string.punctuation.replace("'", "")), " ", x[8:]
+            )
+            .replace("'", "")
+            .strip()
+            .split()
+        ]
+
+        # tmp = re.sub(r"[^\w\s]+", " ", tmp, re.UNICODE).strip()
+        tmp2 = [
+            y
+            for x in re.findall('intitle:".+?"', query)
+            for y in re.sub(
+                "[%s]" % re.escape(string.punctuation.replace("'", "")), " ", x[9:-1]
+            )
+            .replace("'", "")
+            .strip()
+            .split()
+        ]
+        print(tmp1)
+        print(tmp2)
+
+        tmp = " ".join(set(tmp1) | set(tmp2))
+        return tmp
+
+    def add_docs(self, docs, orig_docs=None):
         self.docs.extend(docs)
 
         if self.orig_docs:
@@ -349,12 +509,26 @@ class ensemble:
 
         return idx, res
 
+    ################################################################################
+    ################################################################################
     def rank(self, query, thresh=0.4, cutoff=0.2, max_out=20, k=5):
         ts = time()
 
         assert k >= 1, "Select k >= 1"
 
-        if len(re.sub("\W+", "", query)) < 3:
+        quote = self.find_quote(query)
+        intitle = self.find_intitle(query)
+        query = self.preprocess_query(query)
+
+        print("QUERY:", query)
+        if quote:
+            print("QUOTED:", quote)
+
+        if intitle:
+            print("INTITLE:", intitle)
+
+        if len(query) < 3:
+            print("Too short query")
             return [], []
 
         results = []
@@ -371,12 +545,13 @@ class ensemble:
                     print("TRANSLATE ERROR:", args)
 
         if self.use_bm25:
-            bm25idx, bm25res = self.BM25model.rank(query)
+            bm25idx, bm25res = self.BM25model.rank(query, quoted=quote, intitle=intitle)
 
             if transquery:
-                bm25idx2, bm25res2 = self.BM25model.rank(transquery)
-                # NEW CHANGE: CLIPPING INPUT INDICES FOR BS
-                indices |= set(bm25idx2[:15])
+                bm25idx2, bm25res2 = self.BM25model.rank(
+                    transquery, quoted=quote, intitle=intitle
+                )
+                indices |= set(bm25idx2)
                 results.append(bm25idx2)
 
             # NEW CHANGE: CLIPPING INPUT INDICES FOR BS
@@ -384,26 +559,35 @@ class ensemble:
             results.append(bm25idx)
 
         if self.use_ft:
-            ftidx, ftres = self.FTmodel.rank(query)
+            ftidx, ftres = self.FTmodel.rank(query, quoted=quote, intitle=intitle)
 
             if transquery:
-                ftidx2, ftres2 = self.FTmodel.rank(transquery)
-                # NEW CHANGE: CLIPPING INPUT INDICES FOR BS
-                indices |= set(ftidx2[:15])
+                ftidx2, ftres2 = self.FTmodel.rank(
+                    transquery, quoted=quote, intitle=intitle
+                )
+                indices |= set(ftidx2)
                 results.append(ftidx2)
 
             # NEW CHANGE: CLIPPING INPUT INDICES FOR BS
             indices |= set(ftidx[:15])
             results.append(ftidx)
 
+        if not indices:
+            print("No matching quoted terms in any doc")
+            return [], []
+
         if self.use_bs:
             indices = np.array(list(indices))
             tmpdocs = [self.docs[i] for i in indices]
             print("Total #docs for running bertscore:", len(indices))
 
-            tmpidx, bsres = self.BSmodel.rank(query, tmpdocs)
+            tmpidx, bsres = self.BSmodel.rank(
+                query, tmpdocs, quoted=quote, intitle=intitle
+            )
             if transquery:
-                tmpidx2, bsres2 = self.BSmodel.rank(transquery, tmpdocs)
+                tmpidx2, bsres2 = self.BSmodel.rank(
+                    transquery, tmpdocs, quoted=quote, intitle=intitle
+                )
                 bsidx2 = indices[tmpidx2]
                 results.append(bsidx2)
 
@@ -428,9 +612,15 @@ class ensemble:
         return round(per, 3)
 
 
+################################################################################
+################################################################################
 if __name__ == "__main__":
-    QUERY = ["राहुल गांधी"]
+    # QUERY = ['narendra modi']
     # QUERY = ["राहुल गांधी", "राहुल गांधी बेरोजगार", 'rahul gandhi', 'rahul gandhi drinking', "नरेंद्र मोदी",  "Narendra Modi", "Election Fact Check", "Karnataka Election", 'Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
+    QUERY = [
+        "rahul gandhi intitle:drinking",
+        'rahul gandhi intitle:"drinking"',
+    ]  # ,  'intitle:"rahul gandhi" drinking', 'intitle:"rahul gandhi drinking"']
 
     docs, orig = load_data("csvProcessing/allData.json")
     model = ensemble(docs, use_translation=True, orig_docs=orig, use_date_level=2)
@@ -438,7 +628,6 @@ if __name__ == "__main__":
     for query in QUERY:
         print("\n")
         print("#" * 40 + " Ensemble " + "#" * 40)
-        print("QUERY:", query)
 
         idx, scores = model.rank(query)
         percent = (
