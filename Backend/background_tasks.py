@@ -31,6 +31,7 @@ def fetch_and_store_top_trends():
         for query in combined_trends:
             # Call the rank_documents_bm25_bert function for each query
             req = {"query": query}
+
             with app.test_request_context(json=req):
                 from app import (
                     rank_documents_bm25_bert,

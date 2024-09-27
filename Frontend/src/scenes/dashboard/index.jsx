@@ -308,6 +308,16 @@ const Dashboard = () => {
             label="Image Upload"
             sx={{ color: "black" }}
           />
+          <FormControlLabel
+            value="link"
+            control={
+              <Radio
+                sx={{ color: "black", "&.Mui-checked": { color: "black" } }}
+              />
+            }
+            label="Image URL"
+            sx={{ color: "black" }}
+          />
         </RadioGroup>
       </Box>
 
