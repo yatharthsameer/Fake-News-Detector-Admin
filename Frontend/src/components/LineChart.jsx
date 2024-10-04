@@ -72,7 +72,7 @@ const LineChart = ({
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "Year",
+        legend: "Year", // Already specified as 'Year'
         legendOffset: 36,
         legendPosition: "middle",
         tickValues: data[0]?.data.map((d) => d.x),
@@ -84,7 +84,7 @@ const LineChart = ({
         tickSize: 3,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "count",
+        legend: "Frequency", // Changed from 'count' to 'Frequency'
         legendOffset: -40,
         legendPosition: "middle",
       }}
@@ -96,6 +96,21 @@ const LineChart = ({
       pointBorderColor={{ from: "serieColor" }}
       pointLabelYOffset={-12}
       useMesh={true}
+      tooltip={({ point }) => (
+        <div
+          style={{
+            background: "white",
+            padding: "8px 10px",
+            border: "1px solid #ccc",
+            color: "black", // Set the text color to black
+            fontSize: "12px", // Set a smaller font size
+          }}
+        >
+          <strong>Year: {point.data.xFormatted}</strong>
+          <br />
+          <strong>Frequency: {point.data.yFormatted}</strong>
+        </div>
+      )}
       legends={[
         {
           anchor: "top-right",

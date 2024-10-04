@@ -739,6 +739,15 @@ const Dashboard = () => {
                             <Box height="250px">
                               <LineChart data={chartData} isDashboard={true} />
                             </Box>
+                            <Typography
+                              variant="body2"
+                              color="black"
+                              align="center"
+                              mt={2}
+                            >
+                              The graph depicts the number of fact-checks every
+                              year on the subject/claim being searched.
+                            </Typography>
                           </Box>
                         </Grid>
                       </>
@@ -822,6 +831,15 @@ const Dashboard = () => {
                             <Box height="250px">
                               <LineChart data={chartData} isDashboard={true} />
                             </Box>
+                            <Typography
+                              variant="body2"
+                              color="black"
+                              align="center"
+                              mt={2}
+                            >
+                              The graph depicts the number of fact-checks every
+                              year on the subject/claim being searched.
+                            </Typography>
                           </Box>
                         </Grid>
                         <Grid item xs={12} md={7}>
