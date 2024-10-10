@@ -126,7 +126,7 @@ const Form = () => {
     }
   };
 
-  const handleFormSubmit = async (values) => {
+  const handleFormSubmit = async (values, { resetForm }) => {
     setIsLoading(true);
     setMessage("");
     try {
@@ -145,6 +145,7 @@ const Form = () => {
       } else {
         setMessage(result.message || "Data submitted successfully");
         setIsError(false);
+        resetForm(); // Reset the form after successful submission
       }
     } catch (error) {
       console.error("An error occurred during form submission:", error);
@@ -489,14 +490,19 @@ const Form = () => {
             handleBlur,
             handleChange,
             handleSubmit,
+            resetForm, // Add this to use inside handleFormSubmit
           }) => (
-            <form id="form-id" onSubmit={handleSubmit}>
+            <form
+              id="form-id"
+              onSubmit={(event) => handleSubmit(event, { resetForm })}
+            >
               <Box display="flex" flexDirection="column" gap="20px">
                 <TextField
                   fullWidth
                   variant="outlined"
                   type="text"
                   label="Story Date"
+                  placeholder="24th Jul 2024"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.Story_Date}
@@ -531,6 +537,7 @@ const Form = () => {
                   variant="outlined"
                   type="text"
                   label="Story URL"
+                  placeholder="http://example.com"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.Story_URL}
@@ -565,6 +572,7 @@ const Form = () => {
                   variant="outlined"
                   type="text"
                   label="Headline"
+                  placeholder="Sample Headline"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.Headline}
@@ -599,6 +607,7 @@ const Form = () => {
                   variant="outlined"
                   type="text"
                   label="Tags"
+                  placeholder="tag1, tag2"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.tags}
@@ -633,6 +642,7 @@ const Form = () => {
                   variant="outlined"
                   type="text"
                   label="What (Claim)"
+                  placeholder="Sample Claim"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values["What_(Claim)"]}
@@ -672,6 +682,11 @@ const Form = () => {
                             variant="outlined"
                             type="text"
                             label={`Image URL ${index + 1}`}
+                            placeholder={
+                              index === 0
+                                ? "http://example.com/image.jpg"
+                                : "http://example.com/image2.jpg"
+                            }
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={imageUrl}
@@ -739,6 +754,7 @@ const Form = () => {
                   variant="outlined"
                   type="text"
                   label="About Person"
+                  placeholder="Sample Person"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.About_Person}
@@ -773,6 +789,7 @@ const Form = () => {
                   variant="outlined"
                   type="text"
                   label="About Subject"
+                  placeholder="Sample Subject"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.About_Subject}
