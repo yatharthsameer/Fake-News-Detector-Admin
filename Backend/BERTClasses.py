@@ -424,14 +424,14 @@ class ensemble:
         return tmp
 
     def find_quote(self, query):
-        print(query)
+        # print(query)
         tmp = " ".join(re.findall('".+?"', query))
         tmp = re.sub(
             "[%s]" % re.escape(string.punctuation.replace("'", "")), " ", tmp
         ).strip()
         tmp = tmp.replace("'", "")
         # tmp = re.sub(r"[^\w\s]+", " ", tmp, re.UNICODE).strip()
-        return tmp
+        return tmp.lower()
 
     def find_intitle(self, query):
         tmp1 = [
@@ -456,11 +456,11 @@ class ensemble:
             .strip()
             .split()
         ]
-        print(tmp1)
-        print(tmp2)
+        # print(tmp1)
+        # print(tmp2)
 
         tmp = " ".join(set(tmp1) | set(tmp2))
-        return tmp
+        return tmp.lower()
 
     def add_docs(self, docs, orig_docs=None):
         self.docs.extend(docs)
@@ -615,17 +615,23 @@ class ensemble:
 ################################################################################
 ################################################################################
 if __name__ == "__main__":
-    # QUERY = ['narendra modi']
+    # QUERY = ['"Deepinder Goyal"', '"Shivam Dube"', '"Bad Blood"', '"Suryakumar Yadav"', '"Liverpool"', '"Mukesh Ambani"', '"Haryana Election"', '"Bangalore weather"']
     # QUERY = ["राहुल गांधी", "राहुल गांधी बेरोजगार", 'rahul gandhi', 'rahul gandhi drinking', "नरेंद्र मोदी",  "Narendra Modi", "Election Fact Check", "Karnataka Election", 'Tejas express', 'Cow Attack Faridabad', 'virat kohli', 'rahul gandhi', 'rahul gandhi drinking', 'beef mcdonald', 'Akhilesh Yadav', 'आलू से सोना', 'Rolls Royce Saudi Arabia.', 'ms dhoni', 'रक्षाबंधन बंपर धमाका को लेकर केबीसी कंपनी के नाम से वायरल किया जा रहा फर्जी पोस्ट', 'केदारनाथ नहीं, 2 साल पहले पाकिस्तान के स्वात घाटी में आई बाढ़ का है वायरल वीडियो']
-    QUERY = [
-        "rahul gandhi intitle:drinking",
-        'rahul gandhi intitle:"drinking"',
-    ]  # ,  'intitle:"rahul gandhi" drinking', 'intitle:"rahul gandhi drinking"']
+    # QUERY = ['rahul gandhi intitle:drinking', 'rahul gandhi intitle:"drinking"']#,  'intitle:"rahul gandhi" drinking', 'intitle:"rahul gandhi drinking"']
+
+    QUERY = (
+        []
+        + ["Kisan", "Kisan", "Haryana", "England Women", "Scotland Women", "Navratri"]
+        + ["Barcelona", "BAN", "Madrid"]
+        + ["Chennai", "Ind", "United"]
+    )
+    # ['Vijay Sethupathi', 'Deepinder Goyal', 'Bad Blood 2024', 'Suryakumar Yadav', 'UFC 307', 'Haryana Election', 'George Soros', 'Sonam Wangchuk', 'NBA', 'The Great Indian Kapil Show', 'Antarctica', 'Mukesh Ambani'] \
 
     docs, orig = load_data("csvProcessing/allData.json")
-    model = ensemble(docs, use_translation=True, orig_docs=orig, use_date_level=2)
+    model = ensemble(docs, use_translation=True, orig_docs=orig, use_date_level=1)
 
     for query in QUERY:
+        query = '"' + query + '"'
         print("\n")
         print("#" * 40 + " Ensemble " + "#" * 40)
 
@@ -638,7 +644,7 @@ if __name__ == "__main__":
         print("Num res:", len(idx))
         print("Percent Match", percent)
 
-        for i, v in zip(idx[:], scores[:]):
+        for i, v in zip(idx[:1], scores[:1]):
             print(" --> ", v, i, docs[i])
             print(" +-> ", orig[i]["Headline"])
             print()

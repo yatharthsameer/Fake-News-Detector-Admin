@@ -19,10 +19,18 @@ import Login from './scenes/login';
 import { AuthProvider } from './context/AuthContext';  // Import AuthProvider
 import Trendspage from "./scenes/trendspage";
 import ProtectedForm from './scenes/protectedForm'; 
+import About from './scenes/about';
+import { useTranslation } from "react-i18next";
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar] = useState(true);
-
+  const { i18n } = useTranslation(); // Translation hook
+  const toggleLanguage = () => {
+    // Toggle between 'en' and 'hi'
+    const newLanguage = i18n.language === 'en' ? 'hi' : 'en';
+    i18n.changeLanguage(newLanguage);
+  };
   return (
     <AuthProvider> 
 
@@ -47,6 +55,8 @@ function App() {
               <Route path="/faq" element={<FAQ />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/geography" element={<Geography />} />
+                <Route path="/about" element={<About />} />
+
             </Routes>
           </main>
         </div>

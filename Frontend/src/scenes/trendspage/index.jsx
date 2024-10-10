@@ -11,52 +11,25 @@ import {
 } from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
+import { useTranslation } from "react-i18next"; // Translation hook
 
 const Trendspage = () => {
   const [resultsColumn1, setResultsColumn1] = useState([]);
-  const [expandedQuery, setExpandedQuery] = useState(null);
   const [isLoadingColumn1, setIsLoadingColumn1] = useState(false);
+  const [currentPageColumn1, setCurrentPageColumn1] = useState(1); // Use this state
+  const [errorColumn1, setErrorColumn1] = useState(null);
   const [resultsColumn2, setResultsColumn2] = useState([]);
   const [isLoadingColumn2, setIsLoadingColumn2] = useState(false);
-  const [currentPageColumn1, setCurrentPageColumn1] = useState(1);
-  const [currentPageColumn2, setCurrentPageColumn2] = useState(1);
-  const [errorColumn1, setErrorColumn1] = useState(null);
+  const [currentPageColumn2, setCurrentPageColumn2] = useState(1); // Use this state
   const [errorColumn2, setErrorColumn2] = useState(null);
-  const [showAllResultsColumn1, setShowAllResultsColumn1] = useState(false);
+  const itemsPerPageColumn1 = 3; // Show 5 results per page in column 1
   const itemsPerPageColumn2 = 7;
+  const { t } = useTranslation(); // Translation hook
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Detect mobile mode
-  // const indexOfLastItemColumn1 = currentPageColumn1 * itemsPerPageColumn1;
-  // const indexOfFirstItemColumn1 = indexOfLastItemColumn1 - itemsPerPageColumn1;
-  // const currentItemsColumn1 = resultsColumn1.slice(
-  //   indexOfFirstItemColumn1,
-  //   indexOfLastItemColumn1
-  // );
 
-  const indexOfLastItemColumn2 = currentPageColumn2 * itemsPerPageColumn2;
-  const indexOfFirstItemColumn2 = indexOfLastItemColumn2 - itemsPerPageColumn2;
-  const currentItemsColumn2 = resultsColumn2.slice(
-    indexOfFirstItemColumn2,
-    indexOfLastItemColumn2
-  );
-
-  const handleNextColumn1 = () => {
-    setCurrentPageColumn1(currentPageColumn1 + 1);
-  };
-
-  const handlePrevColumn1 = () => {
-    setCurrentPageColumn1(currentPageColumn1 - 1);
-  };
-
-  const handleNextColumn2 = () => {
-    setCurrentPageColumn2(currentPageColumn2 + 1);
-  };
-
-  const handlePrevColumn2 = () => {
-    setCurrentPageColumn2(currentPageColumn2 - 1);
-  };
   useEffect(() => {
     fetchTopTrends();
     fetchResultsForColumn2();
@@ -64,8 +37,7 @@ const Trendspage = () => {
 
   const fetchTopTrends = () => {
     setIsLoadingColumn1(true);
-    // fetch("https://factcheckerbtp.vishvasnews.com/api/top-trends")
-    fetch("/api/top-trends")
+    fetch("https://factcheckerbtp.vishvasnews.com/api/top-trends")
       .then((response) => response.json())
       .then((data) => {
         const flattenedData = [];
@@ -87,15 +59,13 @@ const Trendspage = () => {
 
   const fetchResultsForColumn2 = () => {
     setIsLoadingColumn2(true);
-
     const currentDate = new Date();
     const formattedDate = `${currentDate.getDate()} ${currentDate.toLocaleString(
       "default",
       { month: "short" }
     )} ${currentDate.getFullYear()}`;
 
-    // fetch("https://factcheckerbtp.vishvasnews.com/api/stories-by-date", {
-    fetch("/api/stories-by-date", {
+    fetch("https://factcheckerbtp.vishvasnews.com/api/stories-by-date", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -116,14 +86,49 @@ const Trendspage = () => {
       });
   };
 
-  const renderResultsColumn1 = (results) => {
-    const itemsToShow = isMobile && !showAllResultsColumn1 ? 4 : results.length;
+  // Define the functions for navigating pages in Column 1
+  const handleNextColumn1 = () => {
+    setCurrentPageColumn1((prevPage) => prevPage + 1);
+  };
+
+  const handlePrevColumn1 = () => {
+    setCurrentPageColumn1((prevPage) =>
+      prevPage > 1 ? prevPage - 1 : prevPage
+    );
+  };
+
+  // Define the functions for navigating pages in Column 2
+  const handleNextColumn2 = () => {
+    setCurrentPageColumn2((prevPage) => prevPage + 1);
+  };
+
+  const handlePrevColumn2 = () => {
+    setCurrentPageColumn2((prevPage) =>
+      prevPage > 1 ? prevPage - 1 : prevPage
+    );
+  };
+  const renderResultsColumn1 = (
+    results,
+    currentPage,
+    handlePrev,
+    handleNext,
+    itemsPerPage
+  ) => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = results.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
       <>
-        {results.slice(0, itemsToShow).map((result, index) => (
+        {currentItems.map((result, index) => (
           <Box key={index} mb="20px">
-            {result.results.map((item, subIndex) => (
+            {/* Trend Title */}
+            <Typography variant="h5" color={"#00ab05"} mb="10px">
+              {result.query}
+            </Typography>
+
+            {/* Display up to 2 news objects */}
+            {result.results.slice(0, 2).map((item, subIndex) => (
               <Box
                 key={subIndex}
                 display="flex"
@@ -147,15 +152,12 @@ const Trendspage = () => {
                         : ""
                     }
                     alt="News"
-                    width={isMobile ? "250px" : "150px"} // Conditional width
-                    height="95px" // Fixed height
+                    width={isMobile ? "250px" : "150px"}
+                    height="95px"
                     style={{ marginRight: "20px" }}
                   />
                 </ButtonBase>
                 <div>
-                  <Typography variant="h5" color={"#00ab05"}>
-                    {result.query}
-                  </Typography>
                   <Typography
                     color={colors.greenAccent[100]}
                     variant="h6"
@@ -181,16 +183,24 @@ const Trendspage = () => {
             ))}
           </Box>
         ))}
-        {isMobile && !showAllResultsColumn1 && results.length > 4 && (
-          <Box display="flex" justifyContent="center" mt="20px">
-            <Button
-              onClick={() => setShowAllResultsColumn1(true)}
-              variant="contained"
-            >
-              Load More
-            </Button>
-          </Box>
-        )}
+        <Box display="flex" justifyContent="center" mt="20px">
+          <Button
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+            variant="contained"
+            sx={{ mr: 1 }}
+          >
+            Prev
+          </Button>
+          <Button
+            onClick={handleNext}
+            disabled={currentPage === Math.ceil(results.length / itemsPerPage)}
+            variant="contained"
+            sx={{ ml: 1 }}
+          >
+            Next
+          </Button>
+        </Box>
       </>
     );
   };
@@ -290,14 +300,10 @@ const Trendspage = () => {
           title="Trends based misinformation"
           subtitle={
             <>
-              Recycled dis/misinformation is often deployed by bad actors to
-              create confusion and mislead recipients.
-              <br /> This section shows you already debunked dis/misinformation
-              based on:
-              <br /> <b>Current trends </b>– Fact-checks by our team based on
-              what is trending on the web.
-              <br /> <b>Historical trends</b> – Fact-checks from the past years,
-              on the same date and week +/- three days.
+              {t("recycled_misinformation")}
+              <br /> {t("debunked_section")}
+              <br /> <b>{t("current_trends")}</b>
+              <br /> <b>{t("historical_trends")}</b>
             </>
           }
         />
@@ -311,7 +317,7 @@ const Trendspage = () => {
               mb="10px"
               fontWeight="bold"
             >
-              Based on Current Trends
+              {t("based_on_current_trends")}{" "}
             </Typography>
             {isLoadingColumn1 ? (
               <Box
@@ -330,7 +336,13 @@ const Trendspage = () => {
                 {errorColumn1}
               </Typography>
             ) : (
-              renderResultsColumn1(resultsColumn1)
+              renderResultsColumn1(
+                resultsColumn1,
+                currentPageColumn1,
+                handlePrevColumn1,
+                handleNextColumn1,
+                itemsPerPageColumn1
+              )
             )}
           </Box>
         </Grid>
@@ -342,7 +354,7 @@ const Trendspage = () => {
               mb="10px"
               fontWeight="bold"
             >
-              Based on Historical Trends
+              {t("based_on_historical_trends")}{" "}
             </Typography>
 
             {isLoadingColumn2 ? (

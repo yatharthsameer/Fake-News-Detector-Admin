@@ -2,26 +2,25 @@ import React, { useState, useContext } from "react";
 import {
   Box,
   IconButton,
-  Typography,
+  Divider,
   useTheme,
-  Switch,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider,
   useMediaQuery,
   Drawer,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { ColorModeContext, tokens } from "../../theme";
 import { AuthContext } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const Sidebar = () => {
   const theme = useTheme();
@@ -30,6 +29,7 @@ const Sidebar = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
   const colorMode = useContext(ColorModeContext);
   const navigate = useNavigate();
+  const { i18n } = useTranslation(); // Translation hook
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
 
@@ -59,6 +59,10 @@ const Sidebar = () => {
     }
   };
 
+  const handleLanguageToggle = () => {
+    const newLanguage = i18n.language === "en" ? "hi" : "en";
+    i18n.changeLanguage(newLanguage);
+  };
   const menuItems = [
     {
       title: "Search fact-checks",
@@ -73,6 +77,11 @@ const Sidebar = () => {
     {
       title: "Add fact-check(s)",
       to: "/form",
+      icon: <ReceiptOutlinedIcon sx={{ color: "white" }} />,
+    },
+    {
+      title: "About",
+      to: "/about",
       icon: <ReceiptOutlinedIcon sx={{ color: "white" }} />,
     },
   ];
@@ -133,6 +142,30 @@ const Sidebar = () => {
             </ListItem>
           ))}
         </List>
+      </Box>
+      <Box
+        sx={{
+          padding: "20px",
+          textAlign: "center",
+        }}
+      >
+        <FormControlLabel
+          control={
+            <Switch
+              checked={i18n.language === "hi"}
+              onChange={handleLanguageToggle}
+              color="primary"
+            />
+          }
+          label={i18n.language === "en" ? "EN" : "HI"}
+          labelPlacement="top"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        />
       </Box>
     </Box>
   );

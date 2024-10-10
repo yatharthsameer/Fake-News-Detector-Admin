@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify, session, render_template
 from flask_cors import CORS
 import json
+
 # import google.generativeai as genai
 from werkzeug.utils import secure_filename
 from DeepImageSearch import Load_Data, Search_Setup
 import os
+
 # from sentence_transformers import SentenceTransformer, util
 # import urllib.request
 
@@ -13,6 +15,7 @@ import pandas as pd
 import numpy as np
 import logging
 from logging.handlers import RotatingFileHandler
+
 # from transformers import AutoModel, AutoTokenizer, AutoModelForCausalLM
 from scipy.spatial.distance import cosine
 import requests  # Import requests to fetch image from URL
@@ -267,7 +270,6 @@ def upload_file():
                 print("image_filename", image_filename)
                 image_parts = image_filename.split("_")
                 story_index = image_parts[1]  # This is the index of the story object
-                
 
                 if story_index in data:
                     corresponding_object = data[story_index]
@@ -708,12 +710,15 @@ def rank_documents_bm25_bert():
     results = []
     print(type(idx))
     percent = (
-        round(20 * max(list(scores[:3]) + [model.match_percent(query, origdata[idx[0]])] )) * 5
+        round(
+            20 * max(list(scores[:3]) + [model.match_percent(query, origdata[idx[0]])])
+        )
+        * 5
         if len(idx) > 0
         else None
     )
 
-    origkeys = [origdata[i]['key'] for i in idx]
+    origkeys = [origdata[i]["key"] for i in idx]
 
     for doc_id, score in zip(origkeys[:10], scores[:10]):
         # doc_id = str(i)  # Convert index to integer
@@ -732,6 +737,8 @@ def rank_documents_bm25_bert():
 def rank_documents_bm25_bert_trends():
     req = request.json
     query = req.get("query", "")
+    log_query("text", query)
+
     data = []
     with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
         data = json.load(file)
@@ -744,11 +751,7 @@ def rank_documents_bm25_bert_trends():
     # model.use_date_level = 1
     results = []
     print(type(idx))
-    percent = (
-        round(20 * max(scores[:3])) * 5
-        if len(idx) > 0
-        else None
-    )
+    percent = round(20 * max(scores[:3])) * 5 if len(idx) > 0 else None
 
     origkeys = [origdata[i]["key"] for i in idx]
 
@@ -778,6 +781,8 @@ def start_scheduler():
     scheduler_thread.daemon = True
     print("Starting scheduler thread...")
     scheduler_thread.start()
+
+
 start_scheduler()
 
 
@@ -795,6 +800,7 @@ def top_trends():
 
 import re
 from datetime import datetime, timedelta
+
 # Load the data from the JSON file
 # Load the data from the JSON file
 with open("csvProcessing/allData.json", "r", encoding="utf-8") as file:
@@ -829,10 +835,9 @@ def stories_by_date():
     specified_date_str = client_data.get("date", "")
     if not specified_date_str:
         return jsonify({"error": "No date provided"}), 400
-    
+
     if "Sept" in specified_date_str:
         specified_date_str = specified_date_str.replace("Sept", "Sep")
-
 
     try:
         specified_date = datetime.strptime(specified_date_str, "%d %b %Y")
@@ -841,10 +846,11 @@ def stories_by_date():
         print(f"Invalid date format {specified_date_str}")
         return jsonify({"error": f"Invalid date format {specified_date_str}"}), 400
 
-    start_date = specified_date - timedelta(days=1)
-    end_date = specified_date + timedelta(days=1)
+    start_date = specified_date - timedelta(days=3)
+    end_date = specified_date + timedelta(days=3)
 
     matching_stories = []
+    seen_urls = set()  # Set to keep track of already added story URLs
 
     for story_id, story in data.items():
         story_date_str = story.get("Story_Date", "")
@@ -853,13 +859,18 @@ def stories_by_date():
         if story_date:
             story_date_this_year = replace_year_safe(story_date, specified_date.year)
             if story_date_this_year and start_date <= story_date_this_year <= end_date:
-                matching_stories.append(
-                    {
-                        "percentage": 100,
-                        "data": story,
-                        "original_date": story_date,
-                    }  # Store original date for sorting
-                )
+                story_url = story.get("Story_URL", "")
+
+                # Add the story only if its URL has not been added yet
+                if story_url and story_url not in seen_urls:
+                    matching_stories.append(
+                        {
+                            "percentage": 100,
+                            "data": story,
+                            "original_date": story_date,
+                        }
+                    )
+                    seen_urls.add(story_url)  # Mark this URL as seen
 
     # Sort the matching stories by 'original_date' in descending order
     matching_stories.sort(key=lambda x: x["original_date"], reverse=True)
@@ -873,7 +884,6 @@ def stories_by_date():
 
 if __name__ == "__main__":
     # start_scheduler()
-
 
     app.run(host="127.0.0.1", port=8080, debug=True, use_reloader=False)
 # [END gae_python3_app]
