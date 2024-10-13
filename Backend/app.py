@@ -708,6 +708,8 @@ def rank_documents_bm25_bert():
     # Using combined BM25 and BERTScore model to rank documents
     idx, scores = model.rank(query)
     results = []
+    seen_urls = set()  # Set to track seen Story_URLs
+
     print(type(idx))
     percent = (
         round(
@@ -721,16 +723,24 @@ def rank_documents_bm25_bert():
     origkeys = [origdata[i]["key"] for i in idx]
 
     for doc_id, score in zip(origkeys[:10], scores[:10]):
-        # doc_id = str(i)  # Convert index to integer
-        print(doc_id)
-        # doc_obj = data[doc_id]  # Access the corresponding document object
+        # Access the corresponding document object
+        story = data[doc_id]
+        story_url = story.get("Story_URL", "")
+
+        # Skip the story if it has already been added
+        if story_url in seen_urls:
+            continue
+
+        # Add the story URL to the seen list
+        seen_urls.add(story_url)
 
         results.append(
             {
                 "percentage": percent,
-                "data": data[doc_id],  # Include the whole news object
+                "data": story,  # Include the whole news object
             }
         )
+
     return jsonify(results)
 
 
