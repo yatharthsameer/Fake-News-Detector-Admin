@@ -140,7 +140,9 @@ const About = () => {
             >
               {t("image_query")} {/* Image query processing */}
             </Typography>
+          </CardContent>
 
+          <CardContent sx={{ backgroundColor: "#54BA7B" }}>
             <Typography
               variant="h5"
               gutterBottom
@@ -173,7 +175,13 @@ const About = () => {
               paragraph
               sx={{ color: "black", fontFamily: "Arial, sans-serif" }}
             >
-              {t("query_feedback")} {/* Contact email */}
+              {t("query_feedback")}
+              <a
+                href="mailto:mdp@jagrannewmedia.com"
+                style={{ color: "inherit", textDecoration: "none" }}
+              >
+                <span style={{ color: "blue" }}> mdp@jagrannewmedia.com</span>
+              </a>
             </Typography>
 
             <Typography
@@ -181,7 +189,15 @@ const About = () => {
               paragraph
               sx={{ color: "black", fontFamily: "Arial, sans-serif" }}
             >
-              {t("contact_whatsapp")} {/* WhatsApp contact */}
+              {t("contact_whatsapp")}
+              <a
+                href="https://wa.me/919205270923"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "inherit", textDecoration: "none" }}
+              >
+                <span style={{ color: "blue" }}>+91-9205270923</span>
+              </a>
             </Typography>
           </CardContent>
         </Card>

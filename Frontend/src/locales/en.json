@@ -9,10 +9,10 @@
     "text": "Text",
     "loading": "Loading...",
     "image_upload": "Image Upload",
-    "information":"Your query has been matched with a large set of debunked news-stories in the Vishwas News database, using multiple AI-based text matching methods. The “Top Matches” list shows some of the news-stories that are a combination of most recent and most relevant (similar) to your query. The percentage score indicates the match of your query with the closest matching news-story that appears at the top of the list. Other similar news-stories are also shown for your information. If your query does not show a relevant match, it is automatically re-directed to the team of fact-checkers at Vishvas News. If the claim contained in the query is dis/misinformation, they verify and debunk it. The fact-check is then published on the Vishvas News website.",
+    "information": "Your query has been matched with a large set of debunked news-stories in the Vishwas News database, using multiple AI-based text matching methods. The “Top Matches” list shows some of the news-stories that are a combination of most recent and most relevant (similar) to your query. The percentage score indicates the match of your query with the closest matching news-story that appears at the top of the list. Other similar news-stories are also shown for your information. If your query does not show a relevant match, it is automatically re-directed to the team of fact-checkers at Vishvas News. If the claim contained in the query is dis/misinformation, they verify and debunk it. The fact-check is then published on the Vishvas News website.",
     "search": "Search",
     "top_matches": "Top Matches",
-    "claim_match_message":" This claim has up to {{highestMatch}}% match with debunked stories in our Database",
+    "claim_match_message": " This claim has up to {{highestMatch}}% match with debunked stories in our Database",
     "trends_based_misinformation": "Trends based misinformation",
     "recycled_misinformation": "Recycled dis/misinformation is often deployed by bad actors to create confusion and mislead recipients.",
     "debunked_section": "This section shows you already debunked dis/misinformation based on:",
@@ -24,8 +24,8 @@
     "timeline": "Timeline",
     "timeline_description": "The graph depicts the number of fact-checks every year on the subject/claim being searched.",
     "no_match_message": "No match found for the query in the database.",
-    "error_results_not_available":"No results available for this query.",
-    "disclaimer":"Disclaimer: This section of the website is run by an AI tool which makes decisions based on deep learning mechanisms. The parties shall not bear any liability of the decisions made by the tool, but would ensure to take down any wrong decision as and when highlighted by any person or authority with sufficient proof and justification.",
+    "error_results_not_available": "No results available for this query.",
+    "disclaimer": "Disclaimer: This section of the website is run by an AI tool which makes decisions based on deep learning mechanisms. The parties shall not bear any liability of the decisions made by the tool, but would ensure to take down any wrong decision as and when highlighted by any person or authority with sufficient proof and justification.",
     "about_title": "Welcome to MESSAGE CHECK!",
     "about_description": "MESSAGE CHECK is a fact-checking dashboard, and a predictive learning platform to identify existing fact-checks that match dis/misinformation claims going viral. It also enables fact-checkers to predict misinformation around events and identify seasonal or event-based trends that cause a surge in misinformation. The dashboard is part of the Misleading Data Predictor (MDP) created collaboratively by teams at Vishvas News and IIT-Kharagpur.",
     "explanatory_note": "Explanatory note from the team at Department of Computer Science Engineering at the Indian Institute of Technology (IIT), Kharagpur:",
@@ -39,6 +39,6 @@
     "about_vishvas_news": "About Vishvas News",
     "contact_us": "Contact Us",
     "drag_drop_image": "Drag and drop an image here or click to upload.",
-    "query_feedback": "Do you have any query, concern or feedback? Write to us at mdp@jagrannewmedia.com",
-    "contact_whatsapp": "You can also reach the Vishvas News team via WhatsApp on +91-9205270923."
+    "query_feedback": "Do you have any query, concern or feedback? Write to us at ",
+    "contact_whatsapp": "You can also reach the Vishvas News team via WhatsApp on "
 }

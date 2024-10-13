@@ -84,7 +84,7 @@ const LineChart = ({
         tickSize: 3,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "Frequency", // Changed from 'count' to 'Frequency'
+        legend: "No. of fact checks", // Changed from 'count' to 'Frequency'
         legendOffset: -40,
         legendPosition: "middle",
       }}
@@ -108,7 +108,7 @@ const LineChart = ({
         >
           <strong>Year: {point.data.xFormatted}</strong>
           <br />
-          <strong>Frequency: {point.data.yFormatted}</strong>
+          <strong>No. of fact checks {point.data.yFormatted}</strong>
         </div>
       )}
       legends={[
@@ -116,8 +116,8 @@ const LineChart = ({
           anchor: "top-right",
           direction: "column",
           justify: false,
-          translateX: 20,
-          translateY: 0,
+          translateX: -20,
+          translateY: -30,
           itemsSpacing: 0,
           itemDirection: "left-to-right",
           itemWidth: 80,

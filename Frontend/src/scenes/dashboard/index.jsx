@@ -89,7 +89,7 @@ const Dashboard = () => {
     }
 
     const chartData = {
-      id: "Frequency",
+      id: "No. of fact checks",
       color: tokens("dark").blueAccent[300],
       data: Object.keys(yearCount)
         .map((year) => ({
@@ -298,7 +298,7 @@ const Dashboard = () => {
                 sx={{ color: "black", "&.Mui-checked": { color: "black" } }}
               />
             }
-            label="IMage URL"
+            label="Image URL"
             sx={{ color: "black" }}
           />
         </RadioGroup>
@@ -455,7 +455,8 @@ const Dashboard = () => {
           onClick={handleSearchButtonClick}
           sx={{
             backgroundColor: "#0b9933",
-            color: colors.grey[100],
+            color: "white",
+
             borderRadius: "80px",
             marginLeft: "10px",
             fontSize: "14px",
@@ -581,27 +582,6 @@ const Dashboard = () => {
                               >
                                 {t("top_matches")}
                               </Typography>
-                              <Box>
-                                <Button
-                                  onClick={handlePrev}
-                                  disabled={currentPage === 1}
-                                  variant="contained"
-                                  sx={{ mr: 1 }}
-                                >
-                                  Prev
-                                </Button>
-                                <Button
-                                  onClick={handleNext}
-                                  disabled={
-                                    currentPage ===
-                                    Math.ceil(results.length / itemsPerPage)
-                                  }
-                                  variant="contained"
-                                  sx={{ ml: 1 }}
-                                >
-                                  Next
-                                </Button>
-                              </Box>
                             </Box>
                             {Array.isArray(currentItems) ? (
                               currentItems.map((result, index) => (
@@ -680,6 +660,37 @@ const Dashboard = () => {
                                 {t("error_results_not_available")}{" "}
                               </Typography>
                             )}
+                            <Box display="flex" justifyContent="center" mt={2}>
+                              <Button
+                                onClick={handlePrev}
+                                disabled={currentPage === 1}
+                                variant="contained"
+                                sx={{
+                                  mr: 1,
+                                  backgroundColor: "#0b9933",
+                                  color: "white",
+                                  "&:hover": { backgroundColor: "#9E9E9E" },
+                                }}
+                              >
+                                Prev
+                              </Button>
+                              <Button
+                                onClick={handleNext}
+                                disabled={
+                                  currentPage ===
+                                  Math.ceil(results.length / itemsPerPage)
+                                }
+                                variant="contained"
+                                sx={{
+                                  mr: 1,
+                                  backgroundColor: "#0b9933",
+                                  color: "white",
+                                  "&:hover": { backgroundColor: "#9E9E9E" },
+                                }}
+                              >
+                                Next
+                              </Button>
+                            </Box>
                           </Box>
                         </Grid>
                         <Grid item xs={12}>
@@ -820,27 +831,6 @@ const Dashboard = () => {
                               >
                                 {t("top_matches")}
                               </Typography>
-                              <Box>
-                                <Button
-                                  onClick={handlePrev}
-                                  disabled={currentPage === 1}
-                                  variant="contained"
-                                  sx={{ mr: 1 }}
-                                >
-                                  Prev
-                                </Button>
-                                <Button
-                                  onClick={handleNext}
-                                  disabled={
-                                    currentPage ===
-                                    Math.ceil(results.length / itemsPerPage)
-                                  }
-                                  variant="contained"
-                                  sx={{ ml: 1 }}
-                                >
-                                  Next
-                                </Button>
-                              </Box>
                             </Box>
                             {Array.isArray(currentItems) ? (
                               currentItems.map((result, index) => (
@@ -913,6 +903,37 @@ const Dashboard = () => {
                                 {/* i18n key for error message */}
                               </Typography>
                             )}
+                            <Box display="flex" justifyContent="center" mt={2}>
+                              <Button
+                                onClick={handlePrev}
+                                disabled={currentPage === 1}
+                                variant="contained"
+                                sx={{
+                                  mr: 1,
+                                  backgroundColor: "#0b9933",
+                                  color: "white",
+                                  "&:hover": { backgroundColor: "#9E9E9E" },
+                                }}
+                              >
+                                Prev
+                              </Button>
+                              <Button
+                                onClick={handleNext}
+                                disabled={
+                                  currentPage ===
+                                  Math.ceil(results.length / itemsPerPage)
+                                }
+                                variant="contained"
+                                sx={{
+                                  mr: 1,
+                                  backgroundColor: "#0b9933",
+                                  color: "white",
+                                  "&:hover": { backgroundColor: "#9E9E9E" },
+                                }}
+                              >
+                                Next
+                              </Button>
+                            </Box>
                           </Box>
                         </Grid>
                       </>
