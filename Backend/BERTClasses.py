@@ -232,7 +232,7 @@ class ftsent:
         self.model = fasttext.load_model(model_path)
         self.doc_vecs = [self.model.get_sentence_vector(x) for x in docs]
         self.docs_set = [doc_tokenize_sets(self.clean(x)) for x in docs]
-        # self.orig_docs = orig_docs
+        self.orig_docs = orig_docs
 
 
         if orig_docs is not None:
