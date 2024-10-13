@@ -17,6 +17,8 @@ import { useDropzone } from "react-dropzone";
 import CloseIcon from "@mui/icons-material/Close";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { tokens } from "../../theme";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import styles
 
 const storyDateValidation = yup
   .string()
@@ -78,10 +80,8 @@ const Form = () => {
 
   const handleCSVSubmit = async () => {
     setIsLoading(true);
-    setMessage("");
     if (!file) {
-      setMessage("No file selected");
-      setIsError(true);
+      toast.error("No file selected"); // Show error toast
       setIsLoading(false);
       return;
     }
@@ -110,25 +110,20 @@ const Form = () => {
             .join("; ");
           errorMessage += " Details: " + detailedErrors;
         }
-        setMessage(errorMessage);
-        setIsError(true);
+        toast.error(errorMessage); // Show error toast
       } else {
-        setMessage(result.message);
-        setIsError(false);
+        toast.success(result.message); // Show success toast
         setFile(null);
       }
-      setIsLoading(false);
     } catch (error) {
+      toast.error(`CSV submission error: ${error.message}`); // Show error toast
+    } finally {
       setIsLoading(false);
-      console.error("An error occurred during CSV submission:", error);
-      setMessage(`CSV submission error: ${error.message}`);
-      setIsError(true);
     }
   };
 
   const handleFormSubmit = async (values, { resetForm }) => {
     setIsLoading(true);
-    setMessage("");
     try {
       const response = await fetch("/api/appendDataIndividual", {
         method: "POST",
@@ -139,20 +134,18 @@ const Form = () => {
         body: JSON.stringify(values),
       });
       const result = await response.json();
+
       if (!response.ok) {
-        setMessage(result.error || "Failed to submit data");
-        setIsError(true);
+        toast.error(result.error || "Failed to submit data"); // Show error toast
       } else {
-        setMessage(result.message || "Data submitted successfully");
-        setIsError(false);
+        toast.success(result.message || "Data submitted successfully"); // Show success toast
         resetForm(); // Reset the form after successful submission
       }
     } catch (error) {
-      console.error("An error occurred during form submission:", error);
-      setMessage(`Form submission error: ${error.message}`);
-      setIsError(true);
+      toast.error(`Form submission error: ${error.message}`); // Show error toast
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const theme = useTheme();
@@ -183,6 +176,8 @@ const Form = () => {
 
   return (
     <Box m="20px">
+      <ToastContainer />
+
       <Typography
         variant="h4"
         component="h2"
@@ -831,6 +826,7 @@ const Form = () => {
             form="form-id"
             color="primary"
             variant="contained"
+            disabled={isLoading} // Disable button when loading
             sx={{
               backgroundColor: colors.blueAccent[600],
               color: "#fff",
@@ -839,13 +835,18 @@ const Form = () => {
               padding: "10px 20px",
             }}
           >
-            Submit Form
+            {isLoading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Submit Form"
+            )}
           </Button>
         ) : (
           <Button
             onClick={handleCSVSubmit}
             color="primary"
             variant="contained"
+            disabled={isLoading} // Disable button when loading
             sx={{
               backgroundColor: colors.blueAccent[600],
               color: "#fff",
@@ -854,7 +855,11 @@ const Form = () => {
               padding: "10px 20px",
             }}
           >
-            Submit CSV
+            {isLoading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Submit CSV"
+            )}
           </Button>
         )}
 
