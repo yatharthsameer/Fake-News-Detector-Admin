@@ -157,7 +157,7 @@ const Sidebar = () => {
               color="primary"
             />
           }
-          label={i18n.language === "en" ? "EN" : "HI"}
+          label={i18n.language === "en" ? "ENGLISH" : "HINDI"}
           labelPlacement="top"
           sx={{
             display: "flex",
