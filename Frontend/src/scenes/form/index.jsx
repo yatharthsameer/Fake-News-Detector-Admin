@@ -176,7 +176,16 @@ const Form = () => {
 
   return (
     <Box m="20px">
-      <ToastContainer />
+      <ToastContainer
+        position="top-center" // You can customize the position as needed
+        autoClose={false} // This ensures the popup stays until closed manually
+        hideProgressBar={false} // Shows a progress bar (optional)
+        newestOnTop={false} // Whether the newest toast appears on top
+        closeOnClick={false} // Disables closing the toast on click (user must click the cross icon)
+        rtl={false} // Right-to-left support (if needed)
+        pauseOnFocusLoss={false} // Toast doesn't disappear if window loses focus
+        draggable={false} // Prevent dragging the toast around
+      />
 
       <Typography
         variant="h4"
