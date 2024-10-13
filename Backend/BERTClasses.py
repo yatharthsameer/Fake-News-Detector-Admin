@@ -232,7 +232,8 @@ class ftsent:
         self.model = fasttext.load_model(model_path)
         self.doc_vecs = [self.model.get_sentence_vector(x) for x in docs]
         self.docs_set = [doc_tokenize_sets(self.clean(x)) for x in docs]
-        self.orig_docs = orig_docs
+        # self.orig_docs = orig_docs
+
 
         if orig_docs is not None:
             self.title_set = [
@@ -473,7 +474,7 @@ class ensemble:
             self.BM25model.add_docs(docs, orig_docs)
 
         if self.use_ft:
-            self.FTmodel.add_docs(docs)
+            self.FTmodel.add_docs(docs, orig_docs)
 
     def translate(self, text):
         assert self.use_translation, "Translator not initialized"
