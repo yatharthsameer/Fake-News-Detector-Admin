@@ -1,19 +1,19 @@
 {
-  "short_name": "MDP Vishwas News",
-  "name": "MDP Vishwas News",
+  "short_name": "MDP Vishvas News",
+  "name": "MDP Vishvas News",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "https://www.vishvasnews.com/wp-content/uploads/2018/11/favicon-1-e1562666277466.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "https://www.vishvasnews.com/wp-content/uploads/2018/11/favicon-1-e1562666277466.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "https://www.vishvasnews.com/wp-content/uploads/2018/11/favicon-1-e1562666277466.png",
       "type": "image/png",
       "sizes": "512x512"
     }
