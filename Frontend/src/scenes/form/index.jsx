@@ -8,6 +8,7 @@ import {
   CircularProgress,
   useTheme,
 } from "@mui/material";
+import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 
 import { Formik, FieldArray } from "formik";
 import * as yup from "yup";
@@ -19,6 +20,27 @@ import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { tokens } from "../../theme";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
+import { saveAs } from "file-saver"; // Import the file-saver library
+
+const downloadCSV = async () => {
+  try {
+    const response = await fetch(
+      "https://mdp.vishvasnews.com/api/fetchAllData",
+      {
+        method: "GET",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+
+    const blob = await response.blob();
+    saveAs(blob, "allData.csv");
+  } catch (error) {
+    console.error("Error downloading CSV:", error);
+  }
+};
 
 const storyDateValidation = yup
   .string()
@@ -871,6 +893,21 @@ const Form = () => {
             )}
           </Button>
         )}
+          <Button
+            variant="contained"
+            startIcon={<DownloadOutlinedIcon />}
+            onClick={downloadCSV}
+            sx={{
+              backgroundColor: "#0b9933",
+              color: "white",
+              fontSize: "14px",
+              fontWeight: "bold",
+              padding: "10px 20px",
+              borderRadius: "50px",
+            }}
+          >
+            Download CSV
+          </Button>
 
         <Button
           onClick={handleLogout}
