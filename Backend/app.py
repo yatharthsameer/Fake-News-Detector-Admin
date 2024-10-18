@@ -425,6 +425,74 @@ def upload_image_url():
             os.remove(temp_image_path)
         return jsonify({"error": str(e)}), 500
 
+# --------------------------------------------------- # Fetch all data from the JSON file
+
+
+@app.route("/api/fetchAllData", methods=["GET"])
+def fetch_all_data():
+    try:
+        # Load the data from the JSON file
+        with open("csvProcessing/allData.json", "r", encoding="utf-8") as json_file:
+            data = json.load(json_file)
+
+        # Define the basic headers (without the index field)
+        headers = [
+            "Story_Date",
+            "Story_URL",
+            "Headline",
+            "What_(Claim)",
+            "About_Subject",
+            "About_Person",
+            "tags",
+        ]
+
+        # Find the maximum number of images in any item to dynamically create the headers
+        max_images = max(len(item.get("img", [])) for item in data.values())
+
+        # Add headers for the image columns
+        image_headers = [f"Featured Image {i+1}" for i in range(max_images)]
+        headers.extend(image_headers)
+
+        # Create the CSV rows
+        csv_data = []
+        csv_data.append(",".join(headers))  # Add headers as the first row
+
+        for item in data.values():
+            # Format the row, ensuring we leave empty cells for missing image URLs
+            row = [
+                str(item.get("Story_Date", "")),
+                str(item.get("Story_URL", "")),
+                str(item.get("Headline", "")),
+                str(item.get("What_(Claim)", "")),
+                str(item.get("About_Subject", "")),
+                str(item.get("About_Person", "")),
+                str(item.get("tags", "")),
+            ]
+
+            # Add image URLs to the row, and fill with empty strings for missing images
+            images = item.get("img", [])
+            row.extend(images + [""] * (max_images - len(images)))
+
+            csv_data.append(",".join(row))
+
+        # Join all the CSV rows into a single string
+        csv_string = "\n".join(csv_data)
+
+        # Send CSV data as a response
+        return (
+            csv_string,
+            200,
+            {
+                "Content-Type": "text/csv",
+                "Content-Disposition": "attachment; filename=allData.csv",
+            },
+        )
+
+    except Exception as e:
+        return jsonify({"error": f"Failed to process data: {str(e)}"}), 500
+
+
+# ---------------------------------------------------
 
 from BERTClasses import bm25, ftsent, bertscore, load_data, ensemble
 
