@@ -219,6 +219,9 @@ from PIL import Image
 
 @app.route("/api/upload", methods=["POST"])
 def upload_file():
+    """
+    Uploads an image file and returns the most similar stories.
+    """
     file_path = "csvProcessing/allData.json"  # Ensure this path is correct
     data = {}
     # Load the current data from the JSON file or initialize as an empty dictionary if the file does not exist
@@ -311,6 +314,9 @@ def upload_file():
 
 @app.route("/api/uploadImageURL", methods=["POST"])
 def upload_image_url():
+    """
+    Fetches the image from the provided URL and returns the most similar stories.
+    """
     file_path = "csvProcessing/allData.json"  # Ensure this path is correct
     data = {}
     # Load the current data from the JSON file or initialize as an empty dictionary if the file does not exist
@@ -430,6 +436,9 @@ def upload_image_url():
 
 @app.route("/api/fetchAllData", methods=["GET"])
 def fetch_all_data():
+    """
+    Fetches all the data from the JSON file and returns it as a JSON response.
+    """
     try:
         # Load the data from the JSON file
         with open("csvProcessing/allData.json", "r", encoding="utf-8") as json_file:
@@ -504,6 +513,9 @@ model = ensemble(docs, use_translation=True, orig_docs=origdata, use_date_level=
 
 
 def add_docs(filename):
+    """
+    Helper function to add new documents to the model.
+    """
     newdocs, neworig = load_data(filename)
     docs.extend(newdocs)
     origdata.extend(neworig)
@@ -512,6 +524,9 @@ def add_docs(filename):
 
 @app.route("/api/appendDataIndividual", methods=["POST"])
 def append_data_individual():
+    """
+    Appends a single story to the existing data and indexes the images.
+    """
     request_data = request.get_json()
     result, status_code = append_story(request_data)
     print(result)
@@ -519,10 +534,10 @@ def append_data_individual():
     # Make POST request to external API
     try:
         response = requests.post(
-            "https://factcheckerbtp.vishvasnews.com/api/appendDataIndividual",
+            "https://factchecker.vishvasnews.com/api/appendDataIndividual",
             json=request_data,
             verify=False,
-            timeout=3600,
+            timeout=36000,
         )
     except requests.exceptions.RequestException as e:
         print(f"Error during external API call: {e}")
@@ -540,6 +555,9 @@ def append_data_individual():
 
 
 def process_csv_data(filepath, expected_columns):
+    """
+    Processes the data from a CSV file and appends it to the existing data.
+    """
     successful_entries = 0
     duplicate_entries = 0
     failed_entries = 0
@@ -557,6 +575,7 @@ def process_csv_data(filepath, expected_columns):
             )
             return
 
+        # verify and report if the first row is empty and return if the first row got successfully processed
         for row_number, row in enumerate(csv_reader, start=1):
             json_data = {
                 "Story_Date": row.get("Story Date"),
@@ -592,7 +611,7 @@ def process_csv_data(filepath, expected_columns):
         with open(filepath, "rb") as file:
             files = {"file": file}
             response = requests.post(
-                "https://factcheckerbtp.vishvasnews.com/api/appendDataCSV",
+                "https://factchecker.vishvasnews.com/api/appendDataCSV",
                 files=files,
                 verify=False,
             )
@@ -613,6 +632,10 @@ def process_csv_data(filepath, expected_columns):
 
 @app.route("/api/appendDataCSV", methods=["POST"])
 def append_data_csv():
+    """
+    Accepts a CSV file and processes the data 
+    """
+
     if "file" not in request.files:
         return jsonify({"error": "No file part"}), 400
     file = request.files["file"]
@@ -698,6 +721,9 @@ def append_data_csv():
 
 
 def append_story(request_data):
+    """
+    Main function that appends a story to the existing data and indexes the images.
+    """
     file_path = "csvProcessing/allData.json"  # Ensure this path is correct
 
     # Load the current data from the JSON file or initialize as an empty dictionary if the file does not exist
@@ -773,12 +799,10 @@ def rank_documents_bm25_bert():
         data = json.load(file)
     print("Data loaded successfully.")
 
-    # Using combined BM25 and BERTScore model to rank documents
     idx, scores = model.rank(query)
     results = []
-    seen_urls = set()  # Set to track seen Story_URLs
+    seen_urls = set()
 
-    print(type(idx))
     percent = (
         round(
             20 * max(list(scores[:3]) + [model.match_percent(query, origdata[idx[0]])])
@@ -791,28 +815,92 @@ def rank_documents_bm25_bert():
     origkeys = [origdata[i]["key"] for i in idx]
 
     for doc_id, score in zip(origkeys[:10], scores[:10]):
-        # Access the corresponding document object
         story = data[doc_id]
         story_url = story.get("Story_URL", "")
 
-        # Skip the story if it has already been added
         if story_url in seen_urls:
             continue
-
-        # Add the story URL to the seen list
         seen_urls.add(story_url)
 
         results.append(
             {
                 "percentage": percent,
-                "data": story,  # Include the whole news object
+                "data": story,
             }
         )
+
+    # Check if the highest match percentage is less than 70%
+    if percent and percent < 70:
+        send_email(query, results[:3])  # Send email with the top 3 results
 
     return jsonify(results)
 
 
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+
+def send_email(query, top_results):
+    sender = "yatharth.sameer@jagrannewmedia.com"
+    receiver = "mdp@jagrannewmedia.com"
+    # receiver = "thesameerbros@gmail.com"
+    subject = "Escalated query from Client MDP website."
+
+    # Constructing the email body
+    body = f"<h3>{subject}</h3>"
+    body += f"<p><strong>Query:</strong> {query}</p>"
+    body += "<p>Top 3 Responses:</p><ul>"
+
+    for result in top_results:
+        story_data = result["data"]
+        body += "<li>"
+        body += f"<p><strong>About Person:</strong> {story_data.get('About_Person', 'N/A')}</p>"
+        body += f"<p><strong>About Subject:</strong> {story_data.get('About_Subject', 'N/A')}</p>"
+        body += f"<p><strong>Headline:</strong> {story_data.get('Headline', 'N/A')}</p>"
+        body += (
+            f"<p><strong>Story Date:</strong> {story_data.get('Story_Date', 'N/A')}</p>"
+        )
+        body += f"<p><strong>Story URL:</strong> <a href='{story_data.get('Story_URL', '#')}'>{story_data.get('Story_URL', 'N/A')}</a></p>"
+        body += (
+            f"<p><strong>Claim:</strong> {story_data.get('What_(Claim)', 'N/A')}</p>"
+        )
+        body += f"<p><strong>Tags:</strong> {story_data.get('tags', 'N/A')}</p>"
+        body += f"<p><strong>Match Percentage:</strong> {result.get('percentage', 'N/A')}%</p>"
+
+        # If images are available, list them
+        if "img" in story_data:
+            body += "<p><strong>Images:</strong></p><ul>"
+            for img_url in story_data["img"]:
+                body += f"<li><a href='{img_url}'>{img_url}</a></li>"
+            body += "</ul>"
+
+        body += "</li><br>"
+
+    body += "</ul>"
+
+    # Setting up the email message
+    msg = MIMEMultipart()
+    msg["From"] = sender
+    msg["To"] = receiver
+    msg["Subject"] = subject
+    msg.attach(MIMEText(body, "html"))
+
+    try:
+        # Send the email via Gmail's SMTP server
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender, "lmzobejrtjalxqrk")
+            server.sendmail(sender, receiver, msg.as_string())
+        print("Email sent successfully.")
+    except Exception as e:
+        print(f"Error sending email: {e}")
+
+
 def rank_documents_bm25_bert_trends():
+    """
+    Helper function for ranking the documents based on the TEXT query using the ensemble model, 
+    especially for the current-trends endpoint.
+    """
     req = request.json
     query = req.get("query", "")
     log_query("text", query)
@@ -866,6 +954,9 @@ start_scheduler()
 
 @app.route("/api/top-trends", methods=["GET"])
 def top_trends():
+    """
+    Fetches the top trends from Google Trends for the current date.
+    """
     try:
         # Load the cached results from the file
         with open("top_trends_cache.json", "r", encoding="utf-8") as cache_file:
@@ -909,6 +1000,9 @@ def replace_year_safe(date, year):
 
 @app.route("/api/stories-by-date", methods=["POST"])
 def stories_by_date():
+    """
+    Fetches the stories from the data file based on the specified dates +- 3 days.
+    """
     client_data = request.json
     specified_date_str = client_data.get("date", "")
     if not specified_date_str:

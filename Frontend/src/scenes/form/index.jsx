@@ -702,17 +702,20 @@ const Form = () => {
                   {({ push, remove }) => (
                     <div>
                       {values.img.map((imageUrl, index) => (
-                        <Box key={index} display="flex" alignItems="center">
+                        <Box
+                          key={index}
+                          display="flex"
+                          alignItems="center"
+                          gap="10px"
+                        >
                           <TextField
                             fullWidth
                             variant="outlined"
                             type="text"
                             label={`Image URL ${index + 1}`}
-                            placeholder={
-                              index === 0
-                                ? "http://example.com/image.jpg"
-                                : "http://example.com/image2.jpg"
-                            }
+                            placeholder={`http://example.com/image${
+                              index + 1
+                            }.jpg`}
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={imageUrl}
@@ -723,7 +726,9 @@ const Form = () => {
                               !!errors.img[index]
                             }
                             helperText={
-                              touched.img && !!errors.img && errors.img[index]
+                              touched.img && errors.img && errors.img[index]
+                                ? errors.img[index]
+                                : ""
                             }
                             InputLabelProps={{
                               style: { color: "black" },
@@ -748,18 +753,24 @@ const Form = () => {
                               },
                             }}
                           />
-                          <IconButton
-                            onClick={() => remove(index)}
-                            size="small"
-                            sx={{ ml: 2 }}
-                          >
-                            <CloseIcon />
-                          </IconButton>
+                          {/* Show delete button if there is more than one image */}
+                          {values.img.length > 1 && (
+                            <IconButton
+                              onClick={() => remove(index)}
+                              size="small"
+                              // color change to red
+                              sx={{
+                                color: colors.redAccent[400],
+                              }}
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          )}
                         </Box>
                       ))}
                       <Button
                         type="button"
-                        onClick={() => push("")}
+                        onClick={() => push("")} // Add empty string for new image URL
                         variant="outlined"
                         sx={{
                           mt: 2,
@@ -775,6 +786,7 @@ const Form = () => {
                     </div>
                   )}
                 </FieldArray>
+
                 <TextField
                   fullWidth
                   variant="outlined"
@@ -893,21 +905,21 @@ const Form = () => {
             )}
           </Button>
         )}
-          <Button
-            variant="contained"
-            startIcon={<DownloadOutlinedIcon />}
-            onClick={downloadCSV}
-            sx={{
-              backgroundColor: "#0b9933",
-              color: "white",
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-              borderRadius: "50px",
-            }}
-          >
-            Download CSV
-          </Button>
+        <Button
+          variant="contained"
+          startIcon={<DownloadOutlinedIcon />}
+          onClick={downloadCSV}
+          sx={{
+            backgroundColor: "#0b9933",
+            color: "white",
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "10px 20px",
+            borderRadius: "50px",
+          }}
+        >
+          Download Dataset
+        </Button>
 
         <Button
           onClick={handleLogout}
