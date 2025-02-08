@@ -22,25 +22,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
 import { saveAs } from "file-saver"; // Import the file-saver library
 
-const downloadCSV = async () => {
-  try {
-    const response = await fetch(
-      "https://mdp.vishvasnews.com/api/fetchAllData",
-      {
-        method: "GET",
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-
-    const blob = await response.blob();
-    saveAs(blob, "allData.csv");
-  } catch (error) {
-    console.error("Error downloading CSV:", error);
-  }
-};
 
 const storyDateValidation = yup
   .string()
@@ -81,6 +62,64 @@ const Form = () => {
   const navigate = useNavigate();
   const [view, setView] = useState("csv");
   const [isLoading, setIsLoading] = useState(false);
+const [fromDate, setFromDate] = useState("");
+const [toDate, setToDate] = useState("");
+const downloadCSV = async () => {
+  if (!fromDate || !toDate) {
+    toast.error("Please select both 'From' and 'To' dates.");
+    return;
+  }
+
+  setIsLoading(true); // Show loading indicator
+
+  try {
+    const response = await fetch(
+      "https://mdp.vishvasnews.com/api/fetchAllData",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: fromDate,
+          to: toDate,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      // Try to extract JSON error response
+      let errorMessage = "Failed to fetch data.";
+      try {
+        const errorResponse = await response.json();
+        errorMessage = errorResponse.error || errorMessage;
+      } catch (jsonError) {
+        console.error("Error parsing JSON response:", jsonError);
+      }
+
+      if (response.status === 400) {
+        errorMessage =
+          "Invalid request. Please ensure both dates are correctly selected.";
+      } else if (response.status === 404) {
+        errorMessage = "No stories found within the selected date range.";
+      } else if (response.status === 500) {
+        errorMessage = "Server error. Please try again later.";
+      }
+
+      toast.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    const blob = await response.blob();
+    saveAs(blob, `data_${fromDate}_to_${toDate}.csv`);
+    toast.success("Dataset downloaded successfully!");
+  } catch (error) {
+    console.error("Error downloading CSV:", error);
+    toast.error(error.message || "Error downloading CSV.");
+  } finally {
+    setIsLoading(false); // Hide loading indicator
+  }
+};
 
   const onDrop = (acceptedFiles) => {
     setFile(acceptedFiles[0]);
@@ -905,6 +944,58 @@ const Form = () => {
             )}
           </Button>
         )}
+        <Box display="flex" justifyContent="center" gap={2} mt={2}>
+          <TextField
+            type="date"
+            label="From Date"
+            InputLabelProps={{
+              shrink: true,
+              style: { color: "black" }, // Force label color to black
+            }}
+            InputProps={{
+              style: { color: "black" }, // Force input text color to black
+            }}
+            sx={{
+              width: "200px",
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "black" }, // Border color
+                "&:hover fieldset": { borderColor: "black" }, // On hover
+                "&.Mui-focused fieldset": { borderColor: "black" }, // When focused
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "black", // Label stays black on focus
+              },
+            }}
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
+
+          <TextField
+            type="date"
+            label="To Date"
+            InputLabelProps={{
+              shrink: true,
+              style: { color: "black" },
+            }}
+            InputProps={{
+              style: { color: "black" },
+            }}
+            sx={{
+              width: "200px",
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "black" },
+                "&:hover fieldset": { borderColor: "black" },
+                "&.Mui-focused fieldset": { borderColor: "black" },
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "black",
+              },
+            }}
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+          />
+        </Box>
+
         <Button
           variant="contained"
           startIcon={<DownloadOutlinedIcon />}

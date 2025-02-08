@@ -434,17 +434,66 @@ def upload_image_url():
 # --------------------------------------------------- # Fetch all data from the JSON file
 
 
-@app.route("/api/fetchAllData", methods=["GET"])
+# Function to convert "YYYY-MM-DD" to "31st Dec 2018"
+def convert_to_custom_date_format(date_str):
+    try:
+        dt = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+        day = dt.day
+        suffix = (
+            "th" if 11 <= day <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
+        )
+        formatted_date = f"{day}{suffix} {dt.strftime('%b %Y')}"
+        return formatted_date
+    except ValueError:
+        return None  # Handle invalid dates
+
+
+@app.route("/api/fetchAllData", methods=["POST"])
 def fetch_all_data():
     """
-    Fetches all the data from the JSON file and returns it as a JSON response.
+    Fetches filtered data from the JSON file based on date range and returns it as a CSV response.
     """
     try:
-        # Load the data from the JSON file
+        # Load the JSON data
         with open("csvProcessing/allData.json", "r", encoding="utf-8") as json_file:
             data = json.load(json_file)
 
-        # Define the basic headers (without the index field)
+        # Get 'from' and 'to' dates from request body
+        request_data = request.get_json()
+        from_date = request_data.get("from")
+        to_date = request_data.get("to")
+
+        if not from_date or not to_date:
+            return jsonify({"error": "Both 'from' and 'to' dates are required"}), 400
+
+        # Convert the dates to match the format in JSON file
+        from_date_formatted = convert_to_custom_date_format(from_date)
+        to_date_formatted = convert_to_custom_date_format(to_date)
+
+        if not from_date_formatted or not to_date_formatted:
+            return jsonify({"error": "Invalid date format"}), 400
+
+        # Convert dates to datetime objects for filtering
+        from_dt = datetime.datetime.strptime(from_date, "%Y-%m-%d")
+        to_dt = datetime.datetime.strptime(to_date, "%Y-%m-%d")
+
+        # Filter data based on Story_Date
+        filtered_data = {
+            key: item
+            for key, item in data.items()
+            if "Story_Date" in item
+            and from_dt
+            <= datetime.datetime.strptime(item["Story_Date"], "%d %b %Y")
+            <= to_dt
+        }
+
+        if not filtered_data:
+            return (
+                jsonify({"error": "No stories found within the given date range"}),
+                404,
+            )
+
+        # Define headers for CSV
         headers = [
             "Story_Date",
             "Story_URL",
@@ -455,19 +504,18 @@ def fetch_all_data():
             "tags",
         ]
 
-        # Find the maximum number of images in any item to dynamically create the headers
-        max_images = max(len(item.get("img", [])) for item in data.values())
+        # Determine max number of images for dynamic headers
+        max_images = max(len(item.get("img", [])) for item in filtered_data.values())
 
-        # Add headers for the image columns
+        # Add image headers
         image_headers = [f"Featured Image {i+1}" for i in range(max_images)]
         headers.extend(image_headers)
 
-        # Create the CSV rows
+        # Create CSV rows
         csv_data = []
-        csv_data.append(",".join(headers))  # Add headers as the first row
+        csv_data.append(",".join(headers))  # Header row
 
-        for item in data.values():
-            # Format the row, ensuring we leave empty cells for missing image URLs
+        for item in filtered_data.values():
             row = [
                 str(item.get("Story_Date", "")),
                 str(item.get("Story_URL", "")),
@@ -478,7 +526,7 @@ def fetch_all_data():
                 str(item.get("tags", "")),
             ]
 
-            # Add image URLs to the row, and fill with empty strings for missing images
+            # Add image URLs, filling missing ones with empty strings
             images = item.get("img", [])
             row.extend(images + [""] * (max_images - len(images)))
 
@@ -487,13 +535,13 @@ def fetch_all_data():
         # Join all the CSV rows into a single string
         csv_string = "\n".join(csv_data)
 
-        # Send CSV data as a response
+        # Return CSV response
         return (
             csv_string,
             200,
             {
                 "Content-Type": "text/csv",
-                "Content-Disposition": "attachment; filename=allData.csv",
+                "Content-Disposition": f"attachment; filename=filteredData_{from_date}_to_{to_date}.csv",
             },
         )
 
