@@ -435,6 +435,14 @@ def upload_image_url():
 # --------------------------------------------------- # Fetch all data from the JSON file
 
 
+from flask import Flask, request, jsonify
+import json
+from datetime import datetime
+import re  # Import regex for stripping suffixes
+
+app = Flask(__name__)
+
+
 # Function to convert "YYYY-MM-DD" to "31st Dec 2018"
 def convert_to_custom_date_format(date_str):
     try:
@@ -447,6 +455,11 @@ def convert_to_custom_date_format(date_str):
         return formatted_date
     except ValueError:
         return None  # Handle invalid dates
+
+
+# Function to remove "st", "nd", "rd", "th" from dates in JSON before parsing
+def remove_ordinal_suffix(date_str):
+    return re.sub(r"(st|nd|rd|th)", "", date_str)
 
 
 @app.route("/api/fetchAllData", methods=["POST"])
@@ -474,17 +487,19 @@ def fetch_all_data():
         if not from_date_formatted or not to_date_formatted:
             return jsonify({"error": "Invalid date format"}), 400
 
-        # Convert dates to datetime objects for filtering
-        from_dt = datetime.strptime(from_date, "%Y-%m-%d")
-        to_dt = datetime.strptime(to_date, "%Y-%m-%d")
+        # Convert formatted dates to datetime objects for filtering
+        from_dt = datetime.strptime(
+            remove_ordinal_suffix(from_date_formatted), "%d %b %Y"
+        )
+        to_dt = datetime.strptime(remove_ordinal_suffix(to_date_formatted), "%d %b %Y")
 
-        # Filter data based on Story_Date
+        # Filter data based on Story_Date (removing suffixes before parsing)
         filtered_data = {
             key: item
             for key, item in data.items()
             if "Story_Date" in item
             and from_dt
-            <= datetime.strptime(item["Story_Date"], "%d %b %Y")
+            <= datetime.strptime(remove_ordinal_suffix(item["Story_Date"]), "%d %b %Y")
             <= to_dt
         }
 
