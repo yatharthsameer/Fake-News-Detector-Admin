@@ -435,12 +435,7 @@ def upload_image_url():
 # --------------------------------------------------- # Fetch all data from the JSON file
 
 
-from flask import Flask, request, jsonify
-import json
-from datetime import datetime
-import re  # Import regex for stripping suffixes
 
-app = Flask(__name__)
 
 
 # Function to convert "YYYY-MM-DD" to "31st Dec 2018"
