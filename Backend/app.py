@@ -438,7 +438,7 @@ def upload_image_url():
 # Function to convert "YYYY-MM-DD" to "31st Dec 2018"
 def convert_to_custom_date_format(date_str):
     try:
-        dt = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+        dt = datetime.strptime(date_str, "%Y-%m-%d")
         day = dt.day
         suffix = (
             "th" if 11 <= day <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
@@ -475,8 +475,8 @@ def fetch_all_data():
             return jsonify({"error": "Invalid date format"}), 400
 
         # Convert dates to datetime objects for filtering
-        from_dt = datetime.datetime.strptime(from_date, "%Y-%m-%d")
-        to_dt = datetime.datetime.strptime(to_date, "%Y-%m-%d")
+        from_dt = datetime.strptime(from_date, "%Y-%m-%d")
+        to_dt = datetime.strptime(to_date, "%Y-%m-%d")
 
         # Filter data based on Story_Date
         filtered_data = {
@@ -484,7 +484,7 @@ def fetch_all_data():
             for key, item in data.items()
             if "Story_Date" in item
             and from_dt
-            <= datetime.datetime.strptime(item["Story_Date"], "%d %b %Y")
+            <= datetime.strptime(item["Story_Date"], "%d %b %Y")
             <= to_dt
         }
 
