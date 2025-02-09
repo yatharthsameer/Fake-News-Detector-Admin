@@ -85,7 +85,7 @@ def load_data(filepath="csvProcessing/allData.json"):
                     "tags",
                 ]
             ]
-            print("tmp tmp",tmp)
+            # print("tmp tmp",tmp)
             docs.append(" | ".join(tmp))
 
     return docs, origdata
