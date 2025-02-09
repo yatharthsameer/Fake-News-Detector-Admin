@@ -122,28 +122,45 @@ def extract_img_links(json_path):
 
 
 def download_images(urls_with_ids, folder):
+    """
+    Downloads images from a list of (story_id, image_links) tuples and saves them in the specified folder.
+
+    :param urls_with_ids: List of tuples (story_id, image_links)
+    :param folder: The target directory where images should be saved
+    """
     # Ensure the target folder exists
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-    for id, url in urls_with_ids:
-        if url == "NA" or not url:  # Skip entries with no valid image URL
-            print(f"Skipping download for ID {id}: No valid URL provided.")
+    for story_id, img_links in urls_with_ids:
+        if not img_links or img_links == "NA":  # Skip entries with no valid images
+            print(f"Skipping download for ID {story_id}: No valid image URLs provided.")
             continue
 
-        try:
-            response = requests.get(url)
-            if response.status_code == 200:
-                file_path = f"{folder}/image_{id}.jpg"
-                with open(file_path, "wb") as file:
-                    file.write(response.content)
-                print(f"Downloaded image for ID {id} to {file_path}")
-            else:
+        # Ensure img_links is a list
+        if not isinstance(img_links, list):
+            img_links = [img_links]  # Convert single string into a list
+
+        for index, url in enumerate(img_links, start=1):
+            try:
+                response = requests.get(
+                    url, timeout=10
+                )  # Added timeout for reliability
+                if response.status_code == 200:
+                    file_path = os.path.join(folder, f"image_{story_id}_{index}.jpg")
+                    with open(file_path, "wb") as file:
+                        file.write(response.content)
+                    print(
+                        f"Downloaded image {index} for story ID {story_id} to {file_path}"
+                    )
+                else:
+                    print(
+                        f"Failed to download image {index} for story ID {story_id} from {url}: Status code {response.status_code}"
+                    )
+            except Exception as e:
                 print(
-                    f"Failed to download image for ID {id} from {url}: Status code {response.status_code}"
+                    f"Failed to download image {index} for story ID {story_id} from {url}: {e}"
                 )
-        except Exception as e:
-            print(f"Failed to download image for ID {id} from {url}: {e}")
 
 
 def reindex_json_file(json_filepath):
