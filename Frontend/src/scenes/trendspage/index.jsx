@@ -37,7 +37,7 @@ const Trendspage = () => {
 
   const fetchTopTrends = () => {
     setIsLoadingColumn1(true);
-    fetch("https://factchecker.vishvasnews.com/api/top-trends")
+    fetch("https://mdp.vishvasnews.com/api/top-trends")
       .then((response) => response.json())
       .then((data) => {
         const flattenedData = [];
@@ -65,7 +65,7 @@ const Trendspage = () => {
       { month: "short" }
     )} ${currentDate.getFullYear()}`;
 
-    fetch("https://factchecker.vishvasnews.com/api/stories-by-date", {
+    fetch("https://mdp.vishvasnews.com/api/stories-by-date", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

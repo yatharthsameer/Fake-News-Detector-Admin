@@ -114,8 +114,7 @@ const Dashboard = () => {
 
     if (searchType === "text") {
       const searchQuery = searchInputRef.current.value;
-      // fetch("/api/ensemble", {
-        fetch("https://factchecker.vishvasnews.com/api/ensemble", {
+      fetch("/api/ensemble", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
