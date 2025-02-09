@@ -139,49 +139,122 @@ const downloadCSV = async () => {
   const csvInstructions =
     "Ensure your CSV file has the columns in this order: Story Date, Story URL, Headline, What (Claim), About Subject, About Person, Featured Image, Tags.";
 
-  const handleCSVSubmit = async () => {
-    setIsLoading(true);
-    if (!file) {
-      toast.error("No file selected"); // Show error toast
-      setIsLoading(false);
-      return;
-    }
+const validateCSV = async (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const text = event.target.result;
+      const rows = text
+        .split("\n")
+        .map((row) => row.trim())
+        .filter((row) => row);
+
+      if (rows.length < 2) {
+        toast.error("CSV file is empty or missing required headers.");
+        reject("Invalid CSV format.");
+        return;
+      }
+
+      // Extract headers and ensure required columns exist
+      const headers = rows[0].split(",");
+      const requiredColumns = ["Story Date", "Story URL"];
+
+      for (const col of requiredColumns) {
+        if (!headers.includes(col)) {
+          toast.error(`CSV is missing required column: ${col}`);
+          reject(`Missing column: ${col}`);
+          return;
+        }
+      }
+
+      const dateIndex = headers.indexOf("Story Date");
+      const urlIndex = headers.indexOf("Story URL");
+      const dateRegex =
+        /^(?:[1-9]|[12][0-9]|3[01])(st|nd|rd|th) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4}$/;
+      const urlRegex = /^https?:\/\//;
+
+      let invalidRows = [];
+
+      for (let i = 1; i < rows.length; i++) {
+        const columns = rows[i].split(",");
+
+        if (!columns[dateIndex] || !dateRegex.test(columns[dateIndex].trim())) {
+          invalidRows.push(`Row ${i + 1}: Invalid Story Date`);
+        }
+
+        if (!columns[urlIndex] || !urlRegex.test(columns[urlIndex].trim())) {
+          invalidRows.push(
+            `Row ${i + 1}: Invalid Story URL (must start with http/https)`
+          );
+        }
+      }
+
+      if (invalidRows.length > 0) {
+        toast.error(`CSV validation failed:\n${invalidRows.join("\n")}`);
+        reject("Invalid rows detected.");
+      } else {
+        resolve();
+      }
+    };
+
+    reader.onerror = () => {
+      toast.error("Error reading the CSV file.");
+      reject("CSV read error.");
+    };
+
+    reader.readAsText(file);
+  });
+};
+
+const handleCSVSubmit = async () => {
+  setIsLoading(true);
+  if (!file) {
+    toast.error("No file selected");
+    setIsLoading(false);
+    return;
+  }
+
+  try {
+    await validateCSV(file); // Validate CSV before submission
+
     const formData = new FormData();
     formData.append("file", file);
-    try {
-      const response = await fetch("/api/appendDataCSV", {
-        method: "POST",
-        body: formData,
-      });
 
-      const result = await response.json();
+    const response = await fetch("/api/appendDataCSV", {
+      method: "POST",
+      body: formData,
+    });
 
-      if (!response.ok) {
-        let errorMessage = "Failed to upload CSV.";
-        if (result.error) {
-          errorMessage =
-            result.error +
-            (result.missing_columns
-              ? " Missing columns: " + result.missing_columns.join(", ") + "."
-              : "");
-        }
-        if (result.error_details && result.error_details.length > 0) {
-          const detailedErrors = result.error_details
-            .map((detail) => `Row ${detail.row}: ${detail.error}`)
-            .join("; ");
-          errorMessage += " Details: " + detailedErrors;
-        }
-        toast.error(errorMessage); // Show error toast
-      } else {
-        toast.success(result.message); // Show success toast
-        setFile(null);
+    const result = await response.json();
+
+    if (!response.ok) {
+      let errorMessage = "Failed to upload CSV.";
+      if (result.error) {
+        errorMessage =
+          result.error +
+          (result.missing_columns
+            ? " Missing columns: " + result.missing_columns.join(", ") + "."
+            : "");
       }
-    } catch (error) {
-      toast.error(`CSV submission error: ${error.message}`); // Show error toast
-    } finally {
-      setIsLoading(false);
+      if (result.error_details && result.error_details.length > 0) {
+        const detailedErrors = result.error_details
+          .map((detail) => `Row ${detail.row}: ${detail.error}`)
+          .join("; ");
+        errorMessage += " Details: " + detailedErrors;
+      }
+      toast.error(errorMessage);
+    } else {
+      toast.success(result.message);
+      setFile(null);
     }
-  };
+  } catch (error) {
+    toast.error(`CSV submission error: ${error}`);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const handleFormSubmit = async (values, { resetForm }) => {
     setIsLoading(true);
