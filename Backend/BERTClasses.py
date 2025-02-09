@@ -75,7 +75,7 @@ def load_data(filepath="csvProcessing/allData.json"):
                     )
 
             tmp = [
-                val[x].strip(": ")
+                f'"{val[x].strip(": ")}"'
                 for x in [
                     "Story_URL",
                     "Headline",
