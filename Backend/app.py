@@ -258,6 +258,7 @@ def upload_file():
             similar_images = st.get_similar_images(
                 image_path=filepath, number_of_images=30
             )
+            print(similar_images)
         except Exception as e:
             return (
                 jsonify({"error": f"Error during image similarity search: {str(e)}"}),
@@ -836,6 +837,7 @@ def append_story(request_data):
                 # Add the image to the index
                 try:
                     st.add_images_to_index([image_path])
+                    print(f"Image {idx} indexed successfully. paTH:", image_path)
                 except Exception as e:
                     return {"error": f"Failed to index image {idx}: {str(e)}"}, 500
             else:
