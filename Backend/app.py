@@ -275,7 +275,7 @@ def upload_file():
                 print("image_filename", image_filename)
                 image_parts = image_filename.split("_")
                 story_index = image_parts[1]  # This is the index of the story object
-                print("story index for uplaoed image", story_index)
+                print("story index for uploaded image", story_index)
 
                 if story_index in data:
                     corresponding_object = data[story_index]

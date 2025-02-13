@@ -13,6 +13,7 @@ import { AuthProvider } from './context/AuthContext';
 import Trendspage from "./scenes/trendspage";
 import ProtectedForm from './scenes/protectedForm';
 import About from './scenes/about';
+import DownloadDataset from './scenes/downloadDataset';
 import { useTranslation } from "react-i18next";
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/form" element={<ProtectedForm />} />
                 <Route path="/trendspage" element={<Trendspage />} />
+                <Route path="/downloadDataset" element={<DownloadDataset />} />
                 <Route path="/about" element={<About />} />
               </Routes>
             </main>

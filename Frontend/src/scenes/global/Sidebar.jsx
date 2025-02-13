@@ -80,6 +80,11 @@ const Sidebar = () => {
       icon: <ReceiptOutlinedIcon sx={{ color: "white" }} />,
     },
     {
+      title: "Download Dataset",
+      to: "/downloadDataset",
+      icon: <ReceiptOutlinedIcon sx={{ color: "white" }} />,
+    },
+    {
       title: "About",
       to: "/about",
       icon: <ReceiptOutlinedIcon sx={{ color: "white" }} />,
