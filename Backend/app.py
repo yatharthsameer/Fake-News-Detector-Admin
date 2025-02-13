@@ -437,9 +437,6 @@ def upload_image_url():
 # --------------------------------------------------- # Fetch all data from the JSON file
 
 
-
-
-
 # Function to convert "YYYY-MM-DD" to "31st Dec 2018"
 def convert_to_custom_date_format(date_str):
     try:
@@ -463,6 +460,7 @@ def remove_ordinal_suffix(date_str):
 def fetch_all_data():
     """
     Fetches filtered data from the JSON file based on date range and returns it as a CSV response.
+    The data is **sorted in descending order** (latest first).
     """
     try:
         # Load the JSON data
@@ -477,7 +475,7 @@ def fetch_all_data():
         if not from_date or not to_date:
             return jsonify({"error": "Both 'from' and 'to' dates are required"}), 400
 
-        # Convert the dates to match the format in JSON file
+        # Convert input dates to match JSON format
         from_date_formatted = convert_to_custom_date_format(from_date)
         to_date_formatted = convert_to_custom_date_format(to_date)
 
@@ -490,17 +488,25 @@ def fetch_all_data():
         )
         to_dt = datetime.strptime(remove_ordinal_suffix(to_date_formatted), "%d %b %Y")
 
-        # Filter data based on Story_Date (removing suffixes before parsing)
-        filtered_data = {
-            key: item
-            for key, item in data.items()
-            if "Story_Date" in item
-            and from_dt
-            <= datetime.strptime(remove_ordinal_suffix(item["Story_Date"]), "%d %b %Y")
-            <= to_dt
-        }
+        # Filter and sort data by Story_Date
+        sorted_data = sorted(
+            [
+                item
+                for item in data.values()
+                if "Story_Date" in item
+                and from_dt
+                <= datetime.strptime(
+                    remove_ordinal_suffix(item["Story_Date"]), "%d %b %Y"
+                )
+                <= to_dt
+            ],
+            key=lambda x: datetime.strptime(
+                remove_ordinal_suffix(x["Story_Date"]), "%d %b %Y"
+            ),
+            reverse=True,  # Sort in descending order (latest first)
+        )
 
-        if not filtered_data:
+        if not sorted_data:
             return (
                 jsonify({"error": "No stories found within the given date range"}),
                 404,
@@ -518,7 +524,7 @@ def fetch_all_data():
         ]
 
         # Determine max number of images for dynamic headers
-        max_images = max(len(item.get("img", [])) for item in filtered_data.values())
+        max_images = max(len(item.get("img", [])) for item in sorted_data)
 
         # Add image headers
         image_headers = [f"Featured Image {i+1}" for i in range(max_images)]
@@ -528,7 +534,7 @@ def fetch_all_data():
         csv_data = []
         csv_data.append(",".join(headers))  # Header row
 
-        for item in filtered_data.values():
+        for item in sorted_data:
             row = [
                 str(item.get("Story_Date", "")),
                 str(item.get("Story_URL", "")),
