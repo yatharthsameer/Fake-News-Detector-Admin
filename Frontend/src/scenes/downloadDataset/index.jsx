@@ -1,31 +1,14 @@
-import React, { useContext, useState } from "react";
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  IconButton,
-  CircularProgress,
-  useTheme,
-} from "@mui/material";
+import React, { useState } from "react";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
-
-import { Formik, FieldArray } from "formik";
-import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
-import { useDropzone } from "react-dropzone";
-import CloseIcon from "@mui/icons-material/Close";
-import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { tokens } from "../../theme";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import styles
-import { saveAs } from "file-saver"; // Import the file-saver library
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { saveAs } from "file-saver";
 
 const DownloadDataset = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-//   const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const downloadCSV = async () => {
     if (!fromDate || !toDate) {
@@ -33,7 +16,7 @@ const DownloadDataset = () => {
       return;
     }
 
-    // setIsLoading(true);
+    setIsLoading(true);
 
     try {
       const response = await fetch(
@@ -70,13 +53,15 @@ const DownloadDataset = () => {
       }
 
       const blob = await response.blob();
-      saveAs(blob, `data_${fromDate}_to_${toDate}.csv`);
+      const filename = `filteredData_${fromDate}_to_${toDate}.csv`;
+
+      saveAs(blob, filename);
       toast.success("Dataset downloaded successfully!");
     } catch (error) {
       console.error("Error downloading CSV:", error);
       toast.error(error.message || "Error downloading CSV.");
     } finally {
-    //   setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -94,12 +79,11 @@ const DownloadDataset = () => {
             "&:hover fieldset": { borderColor: "black" },
             "&.Mui-focused fieldset": { borderColor: "black" },
           },
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "black",
-          },
+          "& .MuiInputLabel-root.Mui-focused": { color: "black" },
         }}
         value={fromDate}
         onChange={(e) => setFromDate(e.target.value)}
+        disabled={isLoading}
       />
 
       <TextField
@@ -114,12 +98,11 @@ const DownloadDataset = () => {
             "&:hover fieldset": { borderColor: "black" },
             "&.Mui-focused fieldset": { borderColor: "black" },
           },
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "black",
-          },
+          "& .MuiInputLabel-root.Mui-focused": { color: "black" },
         }}
         value={toDate}
         onChange={(e) => setToDate(e.target.value)}
+        disabled={isLoading}
       />
 
       <Button
@@ -127,18 +110,16 @@ const DownloadDataset = () => {
         startIcon={<DownloadOutlinedIcon />}
         onClick={downloadCSV}
         sx={{
-          backgroundColor: "#0b9933",
+          backgroundColor: isLoading ? "#999" : "#0b9933",
           color: "white",
           fontSize: "14px",
           fontWeight: "bold",
           padding: "10px 20px",
           borderRadius: "50px",
         }}
-        // disabled={isLoading}
+        disabled={isLoading}
       >
- 
-          Download Dataset
-      
+        {isLoading ? "Downloading..." : "Download Dataset"}
       </Button>
     </Box>
   );
