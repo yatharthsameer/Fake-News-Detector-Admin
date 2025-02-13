@@ -455,12 +455,13 @@ def convert_to_custom_date_format(date_str):
 def remove_ordinal_suffix(date_str):
     return re.sub(r"(st|nd|rd|th)", "", date_str)
 
+import io
 
 @app.route("/api/fetchAllData", methods=["POST"])
 def fetch_all_data():
     """
     Fetches filtered data from the JSON file based on date range and returns it as a CSV response.
-    The data is **sorted in descending order** (latest first).
+    The data is **sorted in descending order** (latest first) and formatted correctly for Google Sheets.
     """
     try:
         # Load the JSON data
@@ -530,37 +531,37 @@ def fetch_all_data():
         image_headers = [f"Featured Image {i+1}" for i in range(max_images)]
         headers.extend(image_headers)
 
-        # Create CSV rows
-        csv_data = []
-        csv_data.append(",".join(headers))  # Header row
+        # Use StringIO to generate CSV correctly
+        output = io.StringIO()
+        csv_writer = csv.writer(output, quoting=csv.QUOTE_ALL)  # Ensures proper quoting
 
+        # Write header row
+        csv_writer.writerow(headers)
+
+        # Write data rows
         for item in sorted_data:
             row = [
-                str(item.get("Story_Date", "")),
-                str(item.get("Story_URL", "")),
-                str(item.get("Headline", "")),
-                str(item.get("What_(Claim)", "")),
-                str(item.get("About_Subject", "")),
-                str(item.get("About_Person", "")),
-                str(item.get("tags", "")),
+                item.get("Story_Date", ""),
+                item.get("Story_URL", ""),
+                item.get("Headline", "").replace('"', '""'),  # Escape double quotes
+                item.get("What_(Claim)", "").replace('"', '""'),  # Escape double quotes
+                item.get("About_Subject", ""),
+                item.get("About_Person", ""),
+                item.get("tags", ""),
             ]
 
             # Add image URLs, filling missing ones with empty strings
             images = item.get("img", [])
             row.extend(images + [""] * (max_images - len(images)))
 
-            csv_data.append(",".join(row))
-
-        # Join all the CSV rows into a single string
-        csv_string = "\n".join(csv_data)
+            csv_writer.writerow(row)
 
         # Return CSV response
-        return (
-            csv_string,
-            200,
-            {
-                "Content-Type": "text/csv",
-                "Content-Disposition": f"attachment; filename=filteredData_{from_date}_to_{to_date}.csv",
+        return Response(
+            output.getvalue(),
+            mimetype="text/csv",
+            headers={
+                "Content-Disposition": f"attachment; filename=filteredData_{from_date}_to_{to_date}.csv"
             },
         )
 
